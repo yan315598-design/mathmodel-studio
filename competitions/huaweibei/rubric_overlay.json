@@ -1,0 +1,136 @@
+{
+ "schema_version": "huaweibei-rubric-1.0",
+ "competition": "huaweibei",
+ "version": "1.1-local-deep-distillation",
+ "rating_contract_version": "rating-contract-1.0",
+ "dimensions": [
+  {
+   "id": "problem_chain",
+   "name": "逐问依赖与问题闭环",
+   "weight": 0.18,
+   "hard_fail": "存在未回答子问，或前后问口径冲突"
+  },
+  {
+   "id": "evidence_model_fit",
+   "name": "数据/机理证据与模型匹配",
+   "weight": 0.17,
+   "hard_fail": "只列算法名，没有说明利用的数据结构或机理"
+  },
+  {
+   "id": "assumption_validation",
+   "name": "假设风险与验证对应",
+   "weight": 0.16,
+   "hard_fail": "主要强假设没有对应验证"
+  },
+  {
+   "id": "reproducibility",
+   "name": "求解与复现",
+   "weight": 0.14,
+   "hard_fail": "缺少关键参数、停止条件、数据划分或约束复算"
+  },
+  {
+   "id": "result_interpretation",
+   "name": "结果解释与题面回答",
+   "weight": 0.14,
+   "hard_fail": "只有数字或图，没有单位、基线、约束和现实含义"
+  },
+  {
+   "id": "figure_story",
+   "name": "图表证据链",
+   "weight": 0.11,
+   "hard_fail": "缺少中间状态或可信边界图表"
+  },
+  {
+   "id": "writing_integrity",
+   "name": "摘要与全文一致性",
+   "weight": 0.1,
+   "hard_fail": "摘要、正文、表格和结论数值或口径不一致"
+  }
+ ],
+ "panel_personas": [
+  {
+   "id": "model_reviewer",
+   "focus": "模型对象、推导、路线比较和假设"
+  },
+  {
+   "id": "solver_reviewer",
+   "focus": "算法实现、复杂度、可行性和复现"
+  },
+  {
+   "id": "evidence_reviewer",
+   "focus": "数据划分、验证、图表和不确定性"
+  },
+  {
+   "id": "writing_reviewer",
+   "focus": "摘要六动作与逐问六要素定量密度、式中解释块、章节接口、结果解释和边界（检查点见 writing_voice.md §2/§3）"
+  },
+  {
+   "id": "source_reviewer",
+   "focus": "竞赛键、奖项身份、证据 ID 和禁止迁移内容"
+  }
+ ],
+ "stage_overrides": {
+  "3": {
+   "_note": "模型选择必须结合相似案例的路线比较，同时写清新题与历史题在对象、数据、约束和假设上的差异。",
+   "dims": {
+    "2_selection_rationale": {
+     "describe": "至少比较三条候选路线，并引用案例 ID、证据等级、可迁移结构与拒绝原因"
+    }
+   }
+  },
+  "5": {
+   "_note": "每个子问形成输入、模型、中间量、求解、验证、回答的闭环。",
+   "dims": {
+    "1_subproblem_completeness": {
+     "describe": "逐问输入输出清晰，后续问复用前问中间量而非重新起题"
+    },
+    "2_cross_reference_chain": {
+     "describe": "模型假设、符号、结果和验证在各子问之间保持一致"
+    }
+   }
+  },
+  "8": {
+   "_note": "摘要、正文、图表和结尾按同一逐问证据链组织；页数和摘要长度只作参考，不作获奖保证。",
+   "dims": {
+    "1_abstract_5_paragraph": {
+     "describe": "摘要按 abstract_template.md 六个动作覆盖 distilled_structures.md 五段功能（现实缺口→共同发现→逐问闭环→定量结果与验证→整合边界）；只可参考 abstract_chars 完整覆盖分位，段数命名中的 5 为历史键名不作结构强制"
+    },
+    "2_section_completeness": {
+     "describe": "背景、问题分析、假设、符号、逐问建模、验证、评价、结论和附录职责清晰"
+    },
+    "3_formulas_figures_citations": {
+     "describe": "图表承担结构、机制、中间状态、结果或可信边界证据，不按历史数量凑图"
+    },
+    "4_language_quality": {
+     "describe": "结论先回答题问，再解释机制和边界；不复制历史论文原句"
+    },
+    "5_visual_consistency": {
+     "describe": "图表与正文结论、变量、单位、样本口径和编号一致"
+    }
+   }
+  }
+ },
+ "case_index_path": "competitions/huaweibei/cases/index.json",
+ "manual_review_path": "competitions/huaweibei/cases/manual_review_annotations.json",
+ "manual_paper_review_path": "competitions/huaweibei/papers/manual_paper_reviews.json",
+ "modeling_knowledge_path": "competitions/huaweibei/distilled_modeling.md",
+ "figure_knowledge_path": "competitions/huaweibei/distilled_figures.md",
+ "latex_template_dir": "templates/latex/huaweibei",
+ "source_integrity_rules": [
+  "huaweibei 与 huashubei 必须区分",
+  "A-F 题号不固定映射题型",
+  "单篇路线不冒充共识",
+  "历史数值、参数、权重、结论和原句不得迁移",
+  "2022-2025 不推测数模之星身份"
+ ],
+ "dimensions_scope": "顶层 dimensions（7 维）仅用于 Stage 9 评委模拟器终审打分；stage_overrides.8.dims（5 维）用于 Stage 8 写作过程评分，由 score_artifact.py 的 dim_whitelist 消费。两层维度数目不同是设计而非漂移：终审看整体获奖竞争力，过程评分看写作任务完成度。",
+ "dim_whitelist": {
+  "8": [
+   "1_abstract_5_paragraph",
+   "2_section_completeness",
+   "3_formulas_figures_citations",
+   "4_language_quality",
+   "5_visual_consistency"
+  ]
+ }
+}

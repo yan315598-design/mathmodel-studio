@@ -1,0 +1,136 @@
+{
+  "_doc": "华数杯专属评分维度 overlay。基于 18 篇优秀论文蒸馏，只覆盖相对统一评分契约的差异。",
+  "_source": "local_distilled_18papers",
+  "competition": "huashubei",
+  "version": "1.1-local-evidence-aware",
+  "rating_contract_version": "rating-contract-1.0",
+  "dim_whitelist": {
+    "_doc": "华数杯 stage 8 强调: 模型命名+定量摘要、章节闭环、题型方法匹配、图表解释密度、机理/算法/洞察深度、诚实度。",
+    "8": [
+      "1_abstract_named_quantitative",
+      "2_section_per_problem_closure",
+      "3_model_algorithm_fit_by_type",
+      "4_visual_explanation_density",
+      "5_mechanism_or_algorithm_depth",
+      "6_honesty_and_reproducibility"
+    ]
+  },
+  "stage_overrides": {
+    "8": {
+      "_note": "华数杯 stage 8 (国一标准): 6 维度, 每维度按题型差异化要求。",
+      "dims": {
+        "1_abstract_named_quantitative": {
+          "describe": "摘要按问题分解、给模型命名、方法链、关键定量结果、收尾升华。每问必有数字(最优值/误差/准确率/p值), 关键模型必须有名字。",
+          "A": "A题摘要600-900字, 含最优值/误差/R²/收敛迭代/参数向量; 机理-数据双驱动要在摘要点明。",
+          "B": "B题摘要600-900字, 含优化目标值/资源利用率/线长/QoS; 算法创新点(如SA-PSO)要在摘要命名。",
+          "C": "C题摘要550-750字, 含评价指标值/排序结果/准确率/p值; 清洗结果前置(剔除N个异常值)是C题特色。",
+          "sample_reference": "18篇样本的摘要字符 p50 约 1100，仅用于检查信息密度；不能作为官方硬阈值。"
+        },
+        "2_section_per_problem_closure": {
+          "describe": "章节按问题推进(非算法堆叠), 每个子问题独立闭环(题意→模型→求解→结果→解释), 子问题间用'在问题一基础上'衔接。",
+          "red_flag": "正文章节按'遗传算法章/模拟退火章'堆叠 = 直接出局",
+          "bonus": "独立'问题分析'章+全文思路图; 独立'模型检验'章(基准测试); 独立'灵敏度'章"
+        },
+        "3_model_algorithm_fit_by_type": {
+          "describe": "算法选择必须贴合题型, 且有方法适用性检验(检验前置)。",
+          "A": "A题: 物理机理推导优先, 傅里叶/D-H/RLC方程必须严谨; 纯数据黑箱回归难拿高分; 机理-数据双驱动是最高级。",
+          "B": "B题: 决策变量类型明确(连续/整数/0-1); 目标函数与约束分开写; 大规模NP难必须有可运行代码; 算法选择有决策树。",
+          "C": "C题: 评价题用客观赋权(熵权/TOPSIS, 禁AHP); 分类题报准确率/F1/AUC/混淆矩阵; 统计题检验前置(正态性/KMO)。",
+          "red_flag_A": "A题纯XGBoost无物理机理",
+          "red_flag_B": "B题纯理论无代码",
+          "red_flag_C": "C题用AHP主观赋权"
+        },
+        "4_visual_explanation_density": {
+          "describe": "图表数量按论证需要确定；每张图必须绑定唯一主张、上游数据和必要检查，图后用正文解释比较对象、趋势和边界。",
+          "A": "A题: 物理示意图(矢量)+3D可视化+收敛曲线+参数曲线+对比图",
+          "B": "B题: 算法流程图+帕累托前沿+收敛曲线+基准函数对比+资源分配图",
+          "C": "C题: 数据分布图+相关性热力图+地图(2024C杀手锏)+雷达图+3D曲面+p值热力图",
+          "sample_reference": "部分优秀样本约有20张以上图表，这是样本观察而非官方门槛；图表证据链优先于数量。"
+        },
+        "5_mechanism_or_algorithm_depth": {
+          "describe": "该题型核心维度的深度, 是国一与国二的分水岭。",
+          "A_mechanism": "A题机理深度: 物理方程严谨性+量纲正确+假设合理+数值结果物理意义校验+机理推导完整可复现",
+          "B_algorithm": "B题算法深度: 求解规模+收敛速度+多算法对比+基准函数验证(Ackley)+帕累托前沿质量",
+          "C_insight": "C题洞察深度: 评价权重合理性+模型调参深度+方法选择论证链+外部数据/文献支撑+差异化(避免同质化)"
+        },
+        "6_honesty_and_reproducibility": {
+          "describe": "诚实度(敢于报告负面结果/局限)与可复现性(参数/数据/代码可复现)。国一的重要特征。",
+          "honesty_bonus": "敢于报告负面结果(2025_C_2'优化光照无效'/2023_C_2'算法收敛失败')是国一自信表现; 心虚论文才每个结果都'显著优于'",
+          "reproducibility": "参数来源明确(非'凭经验取值'); 数据处理流程可复现; 算法参数表(种群/迭代/概率)必给; 附录代码可运行"
+        }
+      }
+    },
+    "9": {
+      "_note": "华数杯 stage 9 终审: 按题型强化不同检查重点。",
+      "focus_by_type": {
+        "A": "查物理方程量纲、假设合理性、数值结果物理意义、机理推导完整性",
+        "B": "查决策变量类型、约束完整性、代码可运行性、算法对比充分性",
+        "C": "查数据清洗透明度、方法适用性检验、评价权重合理性、可视化差异化"
+      },
+      "universal_checks": [
+        "摘要每问有定量结果",
+        "章节按问题推进非算法堆叠",
+        "模型有命名",
+        "每张图表绑定主张、上游数据与正文解释",
+        "结论数值与正文一致",
+        "参考文献10-25篇含期刊和英文",
+        "无'显著优于'无证据夸大"
+      ]
+    }
+  },
+  "panel_personas": [
+    {
+      "id": "judge_mechanism",
+      "role": "物理机理派评委 (A题视角)",
+      "focus": "物理方程对不对、量纲对不对、假设合不合理、数值结果有没有物理意义、机理推导能不能复现",
+      "kill": "A题纯数据黑箱 / 量纲错误 / 假设掉核心矛盾 / 关节角超物理范围"
+    },
+    {
+      "id": "judge_algorithm",
+      "role": "算法工程派评委 (B题视角)",
+      "focus": "模型能不能跑大规模实例、收敛快不快、有没有多算法对比、代码能不能复现、帕累托前沿质量",
+      "kill": "B题纯理论无代码 / 单算法无对比 / 伪代码与代码脱节 / 决策变量类型不明"
+    },
+    {
+      "id": "judge_data",
+      "role": "数据洞察派评委 (C题视角)",
+      "focus": "数据清洗透不透明、方法适不适用、评价权重合不合理、可视化有没有差异化、有没有洞察深度",
+      "kill": "C题用AHP / 直接套模型不检验 / 同质化无差异 / 可视化简陋 / 每个结果都显著优于"
+    },
+    {
+      "id": "judge_writing",
+      "role": "论文写作派评委 (通用视角)",
+      "focus": "摘要有没有命名和定量结果、章节是不是按问题推进、图表有没有解释、有没有收尾升华、参考文献规不规范",
+      "kill": "摘要无定量 / 算法堆叠章节 / 图表无解释 / 全学位论文参考文献"
+    }
+  ],
+  "dim_weights_override": {
+    "_doc": "华数杯题型加权建议 (覆盖 config/dim_weights.json default)。三题型核心维度加权更高。",
+    "huashubei": {
+      "A_physics_mechanism_optimization": {
+        "1_abstract_named_quantitative": 1.2,
+        "2_section_per_problem_closure": 1.0,
+        "3_model_algorithm_fit_by_type": 1.3,
+        "4_visual_explanation_density": 1.1,
+        "5_mechanism_or_algorithm_depth": 1.5,
+        "6_honesty_and_reproducibility": 1.0
+      },
+      "B_operations_optimization": {
+        "1_abstract_named_quantitative": 1.2,
+        "2_section_per_problem_closure": 1.0,
+        "3_model_algorithm_fit_by_type": 1.3,
+        "4_visual_explanation_density": 1.1,
+        "5_mechanism_or_algorithm_depth": 1.5,
+        "6_honesty_and_reproducibility": 1.2
+      },
+      "C_data_evaluation_planning": {
+        "1_abstract_named_quantitative": 1.2,
+        "2_section_per_problem_closure": 1.0,
+        "3_model_algorithm_fit_by_type": 1.2,
+        "4_visual_explanation_density": 1.4,
+        "5_mechanism_or_algorithm_depth": 1.4,
+        "6_honesty_and_reproducibility": 1.1
+      }
+    }
+  }
+}

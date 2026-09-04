@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="mathmodel-skill" type="device">
+  <diagram id="drawio-page-1" name="阶段流程">
+    <mxGraphModel dx="1000" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1160" pageHeight="300.3" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="研究阶段流程" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;rounded=0;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=16;fontColor=#1F2A36;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="18" width="1080" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="stage1_box" value="问题分析" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#4060B0;strokeColor=#2C4488;strokeWidth=1.2;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=11.5;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="126" width="168" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="stage2_box" value="数据处理" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#1F6F6F;strokeColor=#14504F;strokeWidth=1.2;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=11.5;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="268" y="126" width="168" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="stage3_box" value="模型构建" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#8A7A1A;strokeColor=#665A12;strokeWidth=1.2;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=11.5;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="496" y="126" width="168" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="stage4_box" value="算法求解" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#D06818;strokeColor=#A04E10;strokeWidth=1.2;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=11.5;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="724" y="126" width="168" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="stage5_box" value="验证应用" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#8D84A8;strokeColor=#6E6584;strokeWidth=1.2;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=11.5;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="952" y="126" width="168" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="stage1_badge" value="1" style="ellipse=1;whiteSpace=wrap;html=1;fillColor=#98D0ED;strokeColor=#3B547F;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=11.5;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="109" y="74" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="stage2_badge" value="2" style="ellipse=1;whiteSpace=wrap;html=1;fillColor=#D4EAE4;strokeColor=#668D89;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=11.5;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="337" y="74" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="stage3_badge" value="3" style="ellipse=1;whiteSpace=wrap;html=1;fillColor=#F6E6A4;strokeColor=#B8A23A;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=11.5;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="565" y="74" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="stage4_badge" value="4" style="ellipse=1;whiteSpace=wrap;html=1;fillColor=#F8D5B3;strokeColor=#C08B5C;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=11.5;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="793" y="74" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="stage5_badge" value="5" style="ellipse=1;whiteSpace=wrap;html=1;fillColor=#C8C1D9;strokeColor=#9B979F;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=11.5;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1021" y="74" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="stage1_caption" value="解读题目背景, 提炼&lt;br&gt;目标函数与硬约束" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;rounded=0;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="224" width="168" height="32.3" as="geometry" />
+        </mxCell>
+        <mxCell id="stage2_caption" value="清洗异常值, 完成填补、&lt;br&gt;标准化与特征构造" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;rounded=0;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="268" y="224" width="168" height="32.3" as="geometry" />
+        </mxCell>
+        <mxCell id="stage3_caption" value="搭建多目标主模型并&lt;br&gt;刻画参数不确定性" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;rounded=0;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="496" y="224" width="168" height="32.3" as="geometry" />
+        </mxCell>
+        <mxCell id="stage4_caption" value="精确/启发式组合求解, &lt;br&gt;输出 Pareto 方案集" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;rounded=0;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="724" y="224" width="168" height="32.3" as="geometry" />
+        </mxCell>
+        <mxCell id="stage5_caption" value="稳健性检验与灵敏度分&lt;br&gt;析, 给出决策建议" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;rounded=0;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="952" y="224" width="168" height="32.3" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_stage1_box__stage2_box_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#1F3F6B;strokeWidth=3.2;endArrow=block;endFill=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="stage1_box" target="stage2_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_stage2_box__stage3_box_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#5F8484;strokeWidth=3.2;endArrow=block;endFill=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="stage2_box" target="stage3_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_stage3_box__stage4_box_3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#665A12;strokeWidth=3.2;endArrow=block;endFill=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="stage3_box" target="stage4_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_stage4_box__stage5_box_4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#7B5530;strokeWidth=3.2;endArrow=block;endFill=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="stage4_box" target="stage5_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

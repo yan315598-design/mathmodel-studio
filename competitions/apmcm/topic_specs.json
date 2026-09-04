@@ -1,0 +1,77 @@
+{
+  "_doc": "APMCM 亚太杯中文赛题号体系 + 题型映射。基于用户本地 2024/2025 赛题蒸馏。",
+  "_source": "local_only_2024_2025",
+  "competition": "apmcm",
+  "official_name": "APMCM 亚太地区大学生数学建模竞赛（中文赛）",
+  "duration_h": 72,
+  "team_size": 3,
+  "language": "zh-CN",
+  "compiler": "xelatex",
+  "default_subproblem_count": 4,
+  "subproblem_count_iqr": [
+    3,
+    5
+  ],
+  "topics": {
+    "A": {
+      "label": "A 题",
+      "category": "几何建模 / 连续优化 / 物理量估计",
+      "primary_type": "A_geometry_optimization",
+      "task_type_key": "A_geometry_optimization",
+      "typical_problems": [
+        "几何体面积体积估计",
+        "连续参数优化",
+        "工程约束",
+        "多目标权衡"
+      ],
+      "local_examples_2024_2025": [
+        "2024 A题 飞行器外形的优化问题",
+        "2025 A题 农业灌溉系统优化"
+      ],
+      "expected_subproblem_count": [
+        3,
+        5
+      ]
+    },
+    "B": {
+      "label": "B 题",
+      "category": "数据分析 / 预测 / 机器学习",
+      "primary_type": "B_data_prediction",
+      "task_type_key": "B_data_prediction",
+      "typical_problems": [
+        "时序预测",
+        "分类预测",
+        "特征工程",
+        "模型评价"
+      ],
+      "local_examples_2024_2025": [
+        "2024 B题 洪水灾害的数据分析与预测",
+        "2025 B题 疾病的预测与大数据分析"
+      ],
+      "expected_subproblem_count": [
+        3,
+        5
+      ]
+    },
+    "C": {
+      "label": "C 题",
+      "category": "算法优化 / 物流运输 / 高级模型",
+      "primary_type": "C_algorithmic_optimization",
+      "task_type_key": "C_algorithmic_optimization",
+      "typical_problems": [
+        "路径与调度",
+        "允许拼货与中转",
+        "启发式算法",
+        "Quantum Boosting / 二分类模型"
+      ],
+      "local_examples_2024_2025": [
+        "2024 C题 基于量子计算的物流配送问题",
+        "2025 C题 基于Quantum Boosting的二分类模型问题"
+      ],
+      "expected_subproblem_count": [
+        3,
+        5
+      ]
+    }
+  }
+}

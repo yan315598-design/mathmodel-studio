@@ -1,0 +1,381 @@
+{
+  "_doc": "华数杯优秀论文实测分位。18 篇(第四/五/六届 A/B/C 各 2 篇)pdfplumber 抽取.",
+  "_source_policy": "local_only",
+  "competition": "huashubei",
+  "source": {
+    "papers_total": 18,
+    "papers_extracted": 18,
+    "year_range": [
+      2023,
+      2025
+    ],
+    "jie_range": [
+      "第四届",
+      "第五届",
+      "第六届"
+    ],
+    "status": "empirical_local_2023_2025",
+    "baker": "distill/extract_all.py + manual stats"
+  },
+  "scoring_policy": {
+    "allowed_reference_metrics": [
+      "abstract_chars",
+      "doc_pages"
+    ],
+    "analysis_only_metrics": [
+      "doc_chars_zh",
+      "fig_count",
+      "table_count"
+    ],
+    "note": "18 篇样本分位只用于校准，不是官方评审门槛；图表抽取不完整，数量不得作硬阈值。"
+  },
+  "dims": {
+    "abstract_chars": {
+      "min": 423,
+      "p25": 935,
+      "p50": 1128,
+      "p75": 1240,
+      "max": 1334,
+      "mean": 1049.2
+    },
+    "doc_chars_zh": {
+      "min": 7630,
+      "p25": 8486,
+      "p50": 12455,
+      "p75": 14348,
+      "max": 17019,
+      "mean": 11955.3
+    },
+    "doc_pages": {
+      "min": 26,
+      "p25": 33,
+      "p50": 38,
+      "p75": 43,
+      "max": 66,
+      "mean": 39.2
+    },
+    "fig_count": {
+      "min": 0,
+      "p25": 1,
+      "p50": 7,
+      "p75": 18,
+      "max": 34,
+      "mean": 10.4
+    },
+    "table_count": {
+      "min": 0,
+      "p25": 0,
+      "p50": 1,
+      "p75": 8,
+      "max": 17,
+      "mean": 4.7
+    }
+  },
+  "by_topic": {
+    "A": {
+      "count": 6,
+      "dims": {
+        "abstract_chars": {
+          "min": 423,
+          "p50": 1011,
+          "max": 1242,
+          "mean": 893.7
+        },
+        "doc_chars_zh": {
+          "min": 8218,
+          "p50": 9150,
+          "max": 17019,
+          "mean": 10987.2
+        },
+        "doc_pages": {
+          "min": 29,
+          "p50": 39,
+          "max": 45,
+          "mean": 37.8
+        },
+        "fig_count": {
+          "min": 0,
+          "p50": 6,
+          "max": 24,
+          "mean": 8
+        },
+        "table_count": {
+          "min": 0,
+          "p50": 0,
+          "max": 13,
+          "mean": 2.8
+        }
+      }
+    },
+    "B": {
+      "count": 6,
+      "dims": {
+        "abstract_chars": {
+          "min": 894,
+          "p50": 1173,
+          "max": 1312,
+          "mean": 1156.3
+        },
+        "doc_chars_zh": {
+          "min": 7630,
+          "p50": 8920,
+          "max": 14380,
+          "mean": 10089.2
+        },
+        "doc_pages": {
+          "min": 26,
+          "p50": 39,
+          "max": 66,
+          "mean": 42.3
+        },
+        "fig_count": {
+          "min": 0,
+          "p50": 8,
+          "max": 34,
+          "mean": 13.5
+        },
+        "table_count": {
+          "min": 0,
+          "p50": 6,
+          "max": 15,
+          "mean": 6
+        }
+      }
+    },
+    "C": {
+      "count": 6,
+      "dims": {
+        "abstract_chars": {
+          "min": 777,
+          "p50": 1141,
+          "max": 1334,
+          "mean": 1097.7
+        },
+        "doc_chars_zh": {
+          "min": 12329,
+          "p50": 14976,
+          "max": 16725,
+          "mean": 14789.7
+        },
+        "doc_pages": {
+          "min": 33,
+          "p50": 36,
+          "max": 46,
+          "mean": 37.5
+        },
+        "fig_count": {
+          "min": 0,
+          "p50": 5,
+          "max": 26,
+          "mean": 9.7
+        },
+        "table_count": {
+          "min": 0,
+          "p50": 0,
+          "max": 17,
+          "mean": 5.2
+        }
+      }
+    }
+  },
+  "papers": [
+    {
+      "file": "2023_A_1.txt",
+      "year": 2023,
+      "topic": "A",
+      "idx": "1",
+      "abstract_chars": 932,
+      "doc_chars_zh": 8555,
+      "doc_pages": 34,
+      "fig_count": 0,
+      "table_count": 0
+    },
+    {
+      "file": "2023_A_2.txt",
+      "year": 2023,
+      "topic": "A",
+      "idx": "2",
+      "abstract_chars": 1090,
+      "doc_chars_zh": 8463,
+      "doc_pages": 38,
+      "fig_count": 2,
+      "table_count": 0
+    },
+    {
+      "file": "2023_B_1.txt",
+      "year": 2023,
+      "topic": "B",
+      "idx": "1",
+      "abstract_chars": 1166,
+      "doc_chars_zh": 8102,
+      "doc_pages": 34,
+      "fig_count": 6,
+      "table_count": 5
+    },
+    {
+      "file": "2023_B_2.txt",
+      "year": 2023,
+      "topic": "B",
+      "idx": "2",
+      "abstract_chars": 1312,
+      "doc_chars_zh": 9460,
+      "doc_pages": 56,
+      "fig_count": 25,
+      "table_count": 8
+    },
+    {
+      "file": "2023_C_1.txt",
+      "year": 2023,
+      "topic": "C",
+      "idx": "1",
+      "abstract_chars": 1247,
+      "doc_chars_zh": 15700,
+      "doc_pages": 34,
+      "fig_count": 21,
+      "table_count": 17
+    },
+    {
+      "file": "2023_C_2.txt",
+      "year": 2023,
+      "topic": "C",
+      "idx": "2",
+      "abstract_chars": 945,
+      "doc_chars_zh": 12329,
+      "doc_pages": 33,
+      "fig_count": 0,
+      "table_count": 0
+    },
+    {
+      "file": "2024_A_1.txt",
+      "year": 2024,
+      "topic": "A",
+      "idx": "1",
+      "abstract_chars": 1242,
+      "doc_chars_zh": 13923,
+      "doc_pages": 40,
+      "fig_count": 24,
+      "table_count": 13
+    },
+    {
+      "file": "2024_A_2.txt",
+      "year": 2024,
+      "topic": "A",
+      "idx": "2",
+      "abstract_chars": 423,
+      "doc_chars_zh": 9745,
+      "doc_pages": 45,
+      "fig_count": 4,
+      "table_count": 1
+    },
+    {
+      "file": "2024_B_1.txt",
+      "year": 2024,
+      "topic": "B",
+      "idx": "1",
+      "abstract_chars": 1305,
+      "doc_chars_zh": 8381,
+      "doc_pages": 26,
+      "fig_count": 0,
+      "table_count": 0
+    },
+    {
+      "file": "2024_B_2.txt",
+      "year": 2024,
+      "topic": "B",
+      "idx": "2",
+      "abstract_chars": 894,
+      "doc_chars_zh": 7630,
+      "doc_pages": 28,
+      "fig_count": 5,
+      "table_count": 0
+    },
+    {
+      "file": "2024_C_1.txt",
+      "year": 2024,
+      "topic": "C",
+      "idx": "1",
+      "abstract_chars": 777,
+      "doc_chars_zh": 14253,
+      "doc_pages": 40,
+      "fig_count": 10,
+      "table_count": 13
+    },
+    {
+      "file": "2024_C_2.txt",
+      "year": 2024,
+      "topic": "C",
+      "idx": "2",
+      "abstract_chars": 1049,
+      "doc_chars_zh": 15701,
+      "doc_pages": 33,
+      "fig_count": 0,
+      "table_count": 0
+    },
+    {
+      "file": "2025_A_1.txt",
+      "year": 2025,
+      "topic": "A",
+      "idx": "1",
+      "abstract_chars": 1199,
+      "doc_chars_zh": 17019,
+      "doc_pages": 41,
+      "fig_count": 9,
+      "table_count": 0
+    },
+    {
+      "file": "2025_A_2.txt",
+      "year": 2025,
+      "topic": "A",
+      "idx": "2",
+      "abstract_chars": 476,
+      "doc_chars_zh": 8218,
+      "doc_pages": 29,
+      "fig_count": 9,
+      "table_count": 3
+    },
+    {
+      "file": "2025_B_1.txt",
+      "year": 2025,
+      "topic": "B",
+      "idx": "1",
+      "abstract_chars": 1180,
+      "doc_chars_zh": 14380,
+      "doc_pages": 66,
+      "fig_count": 11,
+      "table_count": 15
+    },
+    {
+      "file": "2025_B_2.txt",
+      "year": 2025,
+      "topic": "B",
+      "idx": "2",
+      "abstract_chars": 1081,
+      "doc_chars_zh": 12582,
+      "doc_pages": 44,
+      "fig_count": 34,
+      "table_count": 8
+    },
+    {
+      "file": "2025_C_1.txt",
+      "year": 2025,
+      "topic": "C",
+      "idx": "1",
+      "abstract_chars": 1334,
+      "doc_chars_zh": 16725,
+      "doc_pages": 46,
+      "fig_count": 26,
+      "table_count": 1
+    },
+    {
+      "file": "2025_C_2.txt",
+      "year": 2025,
+      "topic": "C",
+      "idx": "2",
+      "abstract_chars": 1234,
+      "doc_chars_zh": 14030,
+      "doc_pages": 39,
+      "fig_count": 1,
+      "table_count": 0
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Math Modeling Competition Workspace"
+  short_description: "研究生赛、华数杯、国赛联合检索、建模与论文证据追踪工作台"
+  default_prompt: "Use $mathmodel-studio to retrieve case and question-level evidence across the three Chinese modeling competitions, then build and audit the solution and paper."

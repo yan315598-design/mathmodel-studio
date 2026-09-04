@@ -1,0 +1,58 @@
+# mathmodel-skill v7.7.0 统一图表基础样式
+# 用法: plt.style.use(r'<skill>/templates/figures/style/mathmodel.mplstyle')
+#   模板脚本内请走 figkit.apply_style() (带内联回退)
+# 配套色板: 同目录 palettes.py | 配色规范: references/color_typology.md
+# 设计令牌: references/design_tokens.md
+
+# --- 字体: 中文走 sans-serif 回退链, 缺字体自动降级不报方块 ---
+font.family        : sans-serif
+font.sans-serif    : Microsoft YaHei, SimHei, PingFang SC, Arial Unicode MS, Arial
+font.serif         : Times New Roman, SimSun
+axes.unicode_minus : False
+
+# --- 取色循环: 默认 academic_blue, 与 palettes.py 一致, 可用 apply_palette 覆盖 ---
+# (rc 解析器把 # 视为注释起点, 故此行 hex 不带 # 前缀)
+axes.prop_cycle    : cycler('color', ['1F4E79', '2E86AB', 'F18F01', 'C73E1D', '3B8C6E', '6C757D'])
+
+# --- 线条与坐标轴: 去顶右 spines, 数据为主角 ---
+lines.linewidth    : 1.8
+axes.linewidth     : 0.9
+axes.spines.top    : False
+axes.spines.right  : False
+axes.axisbelow     : True
+
+# --- 刻度 (v7.7.0): 朝外 + 次级刻度, 期刊惯例 ---
+xtick.direction    : out
+ytick.direction    : out
+xtick.minor.visible: True
+ytick.minor.visible: True
+xtick.major.size   : 3.5
+ytick.major.size   : 3.5
+xtick.minor.size   : 2.0
+ytick.minor.size   : 2.0
+
+# --- 网格: 更淡更细, 只做参照不抢数据; 数据图模板建议改用 figkit.ygrid(仅 y 向) ---
+axes.grid          : True
+grid.alpha         : 0.25
+grid.linestyle     : --
+grid.linewidth     : 0.7
+
+# --- 字号: 正文图最低可读 (300dpi 输出下 9pt 起步) ---
+axes.titlesize     : 11
+axes.labelsize     : 10
+xtick.labelsize    : 9
+ytick.labelsize    : 9
+legend.fontsize    : 9
+legend.frameon     : False
+
+# --- 画布与输出: 屏显轻量, 落盘 300dpi 紧边距 ---
+figure.dpi         : 110
+figure.figsize     : 7.2, 4.5
+savefig.dpi        : 300
+savefig.bbox       : tight
+savefig.transparent : False
+
+# --- 矢量导出: 文字保留为文本不转路径, 改稿不重渲染 ---
+# 见 references/figure_skill_bridge.md 导出三格式纪律 (v7.7.0 起 PDF 由 figkit.save_fig 实际落盘)
+svg.fonttype       : none
+pdf.fonttype       : 42

@@ -1,0 +1,193 @@
+{
+ "schema_version": "rating-contract-1.0",
+ "score_scale": {
+  "min": 1,
+  "max": 10,
+  "required_evidence": true
+ },
+ "base_dimensions": {
+  "0": [
+   "1_role_clarity",
+   "2_tools_ready",
+   "3_time_planning",
+   "4_problem_scan",
+   "5_collab_protocol"
+  ],
+  "1": [
+   "1_three_options_depth",
+   "2_team_strength_match",
+   "3_risk_identification",
+   "4_time_feasibility",
+   "5_decision_record_quality"
+  ],
+  "2": [
+   "1_subproblem_decomposition",
+   "2_key_variables_count",
+   "3_math_skeleton_present",
+   "4_data_alignment",
+   "5_subproblem_dependency_identified"
+  ],
+  "3": [
+   "1_candidate_diversity",
+   "2_selection_rationale",
+   "3_naming_variant",
+   "4_solver_feasibility",
+   "5_literature_support"
+  ],
+  "4": [
+   "1_assumption_count",
+   "2_assumption_support",
+   "3_symbol_uniqueness",
+   "4_consistency_with_model",
+   "5_terminology_standard"
+  ],
+  "5": [
+   "1_subproblem_completeness",
+   "2_cross_reference_chain",
+   "3_symbol_consistency",
+   "4_visual_density",
+   "5_time_budget"
+  ],
+  "6": [
+   "1_multivariate_perturbation",
+   "2_perturbation_realism",
+   "3_output_completeness",
+   "4_robust_interval_quantitative",
+   "5_failure_warning"
+  ],
+  "7": [
+   "1_strengths_specific",
+   "2_weaknesses_real",
+   "3_improvements_actionable",
+   "4_generalization_concrete",
+   "5_self_critique_credibility"
+  ],
+  "8": [
+   "1_abstract_5_paragraph",
+   "2_section_completeness",
+   "3_formulas_figures_citations",
+   "4_language_quality",
+   "5_visual_consistency"
+  ],
+  "9": [
+   "1_anti_pattern_coverage",
+   "2_visual_polish",
+   "3_panel_consensus",
+   "4_bottleneck_addressed",
+   "5_pdf_compile_clean"
+  ]
+ },
+ "stage_dimensions": {
+  "5_per_qi": [
+   "1_problem_fit",
+   "2_math_rigor",
+   "3_solve_correctness",
+   "4_visualization",
+   "5_physical_meaning"
+  ]
+ },
+ "verdict_policy": {
+  "priority": [
+   "block",
+   "pass_early",
+   "pass",
+   "pass_with_review",
+   "refine",
+   "refine_partial",
+   "carryover"
+  ],
+  "block": "存在至少一个 high-severity issue",
+  "pass_early": {
+   "raw_min": 9,
+   "weighted_mean": 9
+  },
+  "pass": {
+   "raw_min": 7,
+   "weighted_mean": 8
+  },
+  "max_iterations": 3,
+  "weight_clamp": [
+   0.7,
+   1.5
+  ]
+ },
+ "evidence_policy": {
+  "default": "经验分位只能校准评分，不等于官方评审规则；无来源或覆盖不足的数量不得作为硬阈值。",
+  "cumcm": {
+   "allowed_reference_metrics": [
+    "abstract_chars",
+    "doc_pages"
+   ],
+   "note": "仅使用来源清单与覆盖完整的指标；案例模型结果不参与阈值。"
+  },
+  "huaweibei": {
+   "allowed_reference_metrics": [
+    "abstract_chars",
+    "doc_pages"
+   ],
+   "note": "图表数、章节识别和词频只作分析；2022—2025 不推测数模之星身份。"
+  },
+  "huashubei": {
+   "allowed_reference_metrics": [
+    "abstract_chars",
+    "doc_pages"
+   ],
+   "observational_metrics": [
+    "fig_count",
+    "table_count",
+    "doc_chars_zh"
+   ],
+   "note": "图表数量来自 18 篇样本观察且抽取不完整，不是官方门槛；评分看图表是否支撑主张。"
+  }
+ },
+ "hard_fail_rules": [
+  "竞赛身份、奖项身份或来源被混用",
+  "摘要主张没有可追踪结果与验证",
+  "关键约束不可行或量纲、口径冲突",
+  "历史参数、结果或论文原句被直接迁移",
+  "存在 high-severity issue 却继续进入下一阶段"
+ ],
+ "panel_personas": [
+  {
+   "id": "modeling",
+   "focus": "问题抽象、假设与模型接口"
+  },
+  {
+   "id": "solver",
+   "focus": "算法、可行性、复杂度与复现"
+  },
+  {
+   "id": "evidence",
+   "focus": "结果、验证、图表和摘要证据链"
+  },
+  {
+   "id": "writing",
+   "focus": "章节闭环、表达与格式"
+  },
+  {
+   "id": "source_integrity",
+   "focus": "竞赛隔离、来源与迁移边界"
+  }
+ ],
+ "scoring_mode": "deduction",
+ "judge_reserve_cap": 0.9,
+ "format_multiplier": {
+  "formula": "clamp((format_score+10)/20,0,1)",
+  "range": [
+   -10,
+   10
+  ]
+ },
+ "qualification_gate": true,
+ "blind_panel": {
+  "hide_thresholds": true,
+  "verdict_recomputed_by_orchestrator": true,
+  "conflict_rule": ">20 分差禁平均，重派离群席一次"
+ },
+ "calibration_anchors": {
+  "huaweibei": {
+   "_note": "未验证假设（v2.0.0 降级标注）：80+/100（扣分制口径）≈ 国一名义区间的说法无公开来源、无数据支撑，仅作内部冲刺目标的经验猜测，禁止在输出中作为事实陈述或获奖承诺引用。可靠校准仅可使用 empirical.json 中 190 篇完整覆盖的摘要长度与页数分位。原表述声称'评委行为研究（研究生赛 2024 分布）'，审计未能找到任何来源。",
+   "verification_status": "unverified_assumption"
+  }
+ }
+}

@@ -1,0 +1,255 @@
+{
+  "_doc": "APMCM 中文赛优秀论文实测分位。由用户本地 2024/2025 共 12 篇优秀论文自动抽取。",
+  "_source_policy": "local_only",
+  "competition": "apmcm",
+  "source": {
+    "papers_total": 12,
+    "papers_extracted": 12,
+    "year_range": [
+      2024,
+      2025
+    ],
+    "baked_at": "2026-06-07T18:09:30",
+    "baker": "tools/build_apmcm_pack.py",
+    "status": "empirical_local_2024_2025"
+  },
+  "dims": {
+    "abstract_chars": {
+      "min": 332,
+      "p25": 794,
+      "p50": 816,
+      "p75": 889,
+      "max": 1057,
+      "mean": 797.1,
+      "unit": "char"
+    },
+    "doc_chars_zh": {
+      "min": 6868,
+      "p25": 9363,
+      "p50": 11258,
+      "p75": 13835,
+      "max": 19483,
+      "mean": 11498.7,
+      "unit": "char"
+    },
+    "doc_pages": {
+      "min": 19,
+      "p25": 23,
+      "p50": 32,
+      "p75": 54,
+      "max": 63,
+      "mean": 37,
+      "unit": "page"
+    },
+    "main_section_count": {
+      "min": 6,
+      "p25": 13,
+      "p50": 20,
+      "p75": 30,
+      "max": 30,
+      "mean": 19.1,
+      "unit": "count"
+    },
+    "figure_count": {
+      "min": 2,
+      "p25": 7,
+      "p50": 10,
+      "p75": 15,
+      "max": 22,
+      "mean": 11,
+      "unit": "count"
+    },
+    "table_count": {
+      "min": 0,
+      "p25": 1,
+      "p50": 4,
+      "p75": 7,
+      "max": 16,
+      "mean": 5.4,
+      "unit": "count"
+    },
+    "formula_count": {
+      "min": 1,
+      "p25": 7,
+      "p50": 10,
+      "p75": 24,
+      "max": 38,
+      "mean": 15.4,
+      "unit": "count"
+    },
+    "subproblem_count": {
+      "min": 3,
+      "p25": 3,
+      "p50": 4,
+      "p75": 5,
+      "max": 5,
+      "mean": 4.0,
+      "unit": "count"
+    },
+    "reference_count": {
+      "min": 0,
+      "p25": 1,
+      "p50": 5,
+      "p75": 6,
+      "max": 8,
+      "mean": 3.8,
+      "unit": "count"
+    }
+  },
+  "by_letter": {
+    "A": {
+      "doc_pages": {
+        "min": 19,
+        "p25": 23,
+        "p50": 23,
+        "p75": 23,
+        "max": 26,
+        "mean": 22.8
+      },
+      "abstract_chars": {
+        "min": 643,
+        "p25": 805,
+        "p50": 869,
+        "p75": 869,
+        "max": 1057,
+        "mean": 843.5
+      },
+      "figure_count": {
+        "min": 2,
+        "p25": 9,
+        "p50": 12,
+        "p75": 12,
+        "max": 15,
+        "mean": 9.5
+      },
+      "table_count": {
+        "min": 1,
+        "p25": 4,
+        "p50": 5,
+        "p75": 5,
+        "max": 7,
+        "mean": 4.2
+      },
+      "formula_count": {
+        "min": 1,
+        "p25": 8,
+        "p50": 9,
+        "p75": 9,
+        "max": 24,
+        "mean": 10.5
+      },
+      "reference_count": {
+        "min": 6,
+        "p25": 6,
+        "p50": 7,
+        "p75": 7,
+        "max": 8,
+        "mean": 6.8
+      }
+    },
+    "B": {
+      "doc_pages": {
+        "min": 22,
+        "p25": 31,
+        "p50": 56,
+        "p75": 56,
+        "max": 63,
+        "mean": 43
+      },
+      "abstract_chars": {
+        "min": 798,
+        "p25": 816,
+        "p50": 906,
+        "p75": 906,
+        "max": 977,
+        "mean": 874.2
+      },
+      "figure_count": {
+        "min": 7,
+        "p25": 16,
+        "p50": 21,
+        "p75": 21,
+        "max": 22,
+        "mean": 16.5
+      },
+      "table_count": {
+        "min": 1,
+        "p25": 1,
+        "p50": 15,
+        "p75": 15,
+        "max": 16,
+        "mean": 8.2
+      },
+      "formula_count": {
+        "min": 6,
+        "p25": 10,
+        "p50": 24,
+        "p75": 24,
+        "max": 34,
+        "mean": 18.5
+      },
+      "reference_count": {
+        "min": 0,
+        "p25": 0,
+        "p50": 0,
+        "p75": 0,
+        "max": 6,
+        "mean": 1.5
+      }
+    },
+    "C": {
+      "doc_pages": {
+        "min": 32,
+        "p25": 38,
+        "p50": 54,
+        "p75": 54,
+        "max": 57,
+        "mean": 45.2
+      },
+      "abstract_chars": {
+        "min": 332,
+        "p25": 679,
+        "p50": 794,
+        "p75": 794,
+        "max": 889,
+        "mean": 673.5
+      },
+      "figure_count": {
+        "min": 5,
+        "p25": 6,
+        "p50": 7,
+        "p75": 7,
+        "max": 10,
+        "mean": 7
+      },
+      "table_count": {
+        "min": 0,
+        "p25": 2,
+        "p50": 3,
+        "p75": 3,
+        "max": 10,
+        "mean": 3.8
+      },
+      "formula_count": {
+        "min": 7,
+        "p25": 7,
+        "p50": 17,
+        "p75": 17,
+        "max": 38,
+        "mean": 17.2
+      },
+      "reference_count": {
+        "min": 1,
+        "p25": 1,
+        "p50": 5,
+        "p75": 5,
+        "max": 5,
+        "mean": 3
+      }
+    }
+  },
+  "quality_signals": {
+    "abstract_quantitative_ratio": 91.7,
+    "note": "pypdf 文本抽取会低估图片内文字和公式数量，图表/公式阈值用于备赛锚定，不作为官方规则。"
+  }
+}

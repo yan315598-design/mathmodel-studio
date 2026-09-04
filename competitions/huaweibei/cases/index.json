@@ -1,0 +1,573 @@
+{
+ "schema_version": "huaweibei-problems-1.0",
+ "cases": [
+  {
+   "id": "huaweibei_2021_A",
+   "year": 2021,
+   "problem": "A",
+   "title": "相关矩阵组的低复杂度计算和存储建模",
+   "source_path": "2021年中国研究生数学建模竞赛赛题/2021年A题/相关矩阵组的低复杂度计算和存储建模.docx",
+   "source_evidence_id": "graduate:problem_statement:2021-A:a3037b7258dd",
+   "paper_ids": [
+    "graduate:paper:2021-A:4a4c708f7451",
+    "graduate:paper:2021-A:00026fb2a520",
+    "graduate:paper:2021-A:263628145be6",
+    "graduate:paper:2021-A:4d82179035ec",
+    "graduate:paper:2021-A:46c616638a0b",
+    "graduate:paper:2021-A:06331a4855e0",
+    "graduate:paper:2021-A:008b9c475463"
+   ],
+   "star_evidence_ids": [
+    "graduate:paper:2021-A:4a4c708f7451",
+    "graduate:paper:2021-A:00026fb2a520"
+   ],
+   "paper_count": 7
+  },
+  {
+   "id": "huaweibei_2021_B",
+   "year": 2021,
+   "problem": "B",
+   "title": "空气质量预报二次建模",
+   "source_path": "2021年中国研究生数学建模竞赛赛题/2021年B题/空气质量预报二次建模.docx",
+   "source_evidence_id": "graduate:problem_statement:2021-B:ddc2e2673570",
+   "paper_ids": [
+    "graduate:paper:2021-B:a983f1940341",
+    "graduate:paper:2021-B:9d938d0e4179",
+    "graduate:paper:2021-B:c890e2331541",
+    "graduate:paper:2021-B:b8be27043db2",
+    "graduate:paper:2021-B:a7c4ec823b57",
+    "graduate:paper:2021-B:3d75ccf495b6",
+    "graduate:paper:2021-B:d52dd94d753a",
+    "graduate:paper:2021-B:a209cf095de8",
+    "graduate:paper:2021-B:6b30e77487b0"
+   ],
+   "star_evidence_ids": [
+    "graduate:paper:2021-B:a983f1940341",
+    "graduate:paper:2021-B:9d938d0e4179"
+   ],
+   "paper_count": 9
+  },
+  {
+   "id": "huaweibei_2021_C",
+   "year": 2021,
+   "problem": "C",
+   "title": "帕金森病的脑深部电刺激治疗建模研究",
+   "source_path": "2021年中国研究生数学建模竞赛赛题/2021年C题/帕金森病的脑深部电刺激治疗建模研究.doc",
+   "source_evidence_id": "graduate:problem_statement:2021-C:dbb42cffa347",
+   "paper_ids": [
+    "graduate:paper:2021-C:81d879f048b1",
+    "graduate:paper:2021-C:46e34e5c1a24",
+    "graduate:paper:2021-C:a67de366bdc3",
+    "graduate:paper:2021-C:9e463fdadba4",
+    "graduate:paper:2021-C:c1465dc157c4",
+    "graduate:paper:2021-C:b4fe907bc3f4",
+    "graduate:paper:2021-C:077ee46748d2"
+   ],
+   "star_evidence_ids": [
+    "graduate:paper:2021-C:81d879f048b1",
+    "graduate:paper:2021-C:46e34e5c1a24"
+   ],
+   "paper_count": 7
+  },
+  {
+   "id": "huaweibei_2021_D",
+   "year": 2021,
+   "problem": "D",
+   "title": "抗乳腺癌候选药物的优化建模",
+   "source_path": "2021年中国研究生数学建模竞赛赛题/2021年D题/抗胰腺癌候选药物的优化建模.docx",
+   "source_evidence_id": "graduate:problem_statement:2021-D:0659b4322a79",
+   "paper_ids": [
+    "graduate:paper:2021-D:f2ebfff348d4",
+    "graduate:paper:2021-D:7b24dd86646c",
+    "graduate:paper:2021-D:f9ac7ba22b06",
+    "graduate:paper:2021-D:0355de2dacb1",
+    "graduate:paper:2021-D:030d46444652",
+    "graduate:paper:2021-D:6adc2185fdce",
+    "graduate:paper:2021-D:322ec9baf97a"
+   ],
+   "star_evidence_ids": [
+    "graduate:paper:2021-D:f2ebfff348d4",
+    "graduate:paper:2021-D:7b24dd86646c"
+   ],
+   "paper_count": 7
+  },
+  {
+   "id": "huaweibei_2021_E",
+   "year": 2021,
+   "problem": "E",
+   "title": "信号干扰下的超宽带（UWB）精确定位问题",
+   "source_path": "2021年中国研究生数学建模竞赛赛题/2021年E题/信号干扰下的超宽带（UWB）精确定位问题.doc",
+   "source_evidence_id": "graduate:problem_statement:2021-E:6af6f1b329cb",
+   "paper_ids": [
+    "graduate:paper:2021-E:c05b8131f46d",
+    "graduate:paper:2021-E:3a20e5cc482d",
+    "graduate:paper:2021-E:34f1734cd05c",
+    "graduate:paper:2021-E:70ab97e8463e",
+    "graduate:paper:2021-E:866534c9a8c4",
+    "graduate:paper:2021-E:1ab32070017d",
+    "graduate:paper:2021-E:de4f8276b314"
+   ],
+   "star_evidence_ids": [
+    "graduate:paper:2021-E:c05b8131f46d",
+    "graduate:paper:2021-E:3a20e5cc482d"
+   ],
+   "paper_count": 7
+  },
+  {
+   "id": "huaweibei_2021_F",
+   "year": 2021,
+   "problem": "F",
+   "title": "航空公司机组优化排班问题",
+   "source_path": "2021年中国研究生数学建模竞赛赛题/2021年F题/航空公司机组优化排班问题.docx",
+   "source_evidence_id": "graduate:problem_statement:2021-F:52e787ebfba5",
+   "paper_ids": [
+    "graduate:paper:2021-F:8da8ff7c36fa",
+    "graduate:paper:2021-F:eeeffef378bb",
+    "graduate:paper:2021-F:a9ab71b6dd7e",
+    "graduate:paper:2021-F:3a5031ca36a1",
+    "graduate:paper:2021-F:458b9a043a8e",
+    "graduate:paper:2021-F:692dba6dcf37",
+    "graduate:paper:2021-F:860ef2caf0a9"
+   ],
+   "star_evidence_ids": [
+    "graduate:paper:2021-F:8da8ff7c36fa",
+    "graduate:paper:2021-F:eeeffef378bb"
+   ],
+   "paper_count": 7
+  },
+  {
+   "id": "huaweibei_2022_A",
+   "year": 2022,
+   "problem": "A",
+   "title": "移动场景超分辨定位问题",
+   "source_path": "2022年中国研究生数学建模竞赛赛题/2022年A题/移动场景超分辨定位问题.docx",
+   "source_evidence_id": "graduate:problem_statement:2022-A:7ec7071a62ae",
+   "paper_ids": [
+    "graduate:paper:2022-A:7ee8303a43bd",
+    "graduate:paper:2022-A:f76c04ca6910",
+    "graduate:paper:2022-A:4b5ed2725493",
+    "graduate:paper:2022-A:42f2ea4ef1ed",
+    "graduate:paper:2022-A:6b58b5bed888",
+    "graduate:paper:2022-A:193333ef5b35",
+    "graduate:paper:2022-A:70e064a803fa",
+    "graduate:paper:2022-A:4704bf03e2b2"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 8
+  },
+  {
+   "id": "huaweibei_2022_B",
+   "year": 2022,
+   "problem": "B",
+   "title": "方形件组批优化问题",
+   "source_path": "2022年中国研究生数学建模竞赛赛题/2022年B题/方形件组批优化问题.docx",
+   "source_evidence_id": "graduate:problem_statement:2022-B:c83a5dd70126",
+   "paper_ids": [
+    "graduate:paper:2022-B:6f83d846eedd",
+    "graduate:paper:2022-B:d6169464f185",
+    "graduate:paper:2022-B:c5c2f5c81d40",
+    "graduate:paper:2022-B:ba7977544ad1",
+    "graduate:paper:2022-B:2e4a14ce1ad1",
+    "graduate:paper:2022-B:bb9c1003ae99",
+    "graduate:paper:2022-B:0e7b28a3f5bc"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 7
+  },
+  {
+   "id": "huaweibei_2022_C",
+   "year": 2022,
+   "problem": "C",
+   "title": "汽车制造涂装-总装缓存调序区调度优化问题",
+   "source_path": "2022年中国研究生数学建模竞赛赛题/2022年C题/汽车制造公司涂装-总装缓存区调序调度优化问题.docx",
+   "source_evidence_id": "graduate:problem_statement:2022-C:157226574e34",
+   "paper_ids": [
+    "graduate:paper:2022-C:a8df9e907b82",
+    "graduate:paper:2022-C:5837d7d5283d",
+    "graduate:paper:2022-C:560712b8aa46",
+    "graduate:paper:2022-C:c109ebf5fa9c",
+    "graduate:paper:2022-C:8b44b3955a1d",
+    "graduate:paper:2022-C:050ba3aea273",
+    "graduate:paper:2022-C:5fa92336a1b1"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 7
+  },
+  {
+   "id": "huaweibei_2022_D",
+   "year": 2022,
+   "problem": "D",
+   "title": "PISA架构芯片资源排布问题",
+   "source_path": "2022年中国研究生数学建模竞赛赛题/2022年D题/PISA架构芯片资源排布问题.docx",
+   "source_evidence_id": "graduate:problem_statement:2022-D:ae01f7d2c334",
+   "paper_ids": [
+    "graduate:paper:2022-D:e1e8632f2e10",
+    "graduate:paper:2022-D:7dcd04bc4399",
+    "graduate:paper:2022-D:8d7c36f66d10",
+    "graduate:paper:2022-D:e69dbf4920ac",
+    "graduate:paper:2022-D:df2e78d06070",
+    "graduate:paper:2022-D:d2dcf6990653",
+    "graduate:paper:2022-D:7751354cf5ca"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 7
+  },
+  {
+   "id": "huaweibei_2022_E",
+   "year": 2022,
+   "problem": "E",
+   "title": "草原放牧策略研究",
+   "source_path": "2022年中国研究生数学建模竞赛赛题/2022年E题/草原放牧策略研究.doc",
+   "source_evidence_id": "graduate:problem_statement:2022-E:f98502ddf2e5",
+   "paper_ids": [
+    "graduate:paper:2022-E:ea0ba69ea7db",
+    "graduate:paper:2022-E:84521bb3d18a",
+    "graduate:paper:2022-E:5c26affd748a",
+    "graduate:paper:2022-E:3fe8db58775d",
+    "graduate:paper:2022-E:4047c1a98e1a",
+    "graduate:paper:2022-E:c5d89a8d8935",
+    "graduate:paper:2022-E:6e3f56650ebc"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 7
+  },
+  {
+   "id": "huaweibei_2022_F",
+   "year": 2022,
+   "problem": "F",
+   "title": "COVID-19疫情期间生活物资的科学管理问题",
+   "source_path": "2022年中国研究生数学建模竞赛赛题/2022年F题/COVID-19疫情期间生活物资的科学管理问题.docx",
+   "source_evidence_id": "graduate:problem_statement:2022-F:92b21b0630d1",
+   "paper_ids": [
+    "graduate:paper:2022-F:c96e8a64f25b",
+    "graduate:paper:2022-F:14817f01a096",
+    "graduate:paper:2022-F:b9f044b3f565",
+    "graduate:paper:2022-F:2b02838f289d",
+    "graduate:paper:2022-F:fb0babe524b9",
+    "graduate:paper:2022-F:4f407ad33c7a",
+    "graduate:paper:2022-F:5bbfdd257360"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 7
+  },
+  {
+   "id": "huaweibei_2023_A",
+   "year": 2023,
+   "problem": "A",
+   "title": "WLAN网络信道接入机制建模",
+   "source_path": "2023年中国研究生数学建模竞赛赛题/A题/WLAN网络信道接入机制建模.docx",
+   "source_evidence_id": "graduate:problem_statement:2023-A:15e8f8f55039",
+   "paper_ids": [
+    "graduate:paper:2023-A:d0104b0e2c70",
+    "graduate:paper:2023-A:6b5f1e1db98c",
+    "graduate:paper:2023-A:ee462e5f89a4",
+    "graduate:paper:2023-A:e7b9703cb19d",
+    "graduate:paper:2023-A:45b8269848e7",
+    "graduate:paper:2023-A:a06aa534c3bb",
+    "graduate:paper:2023-A:a0981c4046bc",
+    "graduate:paper:2023-A:aad533fb34f4",
+    "graduate:paper:2023-A:82524f06613f",
+    "graduate:paper:2023-A:8b0b0eada424"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 10
+  },
+  {
+   "id": "huaweibei_2023_B",
+   "year": 2023,
+   "problem": "B",
+   "title": "在芯片设计中，DFT 计算的硬件复杂度与其算法复杂度和数据元素取值范围",
+   "source_path": "2023年中国研究生数学建模竞赛赛题/B题/B题：DFT类矩阵的整数分解逼近.pdf",
+   "source_evidence_id": "graduate:problem_statement:2023-B:f433f551a7bd",
+   "paper_ids": [
+    "graduate:paper:2023-B:347798782815",
+    "graduate:paper:2023-B:fa8df61ba4fe",
+    "graduate:paper:2023-B:a844250094c7",
+    "graduate:paper:2023-B:166b58049cd0",
+    "graduate:paper:2023-B:0d36bb7b8f4c",
+    "graduate:paper:2023-B:32b9dc631576",
+    "graduate:paper:2023-B:4dc3fe33a57b",
+    "graduate:paper:2023-B:83c53c0fe68b",
+    "graduate:paper:2023-B:c02b682ad79a"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 9
+  },
+  {
+   "id": "huaweibei_2023_C",
+   "year": 2023,
+   "problem": "C",
+   "title": "大规模创新类竞赛评审方案研究",
+   "source_path": "2023年中国研究生数学建模竞赛赛题/C题/大规模创新类竞赛评审方案研究.docx",
+   "source_evidence_id": "graduate:problem_statement:2023-C:241b35946047",
+   "paper_ids": [
+    "graduate:paper:2023-C:48705675e604",
+    "graduate:paper:2023-C:80e3c2b85d26",
+    "graduate:paper:2023-C:ec41ae36192c",
+    "graduate:paper:2023-C:539179b74a7d",
+    "graduate:paper:2023-C:cbb8f63b92aa",
+    "graduate:paper:2023-C:221af1758a11",
+    "graduate:paper:2023-C:a8b6f9f4a638",
+    "graduate:paper:2023-C:18029df70b77",
+    "graduate:paper:2023-C:abffb428040b",
+    "graduate:paper:2023-C:afaf815e03d4"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 10
+  },
+  {
+   "id": "huaweibei_2023_D",
+   "year": 2023,
+   "problem": "D",
+   "title": "区域双碳目标与路径规划研究",
+   "source_path": "2023年中国研究生数学建模竞赛赛题/D题/区域双碳目标与路径规划研究.docx",
+   "source_evidence_id": "graduate:problem_statement:2023-D:03b15ecbf04a",
+   "paper_ids": [
+    "graduate:paper:2023-D:b7842f71a6ab",
+    "graduate:paper:2023-D:be65227642b1",
+    "graduate:paper:2023-D:ccf97a878496",
+    "graduate:paper:2023-D:3724e20f6da1",
+    "graduate:paper:2023-D:aea4e5e843d7",
+    "graduate:paper:2023-D:3d158a2578e0",
+    "graduate:paper:2023-D:b1c5d4e41159",
+    "graduate:paper:2023-D:0368cd43a8e3",
+    "graduate:paper:2023-D:99181e11ced3"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 9
+  },
+  {
+   "id": "huaweibei_2023_E",
+   "year": 2023,
+   "problem": "E",
+   "title": "出血性脑卒中临床智能诊疗建模",
+   "source_path": "2023年中国研究生数学建模竞赛赛题/E题/出血性脑卒中临床智能诊疗建模.docx",
+   "source_evidence_id": "graduate:problem_statement:2023-E:b789932d0c32",
+   "paper_ids": [
+    "graduate:paper:2023-E:3f4621bddfbb",
+    "graduate:paper:2023-E:0b97a60eedbe",
+    "graduate:paper:2023-E:455bbe350f9b",
+    "graduate:paper:2023-E:ed9d2f8c1d44",
+    "graduate:paper:2023-E:3f818f083871",
+    "graduate:paper:2023-E:eaa884b73993",
+    "graduate:paper:2023-E:ab6183848dc6",
+    "graduate:paper:2023-E:5c42b2bfe22e",
+    "graduate:paper:2023-E:f7c0743f16ee",
+    "graduate:paper:2023-E:9a48c6fe4537"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 10
+  },
+  {
+   "id": "huaweibei_2023_F",
+   "year": 2023,
+   "problem": "F",
+   "title": "强对流降水临近预报",
+   "source_path": "2023年中国研究生数学建模竞赛赛题/F题/强对流降水临近预报.docx",
+   "source_evidence_id": "graduate:problem_statement:2023-F:e948f6800868",
+   "paper_ids": [
+    "graduate:paper:2023-F:5c24c2b41755",
+    "graduate:paper:2023-F:af1baaf342a7",
+    "graduate:paper:2023-F:0ed7c722e94b",
+    "graduate:paper:2023-F:705431603c73",
+    "graduate:paper:2023-F:8467e27c13df",
+    "graduate:paper:2023-F:a2ba47b1f9d5",
+    "graduate:paper:2023-F:d4884b88fc13",
+    "graduate:paper:2023-F:31c43c38d60f",
+    "graduate:paper:2023-F:b6f0112b1100",
+    "graduate:paper:2023-F:8f756547e790"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 10
+  },
+  {
+   "id": "huaweibei_2024_A",
+   "year": 2024,
+   "problem": "A",
+   "title": "风电场有功功率优化分配",
+   "source_path": "2024年中国研究生数学建模竞赛赛题/A题/风电场有功功率优化调度.docx",
+   "source_evidence_id": "graduate:problem_statement:2024-A:c831960048c4",
+   "paper_ids": [
+    "graduate:paper:2024-A:4850450d3388",
+    "graduate:paper:2024-A:c971501020f4",
+    "graduate:paper:2024-A:11a031ae7f6b",
+    "graduate:paper:2024-A:daa73a15a67f"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 4
+  },
+  {
+   "id": "huaweibei_2024_B",
+   "year": 2024,
+   "problem": "B",
+   "title": "WLAN组网中网络吞吐量建模",
+   "source_path": "2024年中国研究生数学建模竞赛赛题/B题/WLAN组网中网络吞吐量建模.docx",
+   "source_evidence_id": "graduate:problem_statement:2024-B:eb22bc2ce14e",
+   "paper_ids": [
+    "graduate:paper:2024-B:4a289c99bb42",
+    "graduate:paper:2024-B:15ea1a64e74c",
+    "graduate:paper:2024-B:8106f2c97188",
+    "graduate:paper:2024-B:1845bbac5134"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 4
+  },
+  {
+   "id": "huaweibei_2024_C",
+   "year": 2024,
+   "problem": "C",
+   "title": "数据驱动下磁性元件的磁芯损耗建模",
+   "source_path": "2024年中国研究生数学建模竞赛赛题/C题/数据驱动下磁性元件的磁芯损耗建模.docx",
+   "source_evidence_id": "graduate:problem_statement:2024-C:b5ce5cddbc63",
+   "paper_ids": [
+    "graduate:paper:2024-C:5a590f9a5a71",
+    "graduate:paper:2024-C:70d872a1f738",
+    "graduate:paper:2024-C:d1e04b4fbf2b",
+    "graduate:paper:2024-C:d6f267f3c7b5"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 4
+  },
+  {
+   "id": "huaweibei_2024_D",
+   "year": 2024,
+   "problem": "D",
+   "title": "大数据驱动的地理综合问题",
+   "source_path": "2024年中国研究生数学建模竞赛赛题/D题/大数据驱动的地理综合问题.docx",
+   "source_evidence_id": "graduate:problem_statement:2024-D:809d5f046809",
+   "paper_ids": [
+    "graduate:paper:2024-D:aeb92dce70ae",
+    "graduate:paper:2024-D:696720b81628",
+    "graduate:paper:2024-D:bddb98b1da13",
+    "graduate:paper:2024-D:1024773fe2b1"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 4
+  },
+  {
+   "id": "huaweibei_2024_E",
+   "year": 2024,
+   "problem": "E",
+   "title": "高速公路应急车道紧急启用模型",
+   "source_path": "2024年中国研究生数学建模竞赛赛题/E题/E题/高速公路应急车道启用建模.docx",
+   "source_evidence_id": "graduate:problem_statement:2024-E:3f957fcd69f9",
+   "paper_ids": [
+    "graduate:paper:2024-E:c519ccae1b28",
+    "graduate:paper:2024-E:ec78e4a82565",
+    "graduate:paper:2024-E:68cdac7fa58e",
+    "graduate:paper:2024-E:9fa5ec441502"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 4
+  },
+  {
+   "id": "huaweibei_2024_F",
+   "year": 2024,
+   "problem": "F",
+   "title": "X射线脉冲星光子到达时间建模",
+   "source_path": "2024年中国研究生数学建模竞赛赛题/F题/X射线脉冲星光子到达时间建模.docx",
+   "source_evidence_id": "graduate:problem_statement:2024-F:b9f7eb8fa175",
+   "paper_ids": [
+    "graduate:paper:2024-F:524e70a4d611",
+    "graduate:paper:2024-F:414aa98ed580",
+    "graduate:paper:2024-F:cb62b69d7980",
+    "graduate:paper:2024-F:7cdf9715fc23"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 4
+  },
+  {
+   "id": "huaweibei_2025_A",
+   "year": 2025,
+   "problem": "A",
+   "title": "通用神经网络处理器下的核内调度问题",
+   "source_path": "2025年中国研究生数学建模竞赛赛题/A题/A题/通用神经网络处理器下的核内调度问题.docx",
+   "source_evidence_id": "graduate:problem_statement:2025-A:3fcc53e26081",
+   "paper_ids": [
+    "graduate:paper:2025-A:eb15efe91f40",
+    "graduate:paper:2025-A:d26284fb65c7",
+    "graduate:paper:2025-A:becbc09c579f",
+    "graduate:paper:2025-A:186cc0cdae39"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 4
+  },
+  {
+   "id": "huaweibei_2025_B",
+   "year": 2025,
+   "problem": "B",
+   "title": "无线通信系统链路速率建模",
+   "source_path": "2025年中国研究生数学建模竞赛赛题/B题/无线通信系统链路速率建模.docx",
+   "source_evidence_id": "graduate:problem_statement:2025-B:a1bae6ee69ad",
+   "paper_ids": [
+    "graduate:paper:2025-B:150cea22b1aa",
+    "graduate:paper:2025-B:29ae1e65a24d",
+    "graduate:paper:2025-B:31f63f2fc4de"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 3
+  },
+  {
+   "id": "huaweibei_2025_C",
+   "year": 2025,
+   "problem": "C",
+   "title": "围岩裂隙精准识别与三维模型重构",
+   "source_path": "2025年中国研究生数学建模竞赛赛题/C题/C题/围岩裂隙精准识别与三维模型重构.docx",
+   "source_evidence_id": "graduate:problem_statement:2025-C:d040a3b09a8a",
+   "paper_ids": [
+    "graduate:paper:2025-C:40a3c73c0409",
+    "graduate:paper:2025-C:f3f0fc9a1a7f",
+    "graduate:paper:2025-C:dde3aad6c5f6",
+    "graduate:paper:2025-C:eaf6375148b2",
+    "graduate:paper:2025-C:a69f6c1c55ae"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 5
+  },
+  {
+   "id": "huaweibei_2025_D",
+   "year": 2025,
+   "problem": "D",
+   "title": "低空湍流监测及最优航路规划",
+   "source_path": "2025年中国研究生数学建模竞赛赛题/D题/D题/低空湍流监测及最优航路规划.docx",
+   "source_evidence_id": "graduate:problem_statement:2025-D:2f9e363265c8",
+   "paper_ids": [
+    "graduate:paper:2025-D:ac2d33da18fa",
+    "graduate:paper:2025-D:95743f6ef8d6"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 2
+  },
+  {
+   "id": "huaweibei_2025_E",
+   "year": 2025,
+   "problem": "E",
+   "title": "高速列车轴承智能故障诊断问题",
+   "source_path": "2025年中国研究生数学建模竞赛赛题/E题/E题/高速列车轴承智能故障诊断问题.docx",
+   "source_evidence_id": "graduate:problem_statement:2025-E:7a4299f7d1ea",
+   "paper_ids": [
+    "graduate:paper:2025-E:e86c6a47cc19",
+    "graduate:paper:2025-E:fd49424d2937",
+    "graduate:paper:2025-E:b4f1d4ea6551"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 3
+  },
+  {
+   "id": "huaweibei_2025_F",
+   "year": 2025,
+   "problem": "F",
+   "title": "江南古典园林的美学特征建模",
+   "source_path": "2025年中国研究生数学建模竞赛赛题/F题/F题/江南古典园林的美学特征建模.docx",
+   "source_evidence_id": "graduate:problem_statement:2025-F:e8d5edea0e3c",
+   "paper_ids": [
+    "graduate:paper:2025-F:77892f7dcdfe",
+    "graduate:paper:2025-F:20b9a3fbb48f",
+    "graduate:paper:2025-F:b18c1289e4f1",
+    "graduate:paper:2025-F:861c3d805408"
+   ],
+   "star_evidence_ids": [],
+   "paper_count": 4
+  }
+ ]
+}

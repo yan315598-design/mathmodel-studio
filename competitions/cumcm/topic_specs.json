@@ -1,0 +1,32 @@
+{
+  "_doc": "CUMCM 题号和内容型分类协议。题号不是题型，先检索题面结构，再写入 content_type_key；task_type_key 仅兼容旧 state。",
+  "competition": "cumcm",
+  "official_name": "全国大学生数学建模竞赛",
+  "duration_h": 72,
+  "team_size": 3,
+  "language": "zh-CN",
+  "compiler": "xelatex",
+  "default_subproblem_count": 4,
+  "subproblem_count_iqr": [3, 5],
+  "classification_mode": "content_first",
+  "content_types": {
+    "mechanism_engineering": ["物理机理", "几何与运动学", "信号处理"],
+    "optimization_scheduling": ["优化与调度", "网络与路径"],
+    "data_statistics": ["统计预测", "评价与排序", "图像识别"],
+    "simulation_hybrid": ["仿真模拟", "机理-数据混合", "预测-优化混合"]
+  },
+  "classification_steps": [
+    "提取对象、输入、输出、约束、不确定性和子问依赖",
+    "运行相似案例检索并比较至少三个案例",
+    "按主导困难选择 content_type_key，可记录一个 secondary_type",
+    "题号只写入 problem_letter，不据此选择模型"
+  ],
+  "topics": {
+    "A": {"label": "A 题", "category": "本科组题号", "task_type_key": "A_optimization", "note": "兼容旧 state；近年可为光学、几何运动、策略优化等不同内容"},
+    "B": {"label": "B 题", "category": "本科组题号", "task_type_key": "B_evaluation", "note": "兼容旧 state；近年可为覆盖规划、质量决策、信号反演等不同内容"},
+    "C": {"label": "C 题", "category": "本科组题号", "task_type_key": "C_data", "note": "兼容旧 state；常含数据，但也可能以规划优化为主"},
+    "D": {"label": "D 题", "category": "专科组题号", "task_type_key": "D_industrial", "note": "兼容旧 state；题型随年份变化"},
+    "E": {"label": "E 题", "category": "专科组题号", "task_type_key": "E_creative", "note": "兼容旧 state；题型随年份变化"},
+    "F": {"label": "F 题（历史）", "category": "历史题号", "task_type_key": "B_evaluation", "note": "只用于旧 state 和历史资料兼容"}
+  }
+}

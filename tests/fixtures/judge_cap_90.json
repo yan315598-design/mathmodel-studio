@@ -1,0 +1,14 @@
+{
+  "competition": "huaweibei",
+  "qualification": [
+    {"item": "竞赛身份未混用", "pass": true, "evidence": "decision_log.competition=huaweibei"},
+    {"item": "摘要主张有可追踪结果", "pass": true, "evidence": "trace_claims --strict 通过"}
+  ],
+  "blocks": [
+    {"name": "建模与求解", "weight": 60, "deductions": []},
+    {"name": "写作与呈现", "weight": 40, "deductions": [
+      {"criterion": "图题重复编号", "points": 8, "evidence": "pdf_qa 检出 figure1 重复 2 次"}
+    ]}
+  ],
+  "format_score": 10
+}

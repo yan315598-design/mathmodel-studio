@@ -1,0 +1,135 @@
+{
+  "_doc": "华数杯全国大学生数学建模竞赛题号体系 + 题型映射。基于 2020-2025 共六届 18 道赛题蒸馏。",
+  "_source": "local_distilled_6years_18problems",
+  "competition": "huashubei",
+  "official_name": "“华数杯”全国大学生数学建模竞赛",
+  "duration_h": 72,
+  "team_size": 3,
+  "language": "zh-CN",
+  "compiler": "xelatex",
+  "default_subproblem_count": 4,
+  "subproblem_count_iqr": [3, 5],
+  "topics": {
+    "A": {
+      "label": "A 题",
+      "category": "物理工程机理建模 / 数值仿真 / 结构或参数优化",
+      "primary_type": "A_physics_mechanism_optimization",
+      "task_type_key": "A_physics_mechanism_optimization",
+      "typical_problems": [
+        "传热学机理仿真 (2020 相变防护服 / 2023 隔热织物)",
+        "电磁/电路谐振 (2021 无线充电)",
+        "半导体器件优化 (2022 环形振荡器)",
+        "运动学+路径规划 (2024 机械臂)",
+        "多物理场耦合+参数辨识 (2025 多孔膜光反射)"
+      ],
+      "required_skills": [
+        "偏微分方程数值解 (有限差分/有限元)",
+        "电磁/电路方程",
+        "几何建模与坐标变换 (D-H 参数)",
+        "多目标优化 (NSGA-II / 加权法 / 分层序列法)",
+        "机理模型参数辨识 (最小二乘/非线性拟合)"
+      ],
+      "difficulty_trend": "2020-2023 难度 4 稳定, 2024-2025 跃升至 5",
+      "competition_level": 3,
+      "award_strategy": "物理推导严谨 + 数值结果可解释; 纯数据黑箱难拿高分",
+      "historical_examples": [
+        {"year": 2020, "name": "相变材料低温防护服仿真", "task_type": "A_heat_transfer_pde"},
+        {"year": 2021, "name": "电动汽车无线充电优化匹配", "task_type": "A_electromagnetic_resonance"},
+        {"year": 2022, "name": "环形振荡器优化设计", "task_type": "A_semiconductor_multiobjective"},
+        {"year": 2023, "name": "隔热材料结构优化控制", "task_type": "A_heat_transfer_geometry"},
+        {"year": 2024, "name": "机械臂关节角路径优化", "task_type": "A_robot_kinematics_path"},
+        {"year": 2025, "name": "多孔膜光反射性能优化控制", "task_type": "A_multiphysics_mechanism"}
+      ],
+      "expected_subproblem_count": [3, 5]
+    },
+    "B": {
+      "label": "B 题",
+      "category": "运筹优化 / 组合优化 / 资源调度 (NP 难常见)",
+      "primary_type": "B_operations_optimization",
+      "task_type_key": "B_operations_optimization",
+      "typical_problems": [
+        "二维切割下料 (2020)",
+        "三维装箱+随机规划 (2021 货运飞机)",
+        "多级生产计划+检修调度 (2022 水下机器人)",
+        "领域物理模型+配色优化 (2023 K-M 光学)",
+        "EDA 全局布局 NP 难 (2024 VLSI)",
+        "5G 异构网络资源调度 (2025 网络切片)"
+      ],
+      "required_skills": [
+        "整数规划 (MILP) + 松弛",
+        "元启发式算法 (遗传/模拟退火/粒子群/禁忌搜索)",
+        "列生成法 / 动态规划",
+        "图论 (斯坦纳树/网络流/二分图匹配)",
+        "随机规划 / 机会约束",
+        "多目标优化 (帕累托/NSGA-II/ε-约束)",
+        "商业求解器使用 (Gurobi/CPLEX)"
+      ],
+      "difficulty_trend": "2020-2023 难度 4, 2024-2025 难度 5 (NP 难 + 多目标 + 工程背景)",
+      "competition_level": 3,
+      "award_strategy": "算法实现质量 (求解规模/收敛速度/可视化) + 建模严谨性; 纯理论无代码必败",
+      "historical_examples": [
+        {"year": 2020, "name": "工业零件切割下料优化", "task_type": "B_cutting_stock_2d"},
+        {"year": 2021, "name": "货运飞机装运策略", "task_type": "B_3d_bin_packing_stochastic"},
+        {"year": 2022, "name": "水下机器人组装生产计划", "task_type": "B_mrp_scheduling_stochastic"},
+        {"year": 2023, "name": "不透明制品最优配色方案", "task_type": "B_colormatching_optimization"},
+        {"year": 2024, "name": "VLSI 电路单元自动布局", "task_type": "B_vlsi_placement_nphard"},
+        {"year": 2025, "name": "网络切片无线资源管理", "task_type": "B_5g_resource_scheduling"}
+      ],
+      "expected_subproblem_count": [4, 5]
+    },
+    "C": {
+      "label": "C 题",
+      "category": "数据处理 / 综合评价 / 预测分类 / 规划调度 (数据量最大, 竞争最卷)",
+      "primary_type": "C_data_evaluation_planning",
+      "task_type_key": "C_data_evaluation_planning",
+      "typical_problems": [
+        "综合评价体系 (2020 扶贫绩效 / 2024 老外游中国)",
+        "分类预测 (2021 客户挖掘 / 2023 婴儿行为)",
+        "回归+多目标 (2022 非织造材料性能)",
+        "评价+TSP 路径规划 (2024 城市文旅)",
+        "专业计算模型+统计检验 (2025 LED 光谱+睡眠)"
+      ],
+      "required_skills": [
+        "综合评价 (熵权/TOPSIS/CRITIC/灰色关联/AHP 组合)",
+        "分类与预测 (逻辑回归/决策树/随机森林/XGBoost/LightGBM)",
+        "回归与关联 (皮尔逊/斯皮尔曼/多元回归/LASSO)",
+        "路径规划 (TSP/VRP + 最近邻/遗传/模拟退火)",
+        "统计检验 (t 检验/ANOVA/Friedman/卡方)",
+        "数据可视化 (热力图/地图/雷达图/3D 曲面)",
+        "专业领域计算 (光谱 CIE/TM-30 等标准化计算)"
+      ],
+      "difficulty_trend": "2020-2024 难度 2-3 (易上手), 2025 难度 4 (引入国际标准+统计检验)",
+      "competition_level": 5,
+      "competition_note": "C 题门槛低数据现成, 选题最多最卷; 国一关键不是'做出来'而是'做得比别人细致'",
+      "award_strategy": "评价体系权重合理性 + 模型调参深度 + 可视化质量 + 洞察深度; 避免与数千队同质化",
+      "historical_examples": [
+        {"year": 2020, "name": "脱贫帮扶绩效评价", "task_type": "C_evaluation_progress"},
+        {"year": 2021, "name": "电动汽车目标客户销售策略", "task_type": "C_classification_marketing"},
+        {"year": 2022, "name": "插层熔喷非织造材料性能控制", "task_type": "C_regression_multiobjective"},
+        {"year": 2023, "name": "母亲身心健康对婴儿影响", "task_type": "C_classification_treatment_opt"},
+        {"year": 2024, "name": "老外游中国", "task_type": "C_evaluation_tsp_routing"},
+        {"year": 2025, "name": "可调控生物节律的 LED 光源研究", "task_type": "C_spectrum_analysis_stats"}
+      ],
+      "expected_subproblem_count": [4, 5]
+    }
+  },
+  "difficulty_stats": {
+    "_doc": "6 届 18 题难度/竞争度均值 (1-5 量纲, 5 最难/最卷)",
+    "A_difficulty_mean": 4.33,
+    "B_difficulty_mean": 4.5,
+    "C_difficulty_mean": 2.83,
+    "A_competition_mean": 3.0,
+    "B_competition_mean": 3.0,
+    "C_competition_mean": 4.17,
+    "hardest_problems": ["2024B VLSI 布局", "2025A 多孔膜多物理场", "2025B 5G 资源调度"],
+    "most_competitive_problems": ["2024C 老外游中国 (352城, 选题极多)"],
+    "best_value_for_effort": "A 题 2020-2023 (难度 4 竞争 3) / 2021B-2022B (经典运筹套路清晰)"
+  },
+  "topic_decision_weights": {
+    "_doc": "选题决策矩阵权重, 用于 references/huashubei_topic_decision.md",
+    "match_score": 0.4,
+    "competition_penalty": 0.25,
+    "difficulty_adjust": 0.2,
+    "data_familiarity": 0.15
+  }
+}

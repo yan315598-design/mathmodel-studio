@@ -1,0 +1,11 @@
+{
+  "competition": "cumcm",
+  "qualification": [
+    {"item": "支撑材料不含承诺书", "pass": true, "evidence": "打包清单核对通过"},
+    {"item": "页数不超当年上限", "pass": false, "evidence": "正文 28 页, 超过当年通知上限"}
+  ],
+  "blocks": [
+    {"name": "建模与求解", "weight": 100, "deductions": []}
+  ],
+  "format_score": 5
+}

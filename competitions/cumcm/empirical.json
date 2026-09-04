@@ -1,0 +1,36 @@
+{
+  "_doc": "CUMCM 可核验论文的可靠统计。只把完整摘要和 PDF 页数用于定量锚定；选页 OCR 不支持全文图表、公式、章节或参考文献分位。",
+  "competition": "cumcm",
+  "source": {
+    "papers_total": 33,
+    "official_exhibition": 32,
+    "national_second_with_code": 1,
+    "year_range": "2023-2025",
+    "problem_statements": 26,
+    "cases": 25,
+    "extraction_full_text": 1,
+    "extraction_selected_ocr": 32,
+    "excluded_mislabeled_postgraduate_papers": 58,
+    "baked_at": "2026-08-05",
+    "status": "verified_mixed_extraction"
+  },
+  "dims": {
+    "abstract_chars": {"min": 542, "p25": 805, "p50": 898, "p75": 1009, "max": 1406, "unit": "zh_char", "coverage": 33},
+    "document_pages": {"min": 28, "p25": 44, "p50": 55, "p75": 64, "max": 122, "unit": "page", "coverage": 33}
+  },
+  "unavailable_dims": {
+    "doc_chars_total": "32 篇为选页 OCR，不能代表全文",
+    "doc_chars_zh": "32 篇为选页 OCR，不能代表全文",
+    "main_section_count": "未做全页 OCR",
+    "sub_section_count": "未做全页 OCR",
+    "figure_count": "未做全页 OCR",
+    "table_count": "未做全页 OCR",
+    "formula_count": "未做全页 OCR",
+    "reference_count": "未做全页 OCR",
+    "keyword_count": "OCR 对关键词分隔不稳定"
+  },
+  "quality_signals": {
+    "evidence_policy": "历史出现频率只用于候选生成，不等于推荐或因果证据",
+    "scoring_policy": "只有 dims 中列出的指标允许作为实测分位进入评分"
+  }
+}

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="mathmodel-skill" type="device">
+  <diagram id="drawio-page-1" name="研究框架图">
+    <mxGraphModel dx="1000" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1220" pageHeight="410" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="研究框架图" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;rounded=0;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=16;fontColor=#1F2A36;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="22" width="1140" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="col1_header" value="子问题" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#4060B0;strokeColor=#2C4488;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=13.5;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="44" y="84" width="345.3" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="col2_header" value="方法模型" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#D06818;strokeColor=#A04E10;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=13.5;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="437.3" y="84" width="345.3" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="col3_header" value="结果产出" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#1F6F6F;strokeColor=#14504F;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=13.5;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="830.7" y="84" width="345.3" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="row1_col1" value="调度对象的关键环节如何刻画、&lt;br&gt;评价指标如何筛选与量化？" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EEF6FD;strokeColor=#3B547F;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="44" y="158" width="345.3" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="row1_col2" value="CRITIC-熵权组合赋权构建综合评价指标体系" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FCEAD9;strokeColor=#C08B5C;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="437.3" y="158" width="345.3" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="row1_col3" value="指标权重表与问题量化口径" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#DBEEF4;strokeColor=#668D89;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="830.7" y="158" width="345.3" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="row2_col1" value="多目标需求冲突时, 如何兼顾供水、&lt;br&gt;发电与生态进行方案寻优？" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EEF6FD;strokeColor=#3B547F;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="44" y="236" width="345.3" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="row2_col2" value="多目标规划主模型 + NSGA-II 非支配排序求解" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FCEAD9;strokeColor=#C08B5C;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="437.3" y="236" width="345.3" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="row2_col3" value="Pareto 前沿与推荐折中方案" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#DBEEF4;strokeColor=#668D89;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="830.7" y="236" width="345.3" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="row3_col1" value="最优方案对参数扰动与情景&lt;br&gt;假设的稳健性如何？" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EEF6FD;strokeColor=#3B547F;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="44" y="314" width="345.3" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="row3_col2" value="Sobol 全局灵敏度分析与多情景交叉对比" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FCEAD9;strokeColor=#C08B5C;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="437.3" y="314" width="345.3" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="row3_col3" value="灵敏度排序与稳健性结论" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#DBEEF4;strokeColor=#668D89;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="830.7" y="314" width="345.3" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_row1_col1__row1_col2_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#1F3F6B;strokeWidth=1.6;endArrow=block;endFill=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="row1_col1" target="row1_col2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_row1_col2__row1_col3_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#7B5530;strokeWidth=1.6;endArrow=block;endFill=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="row1_col2" target="row1_col3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_row2_col1__row2_col2_3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#1F3F6B;strokeWidth=1.6;endArrow=block;endFill=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="row2_col1" target="row2_col2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_row2_col2__row2_col3_4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#7B5530;strokeWidth=1.6;endArrow=block;endFill=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="row2_col2" target="row2_col3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_row3_col1__row3_col2_5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#1F3F6B;strokeWidth=1.6;endArrow=block;endFill=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="row3_col1" target="row3_col2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_row3_col2__row3_col3_6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#7B5530;strokeWidth=1.6;endArrow=block;endFill=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="row3_col2" target="row3_col3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

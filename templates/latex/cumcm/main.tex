@@ -1,0 +1,248 @@
+% 自写模板 — 全国大学生数学建模竞赛 (CUMCM) 论文骨架
+% 用法: xelatex main.tex (连编两遍使引用稳定); 或
+%       python scripts/render_paper.py --competition cumcm --workspace <paper_workspace>
+% 依据: 竞赛公开发布的论文格式规范 (A4、页边距不小于 2.5cm、首页摘要、
+%       摘要独占一页、正文自第 2 页起、页码自摘要页起算)。
+%       本文件为独立实现, 未参考任何第三方模板源码。
+% 字体: 正文宋体小四, 章节标题黑体; xelatex 下 ctex 自动选用系统字体
+%       (Windows: 宋体/黑体; Linux 需自备字体或改用 fontset=fandol)。
+
+\documentclass[zihao=-4,a4paper]{ctexart}
+
+% ---------- 页面: A4, 四边距不小于 2.5cm ----------
+\usepackage{geometry}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+% ---------- 数学与公式编号 (1)(2) ----------
+\usepackage{amsmath,amssymb}
+% ctexart 默认公式编号即为 (1)(2) 样式, 无需 \numberwithin
+
+% ---------- 图表 ----------
+\usepackage{graphicx}
+\usepackage{float}      % [H] 就地放置
+\usepackage{booktabs}   % 三线表 \toprule \midrule \bottomrule
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% ---------- 代码附录 ----------
+\usepackage{listings}
+\usepackage{xcolor}
+
+% ---------- 其他 ----------
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
+% 章节标题: 黑体 (ctexart 默认即黑体, 此处显式声明字号便于调整)
+\ctexset{
+  section = {format = {\Large\bfseries\heiti}},
+  subsection = {format = {\large\bfseries\heiti}},
+  subsubsection = {format = {\bfseries\heiti}},
+}
+
+% 图表标题: 黑体小五号 "图1 / 表1"
+\captionsetup{font={small,bf}, labelsep=quad}
+
+% 代码样式 (示例代码保持 ASCII, 避免 listings 中文兼容问题;
+% 如需在代码中放中文注释, 建议改用 minted 或伪代码环境)
+\lstset{
+  basicstyle=\small\ttfamily,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{green!50!black},
+  stringstyle=\color{red!60!black},
+  showstringspaces=false,
+  columns=flexible,
+}
+
+\begin{document}
+
+% 页码自摘要页起算 (摘要页 = 第 1 页)
+\pagenumbering{arabic}
+
+% ============================================================
+% 第 1 页: 摘要 (独占一页, 不与正文同页)
+% ============================================================
+
+\begin{center}
+  {\Large\heiti 论文标题: [论文标题]}\\[0.3em]
+  {\large 题号: [题号]\qquad 参赛队号: [参赛队号]}
+\end{center}
+
+\vspace{0.5em}
+
+% 摘要标题: 黑体居中
+\begin{center}
+  {\Large\heiti 摘\quad 要}
+\end{center}
+
+% ---- 摘要正文 (公开规范建议 1 页以内, 突出方法/结果/结论) ----
+针对 [问题背景一句话重述], 本文建立了 [模型名] 并给出求解方案。
+首先, 针对 [子问题 1], 采用 [方法] 建立 [模型], 求解得到 [关键结果];
+其次, 针对 [子问题 2], 考虑 [约束/目标], 构建 [模型], 通过 [算法] 求得
+[关键结果]; 最后, 对模型进行了灵敏度分析与稳健性检验, 结果表明
+[结论一句话]。
+
+本文的特色在于 [建模思路或求解方法的亮点, 一到两句]。
+
+\vspace{1em}
+\noindent{\heiti 关键词:} [关键词1]; [关键词2]; [关键词3]; [关键词4]
+
+\newpage
+
+% ============================================================
+% 正文 (自第 2 页开始)
+% ============================================================
+
+\section{问题重述}
+
+\subsection{问题背景}
+
+[用两到三段交代问题背景与研究意义, 不照抄题面。]
+
+\subsection{问题提出}
+
+\begin{itemize}
+  \item [子问题 1 的任务描述];
+  \item [子问题 2 的任务描述];
+  \item [子问题 3 的任务描述]。
+\end{itemize}
+
+\section{问题分析}
+
+[分析每个子问题的本质、变量关系与求解思路, 说明技术路线。]
+
+\section{模型假设}
+
+\begin{enumerate}
+  \item [假设 1 及其合理性依据];
+  \item [假设 2 及其合理性依据]。
+\end{enumerate}
+
+\section{符号说明}
+
+% 三线表示例: 符号说明表 (booktabs)
+\begin{table}[H]
+  \centering
+  \caption{符号说明表}
+  \begin{tabular}{cll}
+    \toprule
+    符号 & 含义 & 单位 \\
+    \midrule
+    $i$   & 决策变量编号 & --- \\
+    $x_i$ & 第 $i$ 个决策变量 & [单位] \\
+    $\lambda$ & 模型参数 & [单位] \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{模型建立与求解}
+
+\subsection{[子问题 1] 的模型建立}
+
+[模型推导过程。示例公式如下, 编号自动为 (1)(2)。]
+
+决策目标为最小化总成本:
+\begin{equation}
+  \min \; Z = \sum_{i=1}^{n} c_i x_i,
+\end{equation}
+约束条件为
+\begin{equation}
+  \begin{cases}
+    \displaystyle\sum_{i=1}^{n} a_{ij} x_i \le b_j, & j = 1,2,\dots,m, \\
+    x_i \ge 0, & i = 1,2,\dots,n.
+  \end{cases}
+\end{equation}
+
+\subsection{模型求解}
+
+[求解算法与步骤说明。]
+
+% 三线表示例: 结果表
+\begin{table}[H]
+  \centering
+  \caption{[求解结果汇总]}
+  \begin{tabular}{cccc}
+    \toprule
+    方案 & 指标 A & 指标 B & 目标值 \\
+    \midrule
+    方案 1 & [值] & [值] & [值] \\
+    方案 2 & [值] & [值] & [值] \\
+    方案 3 & [值] & [值] & [值] \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% 图占位示例 (编译无需真实图片; 实际使用时取消注释并替换路径)
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=0.8\textwidth]{figures/result.png}
+  \fbox{\parbox[c][6cm][c]{0.78\textwidth}{\centering [图占位: 技术路线图 / 结果可视化]}}
+  \caption{[图题: 一句话说明该图支撑的结论]}
+\end{figure}
+
+\subsection{[子问题 2] 的模型建立与求解}
+
+[按同样结构展开。]
+
+\section{灵敏度与稳健性分析}
+
+[对关键参数做扰动实验, 用表格或图给出结果, 并给出结论。]
+
+\section{模型评价与推广}
+
+\subsection{模型的优点}
+
+\begin{itemize}
+  \item [优点 1];
+  \item [优点 2]。
+\end{itemize}
+
+\subsection{模型的缺点}
+
+\begin{itemize}
+  \item [缺点 1]。
+\end{itemize}
+
+\subsection{模型的改进与推广}
+
+[改进方向与应用场景。]
+
+% ============================================================
+% 参考文献 (按 GB/T 7714 顺序编码制手工排列)
+% ============================================================
+\begin{thebibliography}{9}
+  \bibitem{ref1} 作者. 论文题目[J]. 期刊名, 2024, 20(3): 1-10.
+  \bibitem{ref2} 作者. 书名[M]. 北京: 出版社, 2023.
+  \bibitem{ref3} Author A. Paper title[J]. Journal Name, 2022, 15(2): 100-110.
+\end{thebibliography}
+
+% ============================================================
+% 附录: 程序代码 (listings; 放不进正文的关键代码)
+% ============================================================
+\appendix
+
+\section{程序代码}
+
+% 示例: Python 求解脚本骨架 (代码保持 ASCII, 中文注释请在源码中酌情处理)
+\begin{lstlisting}[language=Python, caption={求解脚本示例 solve.py}]
+import numpy as np
+from scipy.optimize import linprog
+
+# model parameters
+c = np.array([2.0, 3.0, 1.5])          # cost coefficients
+A_ub = np.array([[1.0, 1.0, 0.0],
+                 [0.0, 2.0, 1.0]])
+b_ub = np.array([40.0, 50.0])
+
+res = linprog(c, A_ub=A_ub, b_ub=b_ub,
+              bounds=[(0, None)] * 3, method="highs")
+print("optimal value:", res.fun)
+print("solution:", res.x)
+\end{lstlisting}
+
+\end{document}

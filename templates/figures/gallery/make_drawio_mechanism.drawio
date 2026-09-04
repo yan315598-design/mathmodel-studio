@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="mathmodel-skill" type="device">
+  <diagram id="drawio-page-1" name="机理示意图">
+    <mxGraphModel dx="1000" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1180" pageHeight="720" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="组合模型机理结构" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;rounded=0;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=16;fontColor=#1F2A36;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="18" width="1100" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="module1" value="数据预处理" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EEF6FD;strokeColor=#3B547F;strokeWidth=1.6;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=11;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="470" y="84" width="240" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="module2" value="需求预测" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#DBEEF4;strokeColor=#668D89;strokeWidth=1.6;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=11;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="900" y="334" width="240" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="module3" value="调度寻优" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FBF3D2;strokeColor=#B8A23A;strokeWidth=1.6;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=11;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="470" y="584" width="240" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="module4" value="评估反馈" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FCEAD9;strokeColor=#C08B5C;strokeWidth=1.6;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=11;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="334" width="240" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="center" value="组合优化总模型&lt;br&gt;多源输入融合 · 多目标方案寻优" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#DDE4EA;strokeColor=#46535F;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=13;fontColor=#262626;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="420" y="301" width="340" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_center__module1_1" value="样本集" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#1F3F6B;strokeWidth=1.6;endArrow=block;endFill=1;startArrow=block;startFill=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="center" target="module1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_center__module2_2" value="预测序列" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#5F8484;strokeWidth=1.6;endArrow=block;endFill=1;startArrow=block;startFill=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="center" target="module2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_center__module3_3" value="可行方案" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#665A12;strokeWidth=1.6;endArrow=block;endFill=1;startArrow=block;startFill=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="center" target="module3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_center__module4_4" value="评估反馈" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#7B5530;strokeWidth=1.6;endArrow=block;endFill=1;startArrow=block;startFill=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF" edge="1" parent="1" source="center" target="module4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_module4__module1_5" value="闭环反馈" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#8A97A3;strokeWidth=1.6;endArrow=block;endFill=1;dashed=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="module4" target="module1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,47 @@
+{
+  "name": "mathmodel-studio",
+  "version": "2.0.0",
+  "description": "Mathematical modeling workbench with joint case and question retrieval, evidence-led writing, figures, scoring, and review workflows.",
+  "author": {
+    "name": "yan315598-design",
+    "url": "https://github.com/yan315598-design"
+  },
+  "homepage": "https://github.com/yan315598-design/mathmodel-studio",
+  "repository": "https://github.com/yan315598-design/mathmodel-studio",
+  "license": "MIT",
+  "keywords": [
+    "apmcm",
+    "asia-pacific",
+    "codex-skill",
+    "cumcm",
+    "graduate-modeling",
+    "huashubei",
+    "huaweibei",
+    "icm",
+    "math-modeling",
+    "mcm"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "MathModel Studio",
+    "shortDescription": "数学建模竞赛论文生产流程：审题、建模、终审，五幕走完一篇可提交的论文",
+    "longDescription": "A multi-runtime mathematical modeling workbench with case and question-level retrieval across CUMCM, the China Graduate Mathematical Contest in Modeling, and Huashu Cup, plus stage packs, dynamic paper plans, figure evidence contracts, claim tracing, and competition-specific scoring overlays.",
+    "developerName": "yan315598-design",
+    "category": "Education",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/yan315598-design/mathmodel-studio",
+    "defaultPrompt": [
+      "Use $mathmodel-studio to open the practical workbench.",
+      "Use $mathmodel-studio to compare A/B/C problem choices.",
+      "Use $mathmodel-studio to plan and generate paper figures.",
+      "Use $mathmodel-studio to review a modeling paper draft.",
+      "Use $mathmodel-studio to start an APMCM Chinese contest workflow.",
+      "Use $mathmodel-studio to retrieve case and question-level evidence across CUMCM, the graduate contest, and Huashu Cup.",
+      "Use $mathmodel-studio to generate a dynamic paper plan and audit every abstract claim."
+    ],
+    "brandColor": "#10A37F"
+  }
+}

@@ -1,0 +1,1271 @@
+{
+  "schema_version": "case-index-2.0",
+  "competition": "huashubei",
+  "source_policy": {
+    "2020_2022": "problem_summary_only",
+    "2023_2025": "topic_summary_plus_two_paper_patterns_per_problem",
+    "question_boundary": "S1-S4 are distilled stages, not original question text"
+  },
+  "cases": [
+    {
+      "id": "huashubei_2020_A",
+      "competition": "huashubei",
+      "year": 2020,
+      "problem": "A",
+      "title": "相变材料低温防护服仿真",
+      "task_type": "A_heat_transfer_pde",
+      "paradigm": "物理工程机理、数值仿真与参数优化",
+      "essence": "围绕相变材料低温防护服仿真，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕相变材料低温防护服仿真，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：多层传热与相变机理",
+        "S2 蒸馏任务链：控制方程和边界条件",
+        "S3 蒸馏任务链：数值离散与参数校准",
+        "S4 蒸馏任务链：防护性能和敏感性"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "多层传热与相变机理",
+        "控制方程和边界条件",
+        "数值离散与参数校准",
+        "防护性能和敏感性"
+      ],
+      "consensus_chain": [],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "边界条件或材料均匀性简化会改变机理结论，必须做边界与材料参数敏感性",
+        "只拟合结果而不校验守恒、量纲和物理范围，会得到数值正确但工程失真的解"
+      ],
+      "required_solution_checks": [
+        "量纲、守恒与物理范围检查",
+        "网格或步长收敛",
+        "参数扰动与基线对比",
+        "优化解可实施性"
+      ],
+      "required_validation": [
+        "量纲、守恒与物理范围检查",
+        "网格或步长收敛",
+        "参数扰动与基线对比",
+        "优化解可实施性"
+      ],
+      "figure_story": [
+        "结构与边界条件示意图",
+        "机理中间场或轨迹图",
+        "参数响应与优化前后对比",
+        "收敛和敏感性图"
+      ],
+      "figure_plan": [
+        "结构与边界条件示意图",
+        "机理中间场或轨迹图",
+        "参数响应与优化前后对比",
+        "收敛和敏感性图"
+      ],
+      "writing_blueprint": [
+        "按物理对象—控制方程—离散求解—参数辨识—优化—物理验证推进，每个公式后解释量纲与工程含义。"
+      ],
+      "paper_count": 0,
+      "evidence_level": "problem_summary_only",
+      "question_evidence_level": "problem_summary_only",
+      "evidence_scope": "topic_and_problem_summary_only",
+      "evidence_ids": [
+        "huashubei:problem_summary:2020-A"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "summary_only",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2020_B",
+      "competition": "huashubei",
+      "year": 2020,
+      "problem": "B",
+      "title": "工业零件切割下料优化",
+      "task_type": "B_cutting_stock_2d",
+      "paradigm": "运筹、组合优化与资源调度",
+      "essence": "围绕工业零件切割下料优化，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕工业零件切割下料优化，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：切割模式和利用率定义",
+        "S2 蒸馏任务链：模式枚举或列生成",
+        "S3 蒸馏任务链：整数规划求解",
+        "S4 蒸馏任务链：排样可视化和下界对照"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "切割模式和利用率定义",
+        "模式枚举或列生成",
+        "整数规划求解",
+        "排样可视化和下界对照"
+      ],
+      "consensus_chain": [],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "遗漏业务约束或把软约束误写为硬约束，会生成不可执行方案",
+        "启发式单次最优不代表稳定最优，必须报告多种子、下界或精确小规模基线"
+      ],
+      "required_solution_checks": [
+        "逐约束可行性审计",
+        "小规模精确解或下界对照",
+        "多种子稳定性",
+        "复杂度与运行时间双报告"
+      ],
+      "required_validation": [
+        "逐约束可行性审计",
+        "小规模精确解或下界对照",
+        "多种子稳定性",
+        "复杂度与运行时间双报告"
+      ],
+      "figure_story": [
+        "决策变量与约束关系图",
+        "方案布局或调度甘特图",
+        "收敛与基线对比",
+        "约束余量和敏感性图"
+      ],
+      "figure_plan": [
+        "决策变量与约束关系图",
+        "方案布局或调度甘特图",
+        "收敛与基线对比",
+        "约束余量和敏感性图"
+      ],
+      "writing_blueprint": [
+        "按业务对象—变量—目标—约束—求解器—可行性—基线—敏感性推进，先证明能执行再解释为何更优。"
+      ],
+      "paper_count": 0,
+      "evidence_level": "problem_summary_only",
+      "question_evidence_level": "problem_summary_only",
+      "evidence_scope": "topic_and_problem_summary_only",
+      "evidence_ids": [
+        "huashubei:problem_summary:2020-B"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "summary_only",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2020_C",
+      "competition": "huashubei",
+      "year": 2020,
+      "problem": "C",
+      "title": "脱贫帮扶绩效评价",
+      "task_type": "C_evaluation_progress",
+      "paradigm": "数据分析、综合评价、预测分类与规划",
+      "essence": "围绕脱贫帮扶绩效评价，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕脱贫帮扶绩效评价，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：数据质量和指标构造",
+        "S2 蒸馏任务链：客观/组合赋权",
+        "S3 蒸馏任务链：综合评价与进步分解",
+        "S4 蒸馏任务链：权重稳健性和政策解释"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "数据质量和指标构造",
+        "客观/组合赋权",
+        "综合评价与进步分解",
+        "权重稳健性和政策解释"
+      ],
+      "consensus_chain": [],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "数据缺失、异常、泄漏或样本选择偏差会把模型性能与现实能力混淆",
+        "权重、阈值和评价口径若未经检验，会让排序或策略随主观设置翻转"
+      ],
+      "required_solution_checks": [
+        "数据质量与泄漏检查",
+        "交叉验证或留出验证",
+        "权重与阈值敏感性",
+        "基线模型和误差分层"
+      ],
+      "required_validation": [
+        "数据质量与泄漏检查",
+        "交叉验证或留出验证",
+        "权重与阈值敏感性",
+        "基线模型和误差分层"
+      ],
+      "figure_story": [
+        "数据质量与分布图",
+        "变量关系或特征贡献图",
+        "预测/评价结果与基线对比",
+        "误差、稳定性或路线图"
+      ],
+      "figure_plan": [
+        "数据质量与分布图",
+        "变量关系或特征贡献图",
+        "预测/评价结果与基线对比",
+        "误差、稳定性或路线图"
+      ],
+      "writing_blueprint": [
+        "按数据审计—指标或特征—基线—主模型—解释—验证—决策推进，结果必须同时报告总体与最差分组。"
+      ],
+      "paper_count": 0,
+      "evidence_level": "problem_summary_only",
+      "question_evidence_level": "problem_summary_only",
+      "evidence_scope": "topic_and_problem_summary_only",
+      "evidence_ids": [
+        "huashubei:problem_summary:2020-C"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "summary_only",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2021_A",
+      "competition": "huashubei",
+      "year": 2021,
+      "problem": "A",
+      "title": "电动汽车无线充电优化匹配",
+      "task_type": "A_electromagnetic_resonance",
+      "paradigm": "物理工程机理、数值仿真与参数优化",
+      "essence": "围绕电动汽车无线充电优化匹配，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕电动汽车无线充电优化匹配，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：线圈互感与谐振等效电路",
+        "S2 蒸馏任务链：偏移工况的数值积分",
+        "S3 蒸馏任务链：效率与功率约束",
+        "S4 蒸馏任务链：参数匹配优化"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "线圈互感与谐振等效电路",
+        "偏移工况的数值积分",
+        "效率与功率约束",
+        "参数匹配优化"
+      ],
+      "consensus_chain": [],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "边界条件或材料均匀性简化会改变机理结论，必须做边界与材料参数敏感性",
+        "只拟合结果而不校验守恒、量纲和物理范围，会得到数值正确但工程失真的解"
+      ],
+      "required_solution_checks": [
+        "量纲、守恒与物理范围检查",
+        "网格或步长收敛",
+        "参数扰动与基线对比",
+        "优化解可实施性"
+      ],
+      "required_validation": [
+        "量纲、守恒与物理范围检查",
+        "网格或步长收敛",
+        "参数扰动与基线对比",
+        "优化解可实施性"
+      ],
+      "figure_story": [
+        "结构与边界条件示意图",
+        "机理中间场或轨迹图",
+        "参数响应与优化前后对比",
+        "收敛和敏感性图"
+      ],
+      "figure_plan": [
+        "结构与边界条件示意图",
+        "机理中间场或轨迹图",
+        "参数响应与优化前后对比",
+        "收敛和敏感性图"
+      ],
+      "writing_blueprint": [
+        "按物理对象—控制方程—离散求解—参数辨识—优化—物理验证推进，每个公式后解释量纲与工程含义。"
+      ],
+      "paper_count": 0,
+      "evidence_level": "problem_summary_only",
+      "question_evidence_level": "problem_summary_only",
+      "evidence_scope": "topic_and_problem_summary_only",
+      "evidence_ids": [
+        "huashubei:problem_summary:2021-A"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "summary_only",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2021_B",
+      "competition": "huashubei",
+      "year": 2021,
+      "problem": "B",
+      "title": "货运飞机装运策略",
+      "task_type": "B_3d_bin_packing_stochastic",
+      "paradigm": "运筹、组合优化与资源调度",
+      "essence": "围绕货运飞机装运策略，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕货运飞机装运策略，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：货舱几何与载重约束",
+        "S2 蒸馏任务链：三维装箱决策",
+        "S3 蒸馏任务链：机会约束处理不确定性",
+        "S4 蒸馏任务链：装载可行性与稳健性"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "货舱几何与载重约束",
+        "三维装箱决策",
+        "机会约束处理不确定性",
+        "装载可行性与稳健性"
+      ],
+      "consensus_chain": [],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "遗漏业务约束或把软约束误写为硬约束，会生成不可执行方案",
+        "启发式单次最优不代表稳定最优，必须报告多种子、下界或精确小规模基线"
+      ],
+      "required_solution_checks": [
+        "逐约束可行性审计",
+        "小规模精确解或下界对照",
+        "多种子稳定性",
+        "复杂度与运行时间双报告"
+      ],
+      "required_validation": [
+        "逐约束可行性审计",
+        "小规模精确解或下界对照",
+        "多种子稳定性",
+        "复杂度与运行时间双报告"
+      ],
+      "figure_story": [
+        "决策变量与约束关系图",
+        "方案布局或调度甘特图",
+        "收敛与基线对比",
+        "约束余量和敏感性图"
+      ],
+      "figure_plan": [
+        "决策变量与约束关系图",
+        "方案布局或调度甘特图",
+        "收敛与基线对比",
+        "约束余量和敏感性图"
+      ],
+      "writing_blueprint": [
+        "按业务对象—变量—目标—约束—求解器—可行性—基线—敏感性推进，先证明能执行再解释为何更优。"
+      ],
+      "paper_count": 0,
+      "evidence_level": "problem_summary_only",
+      "question_evidence_level": "problem_summary_only",
+      "evidence_scope": "topic_and_problem_summary_only",
+      "evidence_ids": [
+        "huashubei:problem_summary:2021-B"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "summary_only",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2021_C",
+      "competition": "huashubei",
+      "year": 2021,
+      "problem": "C",
+      "title": "电动汽车目标客户销售策略",
+      "task_type": "C_classification_marketing",
+      "paradigm": "数据分析、综合评价、预测分类与规划",
+      "essence": "围绕电动汽车目标客户销售策略，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕电动汽车目标客户销售策略，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：客户数据清洗与特征工程",
+        "S2 蒸馏任务链：购买意愿基线分类",
+        "S3 蒸馏任务链：集成模型和解释",
+        "S4 蒸馏任务链：分层营销策略与验证"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "客户数据清洗与特征工程",
+        "购买意愿基线分类",
+        "集成模型和解释",
+        "分层营销策略与验证"
+      ],
+      "consensus_chain": [],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "数据缺失、异常、泄漏或样本选择偏差会把模型性能与现实能力混淆",
+        "权重、阈值和评价口径若未经检验，会让排序或策略随主观设置翻转"
+      ],
+      "required_solution_checks": [
+        "数据质量与泄漏检查",
+        "交叉验证或留出验证",
+        "权重与阈值敏感性",
+        "基线模型和误差分层"
+      ],
+      "required_validation": [
+        "数据质量与泄漏检查",
+        "交叉验证或留出验证",
+        "权重与阈值敏感性",
+        "基线模型和误差分层"
+      ],
+      "figure_story": [
+        "数据质量与分布图",
+        "变量关系或特征贡献图",
+        "预测/评价结果与基线对比",
+        "误差、稳定性或路线图"
+      ],
+      "figure_plan": [
+        "数据质量与分布图",
+        "变量关系或特征贡献图",
+        "预测/评价结果与基线对比",
+        "误差、稳定性或路线图"
+      ],
+      "writing_blueprint": [
+        "按数据审计—指标或特征—基线—主模型—解释—验证—决策推进，结果必须同时报告总体与最差分组。"
+      ],
+      "paper_count": 0,
+      "evidence_level": "problem_summary_only",
+      "question_evidence_level": "problem_summary_only",
+      "evidence_scope": "topic_and_problem_summary_only",
+      "evidence_ids": [
+        "huashubei:problem_summary:2021-C"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "summary_only",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2022_A",
+      "competition": "huashubei",
+      "year": 2022,
+      "problem": "A",
+      "title": "环形振荡器优化设计",
+      "task_type": "A_semiconductor_multiobjective",
+      "paradigm": "物理工程机理、数值仿真与参数优化",
+      "essence": "围绕环形振荡器优化设计，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕环形振荡器优化设计，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：器件机理与振荡约束",
+        "S2 蒸馏任务链：性能代理或电路求解",
+        "S3 蒸馏任务链：多目标 Pareto 优化",
+        "S4 蒸馏任务链：工艺容差验证"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "器件机理与振荡约束",
+        "性能代理或电路求解",
+        "多目标 Pareto 优化",
+        "工艺容差验证"
+      ],
+      "consensus_chain": [],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "边界条件或材料均匀性简化会改变机理结论，必须做边界与材料参数敏感性",
+        "只拟合结果而不校验守恒、量纲和物理范围，会得到数值正确但工程失真的解"
+      ],
+      "required_solution_checks": [
+        "量纲、守恒与物理范围检查",
+        "网格或步长收敛",
+        "参数扰动与基线对比",
+        "优化解可实施性"
+      ],
+      "required_validation": [
+        "量纲、守恒与物理范围检查",
+        "网格或步长收敛",
+        "参数扰动与基线对比",
+        "优化解可实施性"
+      ],
+      "figure_story": [
+        "结构与边界条件示意图",
+        "机理中间场或轨迹图",
+        "参数响应与优化前后对比",
+        "收敛和敏感性图"
+      ],
+      "figure_plan": [
+        "结构与边界条件示意图",
+        "机理中间场或轨迹图",
+        "参数响应与优化前后对比",
+        "收敛和敏感性图"
+      ],
+      "writing_blueprint": [
+        "按物理对象—控制方程—离散求解—参数辨识—优化—物理验证推进，每个公式后解释量纲与工程含义。"
+      ],
+      "paper_count": 0,
+      "evidence_level": "problem_summary_only",
+      "question_evidence_level": "problem_summary_only",
+      "evidence_scope": "topic_and_problem_summary_only",
+      "evidence_ids": [
+        "huashubei:problem_summary:2022-A"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "summary_only",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2022_B",
+      "competition": "huashubei",
+      "year": 2022,
+      "problem": "B",
+      "title": "水下机器人组装生产计划",
+      "task_type": "B_mrp_scheduling_stochastic",
+      "paradigm": "运筹、组合优化与资源调度",
+      "essence": "围绕水下机器人组装生产计划，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕水下机器人组装生产计划，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：BOM 与产能展开",
+        "S2 蒸馏任务链：批量和库存决策",
+        "S3 蒸馏任务链：检修与随机需求协同调度",
+        "S4 蒸馏任务链：滚动计划压力测试"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "BOM 与产能展开",
+        "批量和库存决策",
+        "检修与随机需求协同调度",
+        "滚动计划压力测试"
+      ],
+      "consensus_chain": [],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "遗漏业务约束或把软约束误写为硬约束，会生成不可执行方案",
+        "启发式单次最优不代表稳定最优，必须报告多种子、下界或精确小规模基线"
+      ],
+      "required_solution_checks": [
+        "逐约束可行性审计",
+        "小规模精确解或下界对照",
+        "多种子稳定性",
+        "复杂度与运行时间双报告"
+      ],
+      "required_validation": [
+        "逐约束可行性审计",
+        "小规模精确解或下界对照",
+        "多种子稳定性",
+        "复杂度与运行时间双报告"
+      ],
+      "figure_story": [
+        "决策变量与约束关系图",
+        "方案布局或调度甘特图",
+        "收敛与基线对比",
+        "约束余量和敏感性图"
+      ],
+      "figure_plan": [
+        "决策变量与约束关系图",
+        "方案布局或调度甘特图",
+        "收敛与基线对比",
+        "约束余量和敏感性图"
+      ],
+      "writing_blueprint": [
+        "按业务对象—变量—目标—约束—求解器—可行性—基线—敏感性推进，先证明能执行再解释为何更优。"
+      ],
+      "paper_count": 0,
+      "evidence_level": "problem_summary_only",
+      "question_evidence_level": "problem_summary_only",
+      "evidence_scope": "topic_and_problem_summary_only",
+      "evidence_ids": [
+        "huashubei:problem_summary:2022-B"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "summary_only",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2022_C",
+      "competition": "huashubei",
+      "year": 2022,
+      "problem": "C",
+      "title": "插层熔喷非织造材料性能控制",
+      "task_type": "C_regression_multiobjective",
+      "paradigm": "数据分析、综合评价、预测分类与规划",
+      "essence": "围绕插层熔喷非织造材料性能控制，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕插层熔喷非织造材料性能控制，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：工艺—结构—性能两级关系",
+        "S2 蒸馏任务链：回归和变量筛选",
+        "S3 蒸馏任务链：多目标性能控制",
+        "S4 蒸馏任务链：残差与外推边界"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "工艺—结构—性能两级关系",
+        "回归和变量筛选",
+        "多目标性能控制",
+        "残差与外推边界"
+      ],
+      "consensus_chain": [],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "数据缺失、异常、泄漏或样本选择偏差会把模型性能与现实能力混淆",
+        "权重、阈值和评价口径若未经检验，会让排序或策略随主观设置翻转"
+      ],
+      "required_solution_checks": [
+        "数据质量与泄漏检查",
+        "交叉验证或留出验证",
+        "权重与阈值敏感性",
+        "基线模型和误差分层"
+      ],
+      "required_validation": [
+        "数据质量与泄漏检查",
+        "交叉验证或留出验证",
+        "权重与阈值敏感性",
+        "基线模型和误差分层"
+      ],
+      "figure_story": [
+        "数据质量与分布图",
+        "变量关系或特征贡献图",
+        "预测/评价结果与基线对比",
+        "误差、稳定性或路线图"
+      ],
+      "figure_plan": [
+        "数据质量与分布图",
+        "变量关系或特征贡献图",
+        "预测/评价结果与基线对比",
+        "误差、稳定性或路线图"
+      ],
+      "writing_blueprint": [
+        "按数据审计—指标或特征—基线—主模型—解释—验证—决策推进，结果必须同时报告总体与最差分组。"
+      ],
+      "paper_count": 0,
+      "evidence_level": "problem_summary_only",
+      "question_evidence_level": "problem_summary_only",
+      "evidence_scope": "topic_and_problem_summary_only",
+      "evidence_ids": [
+        "huashubei:problem_summary:2022-C"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "summary_only",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2023_A",
+      "competition": "huashubei",
+      "year": 2023,
+      "problem": "A",
+      "title": "隔热材料结构优化控制",
+      "task_type": "A_heat_transfer_geometry",
+      "paradigm": "物理工程机理、数值仿真与参数优化",
+      "essence": "围绕隔热材料结构优化控制，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕隔热材料结构优化控制，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：纤维结构和等效热物性",
+        "S2 蒸馏任务链：瞬态传热数值模型",
+        "S3 蒸馏任务链：参数反演",
+        "S4 蒸馏任务链：结构优化与物理校验"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "纤维结构和等效热物性",
+        "瞬态传热数值模型",
+        "参数反演",
+        "结构优化与物理校验"
+      ],
+      "consensus_chain": [
+        "纤维结构和等效热物性",
+        "瞬态传热数值模型",
+        "参数反演",
+        "结构优化与物理校验"
+      ],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "边界条件或材料均匀性简化会改变机理结论，必须做边界与材料参数敏感性",
+        "只拟合结果而不校验守恒、量纲和物理范围，会得到数值正确但工程失真的解"
+      ],
+      "required_solution_checks": [
+        "量纲、守恒与物理范围检查",
+        "网格或步长收敛",
+        "参数扰动与基线对比",
+        "优化解可实施性"
+      ],
+      "required_validation": [
+        "量纲、守恒与物理范围检查",
+        "网格或步长收敛",
+        "参数扰动与基线对比",
+        "优化解可实施性"
+      ],
+      "figure_story": [
+        "结构与边界条件示意图",
+        "机理中间场或轨迹图",
+        "参数响应与优化前后对比",
+        "收敛和敏感性图"
+      ],
+      "figure_plan": [
+        "结构与边界条件示意图",
+        "机理中间场或轨迹图",
+        "参数响应与优化前后对比",
+        "收敛和敏感性图"
+      ],
+      "writing_blueprint": [
+        "按物理对象—控制方程—离散求解—参数辨识—优化—物理验证推进，每个公式后解释量纲与工程含义。"
+      ],
+      "paper_count": 2,
+      "evidence_level": "paper_pattern",
+      "question_evidence_level": "paper_pattern",
+      "evidence_scope": "topic_summary_plus_2023_2025_paper_patterns",
+      "evidence_ids": [
+        "huashubei:paper_pattern:2023_A_1",
+        "huashubei:paper_pattern:2023_A_2"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "distilled_pattern",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2023_B",
+      "competition": "huashubei",
+      "year": 2023,
+      "problem": "B",
+      "title": "不透明制品最优配色方案",
+      "task_type": "B_colormatching_optimization",
+      "paradigm": "运筹、组合优化与资源调度",
+      "essence": "围绕不透明制品最优配色方案，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕不透明制品最优配色方案，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：K-M 光学或配色机理",
+        "S2 蒸馏任务链：配方变量与色差目标",
+        "S3 蒸馏任务链：非线性/多目标求解",
+        "S4 蒸馏任务链：实配误差和敏感性"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "K-M 光学或配色机理",
+        "配方变量与色差目标",
+        "非线性/多目标求解",
+        "实配误差和敏感性"
+      ],
+      "consensus_chain": [
+        "K-M 光学或配色机理",
+        "配方变量与色差目标",
+        "非线性/多目标求解",
+        "实配误差和敏感性"
+      ],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "遗漏业务约束或把软约束误写为硬约束，会生成不可执行方案",
+        "启发式单次最优不代表稳定最优，必须报告多种子、下界或精确小规模基线"
+      ],
+      "required_solution_checks": [
+        "逐约束可行性审计",
+        "小规模精确解或下界对照",
+        "多种子稳定性",
+        "复杂度与运行时间双报告"
+      ],
+      "required_validation": [
+        "逐约束可行性审计",
+        "小规模精确解或下界对照",
+        "多种子稳定性",
+        "复杂度与运行时间双报告"
+      ],
+      "figure_story": [
+        "决策变量与约束关系图",
+        "方案布局或调度甘特图",
+        "收敛与基线对比",
+        "约束余量和敏感性图"
+      ],
+      "figure_plan": [
+        "决策变量与约束关系图",
+        "方案布局或调度甘特图",
+        "收敛与基线对比",
+        "约束余量和敏感性图"
+      ],
+      "writing_blueprint": [
+        "按业务对象—变量—目标—约束—求解器—可行性—基线—敏感性推进，先证明能执行再解释为何更优。"
+      ],
+      "paper_count": 2,
+      "evidence_level": "paper_pattern",
+      "question_evidence_level": "paper_pattern",
+      "evidence_scope": "topic_summary_plus_2023_2025_paper_patterns",
+      "evidence_ids": [
+        "huashubei:paper_pattern:2023_B_1",
+        "huashubei:paper_pattern:2023_B_2"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "distilled_pattern",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2023_C",
+      "competition": "huashubei",
+      "year": 2023,
+      "problem": "C",
+      "title": "母亲身心健康对婴儿影响",
+      "task_type": "C_classification_treatment_opt",
+      "paradigm": "数据分析、综合评价、预测分类与规划",
+      "essence": "围绕母亲身心健康对婴儿影响，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕母亲身心健康对婴儿影响，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：母婴数据审计",
+        "S2 蒸馏任务链：影响因素和行为分类",
+        "S3 蒸馏任务链：干预变量优化",
+        "S4 蒸馏任务链：分组误差与反事实边界"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "母婴数据审计",
+        "影响因素和行为分类",
+        "干预变量优化",
+        "分组误差与反事实边界"
+      ],
+      "consensus_chain": [
+        "母婴数据审计",
+        "影响因素和行为分类",
+        "干预变量优化",
+        "分组误差与反事实边界"
+      ],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "数据缺失、异常、泄漏或样本选择偏差会把模型性能与现实能力混淆",
+        "权重、阈值和评价口径若未经检验，会让排序或策略随主观设置翻转"
+      ],
+      "required_solution_checks": [
+        "数据质量与泄漏检查",
+        "交叉验证或留出验证",
+        "权重与阈值敏感性",
+        "基线模型和误差分层"
+      ],
+      "required_validation": [
+        "数据质量与泄漏检查",
+        "交叉验证或留出验证",
+        "权重与阈值敏感性",
+        "基线模型和误差分层"
+      ],
+      "figure_story": [
+        "数据质量与分布图",
+        "变量关系或特征贡献图",
+        "预测/评价结果与基线对比",
+        "误差、稳定性或路线图"
+      ],
+      "figure_plan": [
+        "数据质量与分布图",
+        "变量关系或特征贡献图",
+        "预测/评价结果与基线对比",
+        "误差、稳定性或路线图"
+      ],
+      "writing_blueprint": [
+        "按数据审计—指标或特征—基线—主模型—解释—验证—决策推进，结果必须同时报告总体与最差分组。"
+      ],
+      "paper_count": 2,
+      "evidence_level": "paper_pattern",
+      "question_evidence_level": "paper_pattern",
+      "evidence_scope": "topic_summary_plus_2023_2025_paper_patterns",
+      "evidence_ids": [
+        "huashubei:paper_pattern:2023_C_1",
+        "huashubei:paper_pattern:2023_C_2"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "distilled_pattern",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2024_A",
+      "competition": "huashubei",
+      "year": 2024,
+      "problem": "A",
+      "title": "机械臂关节角路径优化",
+      "task_type": "A_robot_kinematics_path",
+      "paradigm": "物理工程机理、数值仿真与参数优化",
+      "essence": "围绕机械臂关节角路径优化，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕机械臂关节角路径优化，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：D-H 坐标与正逆运动学",
+        "S2 蒸馏任务链：可达域和碰撞约束",
+        "S3 蒸馏任务链：关节角与路径优化",
+        "S4 蒸馏任务链：能耗和可实施性验证"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "D-H 坐标与正逆运动学",
+        "可达域和碰撞约束",
+        "关节角与路径优化",
+        "能耗和可实施性验证"
+      ],
+      "consensus_chain": [
+        "D-H 坐标与正逆运动学",
+        "可达域和碰撞约束",
+        "关节角与路径优化",
+        "能耗和可实施性验证"
+      ],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "边界条件或材料均匀性简化会改变机理结论，必须做边界与材料参数敏感性",
+        "只拟合结果而不校验守恒、量纲和物理范围，会得到数值正确但工程失真的解"
+      ],
+      "required_solution_checks": [
+        "量纲、守恒与物理范围检查",
+        "网格或步长收敛",
+        "参数扰动与基线对比",
+        "优化解可实施性"
+      ],
+      "required_validation": [
+        "量纲、守恒与物理范围检查",
+        "网格或步长收敛",
+        "参数扰动与基线对比",
+        "优化解可实施性"
+      ],
+      "figure_story": [
+        "结构与边界条件示意图",
+        "机理中间场或轨迹图",
+        "参数响应与优化前后对比",
+        "收敛和敏感性图"
+      ],
+      "figure_plan": [
+        "结构与边界条件示意图",
+        "机理中间场或轨迹图",
+        "参数响应与优化前后对比",
+        "收敛和敏感性图"
+      ],
+      "writing_blueprint": [
+        "按物理对象—控制方程—离散求解—参数辨识—优化—物理验证推进，每个公式后解释量纲与工程含义。"
+      ],
+      "paper_count": 2,
+      "evidence_level": "paper_pattern",
+      "question_evidence_level": "paper_pattern",
+      "evidence_scope": "topic_summary_plus_2023_2025_paper_patterns",
+      "evidence_ids": [
+        "huashubei:paper_pattern:2024_A_1",
+        "huashubei:paper_pattern:2024_A_2"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "distilled_pattern",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2024_B",
+      "competition": "huashubei",
+      "year": 2024,
+      "problem": "B",
+      "title": "VLSI 电路单元自动布局",
+      "task_type": "B_vlsi_placement_nphard",
+      "paradigm": "运筹、组合优化与资源调度",
+      "essence": "围绕VLSI 电路单元自动布局，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕VLSI 电路单元自动布局，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：网表与布局约束",
+        "S2 蒸馏任务链：线长和拥塞代理",
+        "S3 蒸馏任务链：启发式/多目标全局布局",
+        "S4 蒸馏任务链：小规模基线和可布线性"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "网表与布局约束",
+        "线长和拥塞代理",
+        "启发式/多目标全局布局",
+        "小规模基线和可布线性"
+      ],
+      "consensus_chain": [
+        "网表与布局约束",
+        "线长和拥塞代理",
+        "启发式/多目标全局布局",
+        "小规模基线和可布线性"
+      ],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "遗漏业务约束或把软约束误写为硬约束，会生成不可执行方案",
+        "启发式单次最优不代表稳定最优，必须报告多种子、下界或精确小规模基线"
+      ],
+      "required_solution_checks": [
+        "逐约束可行性审计",
+        "小规模精确解或下界对照",
+        "多种子稳定性",
+        "复杂度与运行时间双报告"
+      ],
+      "required_validation": [
+        "逐约束可行性审计",
+        "小规模精确解或下界对照",
+        "多种子稳定性",
+        "复杂度与运行时间双报告"
+      ],
+      "figure_story": [
+        "决策变量与约束关系图",
+        "方案布局或调度甘特图",
+        "收敛与基线对比",
+        "约束余量和敏感性图"
+      ],
+      "figure_plan": [
+        "决策变量与约束关系图",
+        "方案布局或调度甘特图",
+        "收敛与基线对比",
+        "约束余量和敏感性图"
+      ],
+      "writing_blueprint": [
+        "按业务对象—变量—目标—约束—求解器—可行性—基线—敏感性推进，先证明能执行再解释为何更优。"
+      ],
+      "paper_count": 2,
+      "evidence_level": "paper_pattern",
+      "question_evidence_level": "paper_pattern",
+      "evidence_scope": "topic_summary_plus_2023_2025_paper_patterns",
+      "evidence_ids": [
+        "huashubei:paper_pattern:2024_B_1",
+        "huashubei:paper_pattern:2024_B_2"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "distilled_pattern",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2024_C",
+      "competition": "huashubei",
+      "year": 2024,
+      "problem": "C",
+      "title": "老外游中国",
+      "task_type": "C_evaluation_tsp_routing",
+      "paradigm": "数据分析、综合评价、预测分类与规划",
+      "essence": "围绕老外游中国，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕老外游中国，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：城市指标和吸引力评价",
+        "S2 蒸馏任务链：候选城市筛选",
+        "S3 蒸馏任务链：多目标路线规划",
+        "S4 蒸馏任务链：路线可行性和权重敏感性"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "城市指标和吸引力评价",
+        "候选城市筛选",
+        "多目标路线规划",
+        "路线可行性和权重敏感性"
+      ],
+      "consensus_chain": [
+        "城市指标和吸引力评价",
+        "候选城市筛选",
+        "多目标路线规划",
+        "路线可行性和权重敏感性"
+      ],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "数据缺失、异常、泄漏或样本选择偏差会把模型性能与现实能力混淆",
+        "权重、阈值和评价口径若未经检验，会让排序或策略随主观设置翻转"
+      ],
+      "required_solution_checks": [
+        "数据质量与泄漏检查",
+        "交叉验证或留出验证",
+        "权重与阈值敏感性",
+        "基线模型和误差分层"
+      ],
+      "required_validation": [
+        "数据质量与泄漏检查",
+        "交叉验证或留出验证",
+        "权重与阈值敏感性",
+        "基线模型和误差分层"
+      ],
+      "figure_story": [
+        "数据质量与分布图",
+        "变量关系或特征贡献图",
+        "预测/评价结果与基线对比",
+        "误差、稳定性或路线图"
+      ],
+      "figure_plan": [
+        "数据质量与分布图",
+        "变量关系或特征贡献图",
+        "预测/评价结果与基线对比",
+        "误差、稳定性或路线图"
+      ],
+      "writing_blueprint": [
+        "按数据审计—指标或特征—基线—主模型—解释—验证—决策推进，结果必须同时报告总体与最差分组。"
+      ],
+      "paper_count": 2,
+      "evidence_level": "paper_pattern",
+      "question_evidence_level": "paper_pattern",
+      "evidence_scope": "topic_summary_plus_2023_2025_paper_patterns",
+      "evidence_ids": [
+        "huashubei:paper_pattern:2024_C_1",
+        "huashubei:paper_pattern:2024_C_2"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "distilled_pattern",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2025_A",
+      "competition": "huashubei",
+      "year": 2025,
+      "problem": "A",
+      "title": "多孔膜光反射性能优化控制",
+      "task_type": "A_multiphysics_mechanism",
+      "paradigm": "物理工程机理、数值仿真与参数优化",
+      "essence": "围绕多孔膜光反射性能优化控制，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕多孔膜光反射性能优化控制，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：成孔动力学机理链",
+        "S2 蒸馏任务链：多物理过程耦合",
+        "S3 蒸馏任务链：参数辨识与代理模型",
+        "S4 蒸馏任务链：反射性能优化和双路互证"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "成孔动力学机理链",
+        "多物理过程耦合",
+        "参数辨识与代理模型",
+        "反射性能优化和双路互证"
+      ],
+      "consensus_chain": [
+        "成孔动力学机理链",
+        "多物理过程耦合",
+        "参数辨识与代理模型",
+        "反射性能优化和双路互证"
+      ],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "边界条件或材料均匀性简化会改变机理结论，必须做边界与材料参数敏感性",
+        "只拟合结果而不校验守恒、量纲和物理范围，会得到数值正确但工程失真的解"
+      ],
+      "required_solution_checks": [
+        "量纲、守恒与物理范围检查",
+        "网格或步长收敛",
+        "参数扰动与基线对比",
+        "优化解可实施性"
+      ],
+      "required_validation": [
+        "量纲、守恒与物理范围检查",
+        "网格或步长收敛",
+        "参数扰动与基线对比",
+        "优化解可实施性"
+      ],
+      "figure_story": [
+        "结构与边界条件示意图",
+        "机理中间场或轨迹图",
+        "参数响应与优化前后对比",
+        "收敛和敏感性图"
+      ],
+      "figure_plan": [
+        "结构与边界条件示意图",
+        "机理中间场或轨迹图",
+        "参数响应与优化前后对比",
+        "收敛和敏感性图"
+      ],
+      "writing_blueprint": [
+        "按物理对象—控制方程—离散求解—参数辨识—优化—物理验证推进，每个公式后解释量纲与工程含义。"
+      ],
+      "paper_count": 2,
+      "evidence_level": "paper_pattern",
+      "question_evidence_level": "paper_pattern",
+      "evidence_scope": "topic_summary_plus_2023_2025_paper_patterns",
+      "evidence_ids": [
+        "huashubei:paper_pattern:2025_A_1",
+        "huashubei:paper_pattern:2025_A_2"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "distilled_pattern",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2025_B",
+      "competition": "huashubei",
+      "year": 2025,
+      "problem": "B",
+      "title": "网络切片无线资源管理",
+      "task_type": "B_5g_resource_scheduling",
+      "paradigm": "运筹、组合优化与资源调度",
+      "essence": "围绕网络切片无线资源管理，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕网络切片无线资源管理，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：业务等级和时频资源定义",
+        "S2 蒸馏任务链：跨周期调度约束",
+        "S3 蒸馏任务链：混合优化或强化启发式",
+        "S4 蒸馏任务链：时延、吞吐和稳定性"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "业务等级和时频资源定义",
+        "跨周期调度约束",
+        "混合优化或强化启发式",
+        "时延、吞吐和稳定性"
+      ],
+      "consensus_chain": [
+        "业务等级和时频资源定义",
+        "跨周期调度约束",
+        "混合优化或强化启发式",
+        "时延、吞吐和稳定性"
+      ],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "遗漏业务约束或把软约束误写为硬约束，会生成不可执行方案",
+        "启发式单次最优不代表稳定最优，必须报告多种子、下界或精确小规模基线"
+      ],
+      "required_solution_checks": [
+        "逐约束可行性审计",
+        "小规模精确解或下界对照",
+        "多种子稳定性",
+        "复杂度与运行时间双报告"
+      ],
+      "required_validation": [
+        "逐约束可行性审计",
+        "小规模精确解或下界对照",
+        "多种子稳定性",
+        "复杂度与运行时间双报告"
+      ],
+      "figure_story": [
+        "决策变量与约束关系图",
+        "方案布局或调度甘特图",
+        "收敛与基线对比",
+        "约束余量和敏感性图"
+      ],
+      "figure_plan": [
+        "决策变量与约束关系图",
+        "方案布局或调度甘特图",
+        "收敛与基线对比",
+        "约束余量和敏感性图"
+      ],
+      "writing_blueprint": [
+        "按业务对象—变量—目标—约束—求解器—可行性—基线—敏感性推进，先证明能执行再解释为何更优。"
+      ],
+      "paper_count": 2,
+      "evidence_level": "paper_pattern",
+      "question_evidence_level": "paper_pattern",
+      "evidence_scope": "topic_summary_plus_2023_2025_paper_patterns",
+      "evidence_ids": [
+        "huashubei:paper_pattern:2025_B_1",
+        "huashubei:paper_pattern:2025_B_2"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "distilled_pattern",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    },
+    {
+      "id": "huashubei_2025_C",
+      "competition": "huashubei",
+      "year": 2025,
+      "problem": "C",
+      "title": "可调控生物节律的 LED 光源研究",
+      "task_type": "C_spectrum_analysis_stats",
+      "paradigm": "数据分析、综合评价、预测分类与规划",
+      "essence": "围绕可调控生物节律的 LED 光源研究，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "problem_essence": "围绕可调控生物节律的 LED 光源研究，把领域对象转成可计算机制、约束或指标，并形成可验证的决策闭环。",
+      "question_dependency": [
+        "S1 蒸馏任务链：光谱标准参数计算",
+        "S2 蒸馏任务链：昼夜照明多目标优化",
+        "S3 蒸馏任务链：睡眠实验统计检验",
+        "S4 蒸馏任务链：负面结果与适用边界"
+      ],
+      "question_granularity": "distilled_stage_not_original_question",
+      "recommended_chain": [
+        "光谱标准参数计算",
+        "昼夜照明多目标优化",
+        "睡眠实验统计检验",
+        "负面结果与适用边界"
+      ],
+      "consensus_chain": [
+        "光谱标准参数计算",
+        "昼夜照明多目标优化",
+        "睡眠实验统计检验",
+        "负面结果与适用边界"
+      ],
+      "paper_route_comparison": [],
+      "assumption_risks": [
+        "数据缺失、异常、泄漏或样本选择偏差会把模型性能与现实能力混淆",
+        "权重、阈值和评价口径若未经检验，会让排序或策略随主观设置翻转"
+      ],
+      "required_solution_checks": [
+        "数据质量与泄漏检查",
+        "交叉验证或留出验证",
+        "权重与阈值敏感性",
+        "基线模型和误差分层"
+      ],
+      "required_validation": [
+        "数据质量与泄漏检查",
+        "交叉验证或留出验证",
+        "权重与阈值敏感性",
+        "基线模型和误差分层"
+      ],
+      "figure_story": [
+        "数据质量与分布图",
+        "变量关系或特征贡献图",
+        "预测/评价结果与基线对比",
+        "误差、稳定性或路线图"
+      ],
+      "figure_plan": [
+        "数据质量与分布图",
+        "变量关系或特征贡献图",
+        "预测/评价结果与基线对比",
+        "误差、稳定性或路线图"
+      ],
+      "writing_blueprint": [
+        "按数据审计—指标或特征—基线—主模型—解释—验证—决策推进，结果必须同时报告总体与最差分组。"
+      ],
+      "paper_count": 2,
+      "evidence_level": "paper_pattern",
+      "question_evidence_level": "paper_pattern",
+      "evidence_scope": "topic_summary_plus_2023_2025_paper_patterns",
+      "evidence_ids": [
+        "huashubei:paper_pattern:2025_C_1",
+        "huashubei:paper_pattern:2025_C_2"
+      ],
+      "reviewed_paper_count": 0,
+      "manual_status": "distilled_pattern",
+      "transfer_boundary": "该记录的 S1-S4 是可复用任务链，不是原题逐问转录。只迁移方法接口、验证和图表角色；必须回到当年或新题题面重建子问、参数、约束和结论。"
+    }
+  ]
+}

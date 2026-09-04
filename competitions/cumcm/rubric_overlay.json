@@ -1,0 +1,50 @@
+{
+  "_doc": "CUMCM 特化评分层。只引用可核验的摘要分位；模型链、验证与图表按题面内容和相似案例检查。",
+  "competition": "cumcm",
+  "version": "2.0",
+  "rating_contract_version": "rating-contract-1.0",
+  "stage_overrides": {
+    "3": {
+      "_note": "模型选择必须有相似案例检索，但不能把历史频率当推荐。",
+      "dims": {
+        "2_selection_rationale": {"describe": "列出至少 3 个相似案例，说明可迁移结构、不可迁移内容和模型取舍"}
+      }
+    },
+    "8": {
+      "_note": "摘要和正文强调问题—方法—结果—验证闭环。",
+      "dims": {
+        "1_abstract_5_paragraph": {
+          "describe": "摘要逐问交代对象、方法、关键定量结果和验证；可核验样本摘要中文字符 IQR [805, 1009]",
+          "hard_threshold": {"abstract_chars": {"min": 500, "max": 1500, "empirical_ref": "abstract_chars"}}
+        },
+        "2_section_completeness": {"describe": "问题重述、假设、符号、模型、求解、检验、评价、参考文献和附录齐全"},
+        "3_formulas_figures_citations": {"describe": "每个子问形成输入—模型—结果—验证闭环，定量结论可回溯到表图或输出"},
+        "4_language_quality": {"describe": "中文表达准确，模型名称服务于解释，不堆叠算法名或虚构改进"},
+        "5_visual_consistency": {"describe": "图表覆盖机制、结果和可信度，单位、图例、口径一致"}
+      }
+    },
+    "9": {
+      "_note": "终审强调可复现性、来源诚实和跨章节一致。",
+      "dims": {
+        "1_anti_pattern_coverage": {"describe": "对照 anti_patterns.md 检查，所有高风险项必须清零"},
+        "5_pdf_compile_clean": {"describe": "xelatex 编译无错误，版面无溢出、缺图和乱码"}
+      }
+    }
+  },
+  "panel_personas": [
+    {"id": "math_rigor", "label": "数学严谨派", "weight": 1.2, "focus": "假设、方程、边界、验证"},
+    {"id": "model_fit", "label": "问题匹配派", "weight": 1.2, "focus": "模型是否由问题结构而非算法热度驱动"},
+    {"id": "code_correctness", "label": "代码正确派", "weight": 1.0, "focus": "数据口径、边界、复现性"},
+    {"id": "writing_clarity", "label": "写作呈现派", "weight": 1.0, "focus": "逐问闭环、定量结论、图文一致"},
+    {"id": "source_audit", "label": "来源审计派", "weight": 1.1, "focus": "证据等级、引用、禁止把题面推断冒充获奖经验"}
+  ],
+  "anti_pattern_path": "competitions/cumcm/anti_patterns.md",
+  "phrase_bank_path": "competitions/cumcm/phrase_bank.md",
+  "winning_patterns_path": "competitions/cumcm/winning_patterns.md",
+  "case_index_path": "competitions/cumcm/cases/index.json",
+  "manual_review_path": "competitions/cumcm/cases/manual_review_annotations.json",
+  "modeling_knowledge_path": "competitions/cumcm/distilled_modeling.md",
+  "figure_knowledge_path": "competitions/cumcm/distilled_figures.md",
+  "latex_template_dir": "templates/latex/cumcm",
+  "citation_format": "GB/T 7714"
+}

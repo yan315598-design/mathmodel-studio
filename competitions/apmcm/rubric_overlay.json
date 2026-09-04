@@ -1,0 +1,78 @@
+{
+  "_doc": "APMCM 亚太杯中文赛评分维度 overlay。基于本地 2024/2025 赛题与优秀论文蒸馏。",
+  "_source": "local_only_2024_2025",
+  "competition": "apmcm",
+  "version": "0.1-local",
+  "rating_contract_version": "rating-contract-1.0",
+  "dim_whitelist": {
+    "_doc": "APMCM stage 8 强调中文摘要定量结果、图表解释、算法适配与可复现。",
+    "8": [
+      "1_abstract_problem_method_result",
+      "2_section_chain",
+      "3_model_algorithm_fit",
+      "4_visual_explanation",
+      "5_reproducibility_and_style"
+    ]
+  },
+  "stage_overrides": {
+    "8": {
+      "_note": "APMCM 中文赛 stage 8: 摘要定量 + 题型方法匹配 + 图表解释密度",
+      "dims": {
+        "1_abstract_problem_method_result": {
+          "describe": "摘要按问题分解、方法、关键结果、稳健性/评价、推广价值组织，必须出现定量结果。"
+        },
+        "2_section_chain": {
+          "describe": "章节从问题分析到模型求解再到结果解释连续推进，不孤立堆模型。"
+        },
+        "3_model_algorithm_fit": {
+          "describe": "算法选择必须贴合题型：A 几何/优化，B 预测/分类，C 调度/高级模型。"
+        },
+        "4_visual_explanation": {
+          "describe": "图表需有编号、单位、解释和结论，不只展示曲线或热力图。"
+        },
+        "5_reproducibility_and_style": {
+          "describe": "参数、数据处理、评价指标和代码流程可复现，中文表述稳健克制。"
+        }
+      }
+    }
+  },
+  "panel_personas": [
+    {
+      "id": "judge_30s",
+      "label": "评委 30 秒视角",
+      "weight": 1.5,
+      "focus": "摘要定量结果 + 主图结论 + 创新点"
+    },
+    {
+      "id": "model_fit",
+      "label": "模型适配视角",
+      "weight": 1.3,
+      "focus": "题型与算法是否匹配"
+    },
+    {
+      "id": "data_repro",
+      "label": "数据复现视角",
+      "weight": 1.2,
+      "focus": "附件数据、预处理、指标和代码流程"
+    },
+    {
+      "id": "visual",
+      "label": "图表呈现视角",
+      "weight": 1.1,
+      "focus": "图表自解释、单位、配色和图注"
+    },
+    {
+      "id": "writing",
+      "label": "中文写作视角",
+      "weight": 1.0,
+      "focus": "文风、章节承接、结论可信度"
+    }
+  ],
+  "anti_pattern_path": "competitions/apmcm/anti_patterns.md",
+  "phrase_bank_path": "competitions/apmcm/phrase_bank.md",
+  "winning_patterns_path": "competitions/apmcm/winning_patterns.md",
+  "abstract_template_path": "competitions/apmcm/abstract_template.md",
+  "paper_skeleton_path": "competitions/apmcm/paper_skeleton.md",
+  "latex_template_dir": "templates/latex/apmcm",
+  "citation_format": "GB/T 7714"
+}

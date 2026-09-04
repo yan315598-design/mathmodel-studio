@@ -1,0 +1,15 @@
+{
+  "competition": "mcm",
+  "qualification": [
+    {"item": "首页为整页 Summary Sheet", "pass": true, "evidence": "首页文本为 300 词 Summary"}
+  ],
+  "blocks": [
+    {"name": "modeling", "weight": 50, "deductions": []}
+  ],
+  "format_score": 5,
+  "panel_scores": [
+    {"seat": "A", "totals": {"modeling": 90, "writing": 80}},
+    {"seat": "B", "totals": {"modeling": 45, "writing": 72}},
+    {"seat": "C", "totals": {"modeling": 88}}
+  ]
+}

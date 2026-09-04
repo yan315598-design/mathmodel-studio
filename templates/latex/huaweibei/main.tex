@@ -1,0 +1,264 @@
+% 自写模板 — 华为杯 (中国研究生数学建模竞赛) 论文骨架
+% 用法: xelatex main.tex (连编两遍); 或
+%       python scripts/render_paper.py --competition huaweibei --workspace <paper_workspace>
+% 依据: 研究生数学建模竞赛公开发布的论文格式要求 (题目/摘要/关键词/正文/
+%       参考文献/附录的通行结构, 参考文献按 GB/T 7714)。
+%       本文件为独立实现, 未参考任何第三方模板源码, 亦未使用竞赛官方
+%       视觉资产 (logo 等); 如赛事明确要求官方封面, 请按当年通知自行替换。
+% 字体: 正文宋体小四, 章节标题黑体; xelatex 下 ctex 自动选用系统字体。
+
+\documentclass[zihao=-4,a4paper]{ctexart}
+
+% ---------- 页面 ----------
+\usepackage{geometry}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2.6cm, right=2.6cm}
+
+% ---------- 数学 ----------
+\usepackage{amsmath,amssymb}
+
+% ---------- 图表 ----------
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% ---------- 代码附录 ----------
+\usepackage{listings}
+\usepackage{xcolor}
+
+% ---------- 其他 ----------
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+% 章节标题: 黑体
+\ctexset{
+  section = {format = {\Large\bfseries\heiti}},
+  subsection = {format = {\large\bfseries\heiti}},
+  subsubsection = {format = {\bfseries\heiti}},
+}
+
+% 图表标题
+\captionsetup{font={small,bf}, labelsep=quad}
+
+% 页眉: 左侧赛事名, 右侧页码 (不需要可整段删除, 改用 \pagestyle{plain})
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small 研究生数学建模论文}
+\fancyhead[R]{\small 第 \thepage\ 页}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% 代码样式
+\lstset{
+  basicstyle=\small\ttfamily,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{green!50!black},
+  stringstyle=\color{red!60!black},
+  showstringspaces=false,
+  columns=flexible,
+}
+
+\begin{document}
+
+% ============================================================
+% 封面 (信息占位区; 按当年参赛要求增删字段)
+% ============================================================
+\begin{titlepage}
+  \begin{center}
+    \vspace*{2.0cm}
+    {\Huge\heiti [论文标题]}\\[2.5cm]
+
+    {\large
+      \begin{tabular}{rl}
+        题号:         & [题号] \\[0.8em]
+        学校名称:     & [学校名称] \\[0.8em]
+        参赛队号:     & [参赛队号] \\[0.8em]
+        队员一:       & [队员一姓名] \\[0.8em]
+        队员二:       & [队员二姓名] \\[0.8em]
+        队员三:       & [队员三姓名] \\[0.8em]
+        指导教师:     & [指导教师姓名] \\
+      \end{tabular}}
+    \vfill
+  \end{center}
+\end{titlepage}
+
+% 封面不编页码; 页码从摘要页起算
+\pagenumbering{arabic}
+
+% ============================================================
+% 摘要页
+% ============================================================
+\begin{center}
+  {\Large\heiti 摘\quad 要}
+\end{center}
+
+% ---- 摘要正文 (建议 600-1000 字, 覆盖问题/方法/结果/结论) ----
+% render_paper.py 注入锚: 下一行在渲染时被替换为 abstract 节内容; 手写论文时删除锚点行直接写正文
+% __ABSTRACT__
+
+\vspace{1em}
+\noindent{\heiti 关键词:} [关键词1]; [关键词2]; [关键词3]; [关键词4]
+
+\newpage
+
+% ============================================================
+% 目录 (可选: 评审偏好不一, 不需要时保持注释状态即可)
+% ============================================================
+% \tableofcontents
+% \newpage
+
+% ============================================================
+% 正文
+% render_paper.py 注入锚: 下方成对 SECTIONS 锚行之间的
+% 演示正文会被 sections/*.tex 自动替换; 手写论文时删除两个锚点行直接写
+% ============================================================
+% __SECTIONS__
+
+\section{问题重述}
+
+\subsection{问题背景}
+
+[用两到三段交代问题背景与研究价值, 不照抄题面。]
+
+\subsection{问题提出}
+
+\begin{itemize}
+  \item [子问题 1 的任务描述];
+  \item [子问题 2 的任务描述];
+  \item [子问题 3 的任务描述]。
+\end{itemize}
+
+\section{问题分析}
+
+[逐问分析问题本质、变量关系与求解思路, 并给出总体技术路线。]
+
+\section{模型假设与符号说明}
+
+\subsection{模型假设}
+
+\begin{enumerate}
+  \item [假设 1 及其合理性依据];
+  \item [假设 2 及其合理性依据]。
+\end{enumerate}
+
+\subsection{符号说明}
+
+\begin{table}[H]
+  \centering
+  \caption{符号说明表}
+  \begin{tabular}{cll}
+    \toprule
+    符号 & 含义 & 单位 \\
+    \midrule
+    $i$   & 决策变量编号 & --- \\
+    $x_i$ & 第 $i$ 个决策变量 & [单位] \\
+    $\lambda$ & 模型参数 & [单位] \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{模型建立与求解}
+
+\subsection{[子问题 1] 的模型建立}
+
+[模型推导过程, 示例公式如下。]
+
+\begin{equation}
+  \min \; Z = \sum_{i=1}^{n} c_i x_i
+\end{equation}
+\begin{equation}
+  \text{s.t.}\quad \sum_{i=1}^{n} a_{ij} x_i \le b_j, \quad j = 1,2,\dots,m
+\end{equation}
+
+\subsection{模型求解与结果}
+
+[求解算法与结果分析。]
+
+\begin{table}[H]
+  \centering
+  \caption{[求解结果汇总]}
+  \begin{tabular}{cccc}
+    \toprule
+    方案 & 指标 A & 指标 B & 目标值 \\
+    \midrule
+    方案 1 & [值] & [值] & [值] \\
+    方案 2 & [值] & [值] & [值] \\
+    方案 3 & [值] & [值] & [值] \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% 图占位示例 (实际使用时取消注释并替换路径)
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=0.8\textwidth]{figures/result.png}
+  \fbox{\parbox[c][6cm][c]{0.78\textwidth}{\centering [图占位: 技术路线图 / 结果可视化]}}
+  \caption{[图题: 一句话说明该图支撑的结论]}
+\end{figure}
+
+\subsection{[子问题 2] 的模型建立与求解}
+
+[按同样结构展开其余子问题。]
+
+\section{灵敏度分析}
+
+[关键参数扰动设计、结果与结论。]
+
+\section{模型评价与推广}
+
+\subsection{优缺点}
+
+\begin{itemize}
+  \item 优点: [优点 1]; [优点 2]。
+  \item 缺点: [缺点 1]。
+\end{itemize}
+
+\subsection{模型推广}
+
+[改进方向与应用场景。]
+
+% __END_SECTIONS__
+
+% ============================================================
+% 参考文献: GB/T 7714 顺序编码制 (手写条目示例;
+% 如使用 bib 工具, 可换成 gbt7714 宏包 + BibTeX)
+% ============================================================
+\begin{thebibliography}{9}
+  \bibitem{journal} 作者1, 作者2. 论文题目[J]. 期刊名, 2024, 20(3): 1-10.
+  \bibitem{book} 作者. 专著书名[M]. 出版地: 出版社, 2023: 50-65.
+  \bibitem{thesis} 作者. 学位论文题目[D]. 城市: 学校名称, 2022.
+  \bibitem{online} 作者. 网页标题[EB/OL]. (2024-01-15)[2025-06-01]. https://example.com/page.
+  \bibitem{english} Author A, Author B. Paper title[J]. Journal Name, 2022, 15(2): 100-110.
+\end{thebibliography}
+
+% ============================================================
+% 附录: 程序代码
+% ============================================================
+\appendix
+
+\section{程序代码}
+
+\begin{lstlisting}[language=Python, caption={求解脚本示例 solve.py}]
+import numpy as np
+from scipy.optimize import linprog
+
+# model parameters
+c = np.array([2.0, 3.0, 1.5])          # cost coefficients
+A_ub = np.array([[1.0, 1.0, 0.0],
+                 [0.0, 2.0, 1.0]])
+b_ub = np.array([40.0, 50.0])
+
+res = linprog(c, A_ub=A_ub, b_ub=b_ub,
+              bounds=[(0, None)] * 3, method="highs")
+print("optimal value:", res.fun)
+print("solution:", res.x)
+\end{lstlisting}
+
+\end{document}

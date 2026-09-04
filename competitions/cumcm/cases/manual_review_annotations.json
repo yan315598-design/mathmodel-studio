@@ -1,0 +1,2585 @@
+{
+  "schema_version": "1.0",
+  "competition": "cumcm",
+  "reviewed_case_count": 25,
+  "reviewed_paper_count": 64,
+  "interpretation_rule": "OCR 的 missing_questions 只表示摘要分段未稳定识别，不表示原论文未作答。单篇题只形成可复算路线，不形成跨论文共识。",
+  "cases": [
+    {
+      "id": "cumcm_2021_A",
+      "year": 2021,
+      "problem": "A",
+      "title": "“FAST”主动反射面的形状调节",
+      "paradigm": "几何机理与约束反演",
+      "source_paradigm": "几何机理与约束反演",
+      "problem_essence": "受几何约束的反射面形状反演与执行器调节",
+      "source_problem_essence": "受几何约束的反射面形状反演与执行器调节",
+      "transfer_boundary": "适合曲面拟合和阵面控制；若结构弹性不可忽略，需加入有限元或刚度约束。",
+      "source_transfer_boundary": "适合曲面拟合和阵面控制；若结构弹性不可忽略，需加入有限元或刚度约束。",
+      "question_dependency": [
+        "Q1 建立理想抛物面及可行参数域",
+        "Q2 继承 Q1 曲面，经坐标旋转求节点与促动器调整量",
+        "Q3 继承 Q2 调整结果，以光线落点计算接收效率"
+      ],
+      "consensus_chain": [
+        "坐标系与理想抛物面",
+        "节点位移和索网约束",
+        "约束优化或曲面拟合",
+        "反射光线与接收效率"
+      ],
+      "paper_route_comparison": [
+        "路线一以促动器伸缩量或节点间距变化最小为目标；路线二以理想面和基准球面的积分偏差最小为目标；效率计算又分面板加权和几何光线追迹。"
+      ],
+      "result_disagreements": [
+        "理想面参数随目标函数变化，不能只比较方程系数；Q3 出现约 67.46% 与 1.53% 的接收比，主要是信号面积、面板覆盖和分母定义不同，不能投票取值。"
+      ],
+      "assumption_risks": [
+        "把面板视为刚性曲面、信号直线传播且完全反射、忽略索网弹性和馈源真实响应，会把几何效率误写成系统效率。"
+      ],
+      "required_solution_checks": [
+        "坐标变换往返一致",
+        "促动器行程和节点间距逐点可行",
+        "曲面残差与光线采样收敛",
+        "效率分子分母同口径"
+      ],
+      "figure_story": [
+        "坐标与剖面图说明几何",
+        "节点位移和拟合残差图打开中间层",
+        "光线落点图解释效率",
+        "约束余量图证明可实施"
+      ],
+      "writing_blueprint": [
+        "先说明为何把工程问题降为几何反演，再依次写理想面、执行器映射、效率验证；摘要同时报告几何误差、行程上界和效率口径。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2021-A:ff63c25b7529",
+          "local:annual_paper:2021-A:2ddf199f7dac",
+          "local:annual_paper:2021-A:ce082dc02f3c"
+        ],
+        "2": [
+          "local:annual_paper:2021-A:ff63c25b7529",
+          "local:annual_paper:2021-A:2ddf199f7dac"
+        ],
+        "3": [
+          "local:annual_paper:2021-A:ff63c25b7529",
+          "local:annual_paper:2021-A:2ddf199f7dac"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2021-A:ff63c25b7529",
+        "local:annual_paper:2021-A:2ddf199f7dac",
+        "local:annual_paper:2021-A:ce082dc02f3c"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2021-A:ff63c25b7529",
+          "paper_title": "“FAST”主动反射面调节模型",
+          "source_path": "2021/A028.pdf",
+          "pages": 38,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2021-A:2ddf199f7dac",
+          "paper_title": "基于目标优化的“FAST”主动反射面形状调节研究",
+          "source_path": "2021/A115.pdf",
+          "pages": 35,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2021-A:ce082dc02f3c",
+          "paper_title": "\"FAST\"工作抛物面的优化设计",
+          "source_path": "2021/A217.pdf",
+          "pages": 59,
+          "extraction_method": "ocr_full",
+          "review_flags": [
+            "missing_questions:2,3"
+          ],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页；标记：missing_questions:2,3"
+        }
+      ],
+      "source_review_flags": [
+        "local:annual_paper:2021-A:ce082dc02f3c:missing_questions:2,3"
+      ],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2021_B",
+      "year": 2021,
+      "problem": "B",
+      "title": "乙醇偶合制备C4 烯烃",
+      "paradigm": "实验统计与工艺优化",
+      "source_paradigm": "实验统计与工艺优化",
+      "problem_essence": "多因素化学实验的因果筛选、产率预测与工艺优化",
+      "source_problem_essence": "多因素化学实验的因果筛选、产率预测与工艺优化",
+      "transfer_boundary": "适合实验设计数据；样本稀少时不要直接使用高容量黑箱模型。",
+      "source_transfer_boundary": "适合实验设计数据；样本稀少时不要直接使用高容量黑箱模型。",
+      "question_dependency": [
+        "Q1 描述温度与时间规律",
+        "Q2 在 Q1 基础上分解因素效应与交互",
+        "Q3 用 Q2 响应模型优化收率",
+        "Q4 围绕 Q3 最优区和模型不确定区设计 5 次新实验"
+      ],
+      "consensus_chain": [
+        "数据与实验条件统一",
+        "趋势拟合和因素效应",
+        "含交互项的响应模型",
+        "约束工艺优化",
+        "验证性与探索性试验设计"
+      ],
+      "paper_route_comparison": [
+        "趋势模型包括二次/Logistic/指数拟合；因素分析包括方差分析、逐步回归、偏最小二乘和正交试验；优化包括回归面、BP 神经网络和二次规划；新实验包括均匀设计与最优点邻域验证。"
+      ],
+      "result_disagreements": [
+        "Q3 无温度上限时最大收率约 47.1%、51.31%、56.3%、57.19%，350℃约束下约 28.2%、29.8%、38.47%、46.48%；差异来自拟合函数、变量编码、交互项、训练范围外外推及 OCR 百分号缺失。"
+      ],
+      "assumption_risks": [
+        "小样本高维拟合、把相关当因果、忽略装料方式或石英砂、假设反应不可逆及环境恒定，都会改变最优配方的可信度。"
+      ],
+      "required_solution_checks": [
+        "残差和显著性诊断",
+        "训练范围内外分开报告",
+        "交叉验证或留一法",
+        "最优点工艺边界与局部扰动",
+        "5 次试验兼顾确认和信息增益"
+      ],
+      "figure_story": [
+        "散点和拟合组图讲温度/时间规律",
+        "主效应与交互图解释因素",
+        "响应面和可行域展示最优点",
+        "实验设计空间图说明 5 次试验为何这样选"
+      ],
+      "writing_blueprint": [
+        "每问按化学现象、统计证据、模型、数值结论、可验证实验收束；不能只写黑箱预测精度，应解释最优组合位于观测域还是外推域。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2021-B:0f49652c49a8",
+          "local:annual_paper:2021-B:05d87dbb3cd8",
+          "local:annual_paper:2021-B:986ee3b76ef9",
+          "local:annual_paper:2021-B:f650bf6d3fd3"
+        ],
+        "2": [
+          "local:annual_paper:2021-B:0f49652c49a8",
+          "local:annual_paper:2021-B:05d87dbb3cd8",
+          "local:annual_paper:2021-B:986ee3b76ef9",
+          "local:annual_paper:2021-B:f650bf6d3fd3"
+        ],
+        "3": [
+          "local:annual_paper:2021-B:0f49652c49a8",
+          "local:annual_paper:2021-B:05d87dbb3cd8",
+          "local:annual_paper:2021-B:986ee3b76ef9",
+          "local:annual_paper:2021-B:f650bf6d3fd3"
+        ],
+        "4": [
+          "local:annual_paper:2021-B:0f49652c49a8",
+          "local:annual_paper:2021-B:05d87dbb3cd8",
+          "local:annual_paper:2021-B:986ee3b76ef9",
+          "local:annual_paper:2021-B:f650bf6d3fd3"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2021-B:0f49652c49a8",
+        "local:annual_paper:2021-B:05d87dbb3cd8",
+        "local:annual_paper:2021-B:986ee3b76ef9",
+        "local:annual_paper:2021-B:f650bf6d3fd3"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2021-B:0f49652c49a8",
+          "paper_title": "C4烯烃制备分析与试验设计",
+          "source_path": "2021/B007.pdf",
+          "pages": 45,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2021-B:05d87dbb3cd8",
+          "paper_title": "d.构建模型",
+          "source_path": "2021/B026.pdf",
+          "pages": 26,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2021-B:986ee3b76ef9",
+          "paper_title": "乙醇偶合制备C4烯烃的多元回归与神经网络模型",
+          "source_path": "2021/B050.pdf",
+          "pages": 59,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2021-B:f650bf6d3fd3",
+          "paper_title": "乙醇制备C4烯烃催化剂组合的分析与设计",
+          "source_path": "2021/B160.pdf",
+          "pages": 28,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2021_C",
+      "year": 2021,
+      "problem": "C",
+      "title": "生产企业原材料的订购与运输",
+      "paradigm": "供应链评价与鲁棒优化",
+      "source_paradigm": "供应链评价与鲁棒优化",
+      "problem_essence": "不确定供给下的供应商筛选、订购和运输联合决策",
+      "source_problem_essence": "不确定供给下的供应商筛选、订购和运输联合决策",
+      "transfer_boundary": "适合多期供应链；若交付时序和库存强耦合，应显式建立滚动库存状态。",
+      "source_transfer_boundary": "适合多期供应链；若交付时序和库存强耦合，应显式建立滚动库存状态。",
+      "question_dependency": [
+        "Q1 建立供货能力评价并筛出重要供应商",
+        "Q2 用 Q1 候选集完成最少供应商、订购和转运联合决策",
+        "Q3 在 Q2 约束上调整 A/C 原料结构",
+        "Q4 扩展供应范围并求产能上限"
+      ],
+      "consensus_chain": [
+        "供应商评价",
+        "原料到产能的等效换算",
+        "库存递推与供应选择",
+        "订购和转运联合优化",
+        "结构偏好与产能情景"
+      ],
+      "paper_route_comparison": [
+        "评价使用熵权 TOPSIS、投影寻踪或 AHP 修正；订购使用 0-1/线性/双层随机规划或贪心；运输按期望损耗分配；产能用整数规划、线性规划或动态贪心推演。"
+      ],
+      "result_disagreements": [
+        "最少供应商出现约 16、24、27、39 家；产能提升出现约 12.7%、1.58 万立方米、4.5744 万立方米、53% 等不同口径。候选集、供货量统计量、库存规则、损耗计入方式和‘产能’分母不同，数值不可直接横比。"
+      ],
+      "assumption_risks": [
+        "历史供货稳定、全部实供量均收购、周内全部转运、库存初值足够、运输成本与距离无关、转运能力即产能上限均是强假设。"
+      ],
+      "required_solution_checks": [
+        "逐周物料与库存守恒",
+        "最少供应商下界和删一可行性",
+        "供货短缺极端情景",
+        "采购成本、损耗和产能统一量纲",
+        "方案对历史回放"
+      ],
+      "figure_story": [
+        "指标雷达/排序解释供应商筛选",
+        "库存和到货时序打开动态约束",
+        "供应商—转运商流图展示方案",
+        "成本—损耗—产能前沿解释权衡"
+      ],
+      "writing_blueprint": [
+        "先定义供货能力、经济性和产能的精确口径；每问沿同一库存状态递推，结果表同时给供应商数、成本、损耗和安全余量。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2021-C:970a07e5c003",
+          "local:annual_paper:2021-C:999cada05440",
+          "local:annual_paper:2021-C:6b9f297484e4",
+          "local:annual_paper:2021-C:a68cc732ad63"
+        ],
+        "2": [
+          "local:annual_paper:2021-C:970a07e5c003",
+          "local:annual_paper:2021-C:999cada05440",
+          "local:annual_paper:2021-C:6b9f297484e4",
+          "local:annual_paper:2021-C:a68cc732ad63"
+        ],
+        "3": [
+          "local:annual_paper:2021-C:999cada05440",
+          "local:annual_paper:2021-C:6b9f297484e4",
+          "local:annual_paper:2021-C:a68cc732ad63"
+        ],
+        "4": [
+          "local:annual_paper:2021-C:999cada05440",
+          "local:annual_paper:2021-C:6b9f297484e4",
+          "local:annual_paper:2021-C:a68cc732ad63"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2021-C:970a07e5c003",
+        "local:annual_paper:2021-C:999cada05440",
+        "local:annual_paper:2021-C:6b9f297484e4",
+        "local:annual_paper:2021-C:a68cc732ad63"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2021-C:970a07e5c003",
+          "paper_title": "生产企业原材料订购与运输的评价与规划模型",
+          "source_path": "2021/C006.pdf",
+          "pages": 60,
+          "extraction_method": "ocr_full",
+          "review_flags": [
+            "missing_questions:3,4"
+          ],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页；标记：missing_questions:3,4"
+        },
+        {
+          "evidence_id": "local:annual_paper:2021-C:999cada05440",
+          "paper_title": "基于双层和随机规划的原材料订购与运输问题",
+          "source_path": "2021/C085.pdf",
+          "pages": 56,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2021-C:6b9f297484e4",
+          "paper_title": "基于优化算法的企业原材料订购与运输规划模型",
+          "source_path": "2021/C169.pdf",
+          "pages": 51,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2021-C:a68cc732ad63",
+          "paper_title": "双目标贪心优化下的企业原料订购运输方案",
+          "source_path": "2021/C283.pdf",
+          "pages": 58,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [
+        "local:annual_paper:2021-C:970a07e5c003:missing_questions:3,4"
+      ],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2021_D",
+      "year": 2021,
+      "problem": "D",
+      "title": "连铸切割的在线优化",
+      "paradigm": "在线下料与滚动调度",
+      "source_paradigm": "在线下料与滚动调度",
+      "problem_essence": "在线到达订单下的一维下料与切割调度",
+      "source_problem_essence": "在线到达订单下的一维下料与切割调度",
+      "transfer_boundary": "适合在线下料；大规模组合爆炸时需列生成或启发式搜索。",
+      "source_transfer_boundary": "适合在线下料；大规模组合爆炸时需列生成或启发式搜索。",
+      "question_dependency": [
+        "Q1 求静态尾坯的词典序最优切割",
+        "Q2 把异常废坯和到达时刻加入 Q1，滚动调整",
+        "Q3 复用 Q2 算法，仅改变目标长度与允许区间"
+      ],
+      "consensus_chain": [
+        "长度离散与物料状态",
+        "切割组合生成",
+        "词典序整数规划",
+        "异常到达后的滚动重优化",
+        "多目标长度复算"
+      ],
+      "paper_route_comparison": [
+        "两篇采用损失、目标长度根数、区间根数的序贯多目标规划；一篇给出零损失充要条件与平均绝对偏差二阶段模型；另一篇用分类流程和程序枚举。"
+      ],
+      "result_disagreements": [
+        "Q2 一篇报告 9 次异常下总切割损失 16.6m，其他论文多给方案表而摘要缺少同口径总损失；Q3 报告 8.5m 目标损失 8.8m、11.1m 目标损失 17.1m，跨论文数值覆盖不足，不能当作共识真值。"
+      ],
+      "assumption_risks": [
+        "0.1m 离散精度、异常立即形成 0.8m 废段、调整零耗时、设备无故障，以及废段是否计入损失，会直接改变最优性。"
+      ],
+      "required_solution_checks": [
+        "每段长度和总长守恒",
+        "词典序优先级逐层锁定",
+        "在线计算时间小于决策窗口",
+        "异常时刻前后方案可执行",
+        "与贪心和离线下界比较"
+      ],
+      "figure_story": [
+        "工艺和废段示意建立状态",
+        "切割组合图解释分类",
+        "滚动时间线展示何时重排",
+        "累计损失对比图证明在线策略价值"
+      ],
+      "writing_blueprint": [
+        "先写清损失定义和三层优先级，再用一个异常窗口完整演示状态更新；结果不仅列切法，还要解释为何不能再改进。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2021-D:5aace27b0a12",
+          "local:annual_paper:2021-D:99735fdd8c08",
+          "local:annual_paper:2021-D:70e2cf37327b"
+        ],
+        "2": [
+          "local:annual_paper:2021-D:5aace27b0a12",
+          "local:annual_paper:2021-D:99735fdd8c08",
+          "local:annual_paper:2021-D:70e2cf37327b"
+        ],
+        "3": [
+          "local:annual_paper:2021-D:5aace27b0a12",
+          "local:annual_paper:2021-D:99735fdd8c08",
+          "local:annual_paper:2021-D:70e2cf37327b"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2021-D:5aace27b0a12",
+        "local:annual_paper:2021-D:99735fdd8c08",
+        "local:annual_paper:2021-D:70e2cf37327b"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2021-D:5aace27b0a12",
+          "paper_title": "连铸切割的在线优化模型",
+          "source_path": "2021/D017.pdf",
+          "pages": 21,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2021-D:99735fdd8c08",
+          "paper_title": "连铸切割的在线优化",
+          "source_path": "2021/D026.pdf",
+          "pages": 36,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2021-D:70e2cf37327b",
+          "paper_title": "连铸切割的在线优化",
+          "source_path": "2021/D034.pdf",
+          "pages": 30,
+          "extraction_method": "ocr_full",
+          "review_flags": [
+            "no_explicit_assumptions"
+          ],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页；标记：no_explicit_assumptions"
+        }
+      ],
+      "source_review_flags": [
+        "local:annual_paper:2021-D:70e2cf37327b:no_explicit_assumptions"
+      ],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2021_E",
+      "year": 2021,
+      "problem": "E",
+      "title": "中药材的鉴别",
+      "paradigm": "高维特征与多分类",
+      "source_paradigm": "高维特征与多分类",
+      "problem_essence": "高维光谱或成分数据的特征提取与多分类识别",
+      "source_problem_essence": "高维光谱或成分数据的特征提取与多分类识别",
+      "transfer_boundary": "适合有标签识别；采集设备或批次变化时必须做域偏移检查。",
+      "source_transfer_boundary": "适合有标签识别；采集设备或批次变化时必须做域偏移检查。",
+      "question_dependency": [
+        "Q1 预处理光谱并探索类别结构",
+        "Q2 用已知标签训练产地/类别分类器并判未知样本",
+        "Q3 融合近红外和中红外复用 Q2",
+        "Q4 先判类别再在类别内判产地"
+      ],
+      "consensus_chain": [
+        "光谱去噪和标准化",
+        "特征提取与降维",
+        "无监督结构探索",
+        "监督分类与未知样本判别",
+        "双光谱或分层融合"
+      ],
+      "paper_route_comparison": [
+        "预处理含 SG/SNV、导数和异常剔除；降维含 PCA、Isomap、LLE；分类比较 LDA、SVM、树模型与集成学习；融合采用拼接特征、模型投票或两阶段分类。"
+      ],
+      "result_disagreements": [
+        "Q1 聚类数出现 6 类与 3 类；Q2 测试准确率约 93.9% 至 98.3%，未知样本标签也有少量分歧；差异来自异常样本处理、波段筛选、降维、分类器和验证划分。"
+      ],
+      "assumption_risks": [
+        "光谱批次和仪器无漂移、样本近似均衡、异常点可直接删除、同一样本相关测量可独立划分，均可能造成域偏移或数据泄漏。"
+      ],
+      "required_solution_checks": [
+        "预处理仅在训练折拟合",
+        "按样本/批次分层交叉验证",
+        "混淆矩阵与宏平均指标",
+        "聚类稳定性和轮廓系数",
+        "未知样本置信度与拒判机制"
+      ],
+      "figure_story": [
+        "原始—去噪—导数光谱组图",
+        "主成分/流形图展示结构",
+        "混淆矩阵和 ROC 解释分类",
+        "未知样本距离或概率图给可信边界"
+      ],
+      "writing_blueprint": [
+        "先说明每个预处理动作解决什么光谱问题，再把降维可视化与分类指标连起来；未知样本结论必须附概率或距离，不能只列标签串。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2021-E:c947c8a3c866",
+          "local:annual_paper:2021-E:51f448a42e17",
+          "local:annual_paper:2021-E:7693ac5f6b22"
+        ],
+        "2": [
+          "local:annual_paper:2021-E:c947c8a3c866",
+          "local:annual_paper:2021-E:51f448a42e17",
+          "local:annual_paper:2021-E:7693ac5f6b22"
+        ],
+        "3": [
+          "local:annual_paper:2021-E:c947c8a3c866",
+          "local:annual_paper:2021-E:51f448a42e17",
+          "local:annual_paper:2021-E:7693ac5f6b22"
+        ],
+        "4": [
+          "local:annual_paper:2021-E:c947c8a3c866",
+          "local:annual_paper:2021-E:51f448a42e17",
+          "local:annual_paper:2021-E:7693ac5f6b22"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2021-E:c947c8a3c866",
+        "local:annual_paper:2021-E:51f448a42e17",
+        "local:annual_paper:2021-E:7693ac5f6b22"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2021-E:c947c8a3c866",
+          "paper_title": "基于机器学习的中药材类别与产地鉴别",
+          "source_path": "2021/E014.pdf",
+          "pages": 51,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2021-E:51f448a42e17",
+          "paper_title": "中药材的鉴别",
+          "source_path": "2021/E025.pdf",
+          "pages": 39,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2021-E:7693ac5f6b22",
+          "paper_title": "基于红外光谱法的中药材鉴别",
+          "source_path": "2021/E037.pdf",
+          "pages": 37,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2022_A",
+      "year": 2022,
+      "problem": "A",
+      "title": "波浪能最大输出功率设计",
+      "paradigm": "动力学机理与控制优化",
+      "source_paradigm": "动力学机理与控制优化",
+      "problem_essence": "机电耦合动力系统的参数辨识与最大功率控制",
+      "source_problem_essence": "机电耦合动力系统的参数辨识与最大功率控制",
+      "transfer_boundary": "适合周期动力系统；强随机海况需要随机过程或谱分析扩展。",
+      "source_transfer_boundary": "适合周期动力系统；强随机海况需要随机过程或谱分析扩展。",
+      "question_dependency": [
+        "Q1 建立垂荡动力学并求时程",
+        "Q2 基于 Q1 稳态相对速度优化直线阻尼",
+        "Q3 在 Q1 上加入纵摇及耦合",
+        "Q4 基于 Q3 同时优化直线和旋转阻尼"
+      ],
+      "consensus_chain": [
+        "受力和力矩平衡",
+        "耦合微分方程",
+        "数值或解析稳态求解",
+        "平均功率积分",
+        "阻尼参数优化"
+      ],
+      "paper_route_comparison": [
+        "时域求解采用 RK/ode45，部分论文在线性稳态下用拉普拉斯和力电比拟得到解析式；优化采用遍历或遗传算法，稳态截取区间不同。"
+      ],
+      "result_disagreements": [
+        "Q2 常阻尼最优功率约 229.334—229.682W、阻尼约 37194—37639，较一致；非线性阻尼约 228.89—230.127W，参数有差异；Q4 总功率约 316.58、322.13、327.96W，来自耦合近似、稳态区间和搜索边界。"
+      ],
+      "assumption_risks": [
+        "理想流体、小振幅、线性恢复力、忽略摩擦/结构损耗和 PTO 转换损失，使输出接近理论上界；纵摇小量近似在大浪下可能失效。"
+      ],
+      "required_solution_checks": [
+        "量纲与能量平衡",
+        "时间步和稳态区间收敛",
+        "解析特例与数值解互证",
+        "初值衰减",
+        "多海况和阻尼边界敏感性"
+      ],
+      "figure_story": [
+        "受力图定义模型",
+        "位移/速度时程显示进入稳态",
+        "相对速度和瞬时功率解释能量转换",
+        "功率—阻尼曲面与收敛图定位最优"
+      ],
+      "writing_blueprint": [
+        "方程前逐项解释力的来源，求解段给初值、步长和稳态截取；结果段区分理论机械功率与实际电功率。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2022-A:d02a49cce2ed",
+          "local:annual_paper:2022-A:707b2d6ef8cf",
+          "local:annual_paper:2022-A:b74caed96c5b"
+        ],
+        "2": [
+          "local:annual_paper:2022-A:d02a49cce2ed",
+          "local:annual_paper:2022-A:707b2d6ef8cf",
+          "local:annual_paper:2022-A:b74caed96c5b"
+        ],
+        "3": [
+          "local:annual_paper:2022-A:d02a49cce2ed",
+          "local:annual_paper:2022-A:707b2d6ef8cf",
+          "local:annual_paper:2022-A:b74caed96c5b"
+        ],
+        "4": [
+          "local:annual_paper:2022-A:d02a49cce2ed",
+          "local:annual_paper:2022-A:707b2d6ef8cf",
+          "local:annual_paper:2022-A:b74caed96c5b"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2022-A:d02a49cce2ed",
+        "local:annual_paper:2022-A:707b2d6ef8cf",
+        "local:annual_paper:2022-A:b74caed96c5b"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2022-A:d02a49cce2ed",
+          "paper_title": "波浪能装置输出功率优化设计",
+          "source_path": "2022/A001(已优化).pdf",
+          "pages": 37,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2022-A:707b2d6ef8cf",
+          "paper_title": "波浪能装置输出功率最大化模型",
+          "source_path": "2022/A022(已优化)(已优化).pdf",
+          "pages": 30,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2022-A:b74caed96c5b",
+          "paper_title": "基于解析和数值方法的波浪能发电装置最大功率求解",
+          "source_path": "2022/A171(已优化).pdf",
+          "pages": 57,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2022_B",
+      "year": 2022,
+      "problem": "B",
+      "title": "无人机遂行编队飞行中的纯方位无源定位",
+      "paradigm": "几何定位与误差传播",
+      "source_paradigm": "几何定位与误差传播",
+      "problem_essence": "仅方位观测条件下的几何定位、队形校正与可观测性分析",
+      "source_problem_essence": "仅方位观测条件下的几何定位、队形校正与可观测性分析",
+      "transfer_boundary": "适合纯方位定位；存在系统偏差或目标运动时需扩展状态估计模型。",
+      "source_transfer_boundary": "适合纯方位定位；存在系统偏差或目标运动时需扩展状态估计模型。",
+      "question_dependency": [
+        "Q1 建立已知信号源的纯方位定位几何",
+        "Q2 在编号不完全已知时确定最少新增信号源",
+        "Q3 以 Q1/Q2 定位结果迭代校正圆形编队",
+        "Q4 将局部校正推广到锥形编队"
+      ],
+      "consensus_chain": [
+        "方位角观测方程",
+        "轨迹圆交汇与消歧",
+        "误差传播和退化构型",
+        "局部迭代校正",
+        "复杂编队分解"
+      ],
+      "paper_route_comparison": [
+        "定位既有正弦定理分类求解，也有两圆轨迹的计算几何；队形调整包括径向后切向两阶段、带阈值启发式搜索和局部最优贪心。"
+      ],
+      "result_disagreements": [
+        "在给定误差阈值和编号假设下，多篇支持新增 1 架信号源可定位，但适用对象和先验不同；Q4 仅一篇给出平面化指标 3.893 降至 0.206，跨论文数字证据不足。"
+      ],
+      "assumption_risks": [
+        "信号源位置无偏、无人机知道自身编号、方位测量无干扰、运动执行无误差、偏移仅在预设小范围，都是结论成立的条件。"
+      ],
+      "required_solution_checks": [
+        "镜像解与编号消歧",
+        "共线/近共线退化构型",
+        "方位噪声蒙特卡罗",
+        "局部调整的全局收敛",
+        "通信次数和累计误差"
+      ],
+      "figure_story": [
+        "圆交汇几何图解释可辨识性",
+        "误差椭圆显示构型好坏",
+        "迭代前后队形和误差曲线展示校正",
+        "锥形编队分步图说明推广"
+      ],
+      "writing_blueprint": [
+        "先列可观测条件和歧义，再给解算；校正章节逐轮说明谁发信号、谁移动、误差如何下降，避免只展示最终队形。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2022-B:3d952181e3ec",
+          "local:annual_paper:2022-B:2bf981fdfde3",
+          "local:annual_paper:2022-B:26df481d8696"
+        ],
+        "2": [
+          "local:annual_paper:2022-B:3d952181e3ec",
+          "local:annual_paper:2022-B:26df481d8696"
+        ],
+        "3": [
+          "local:annual_paper:2022-B:26df481d8696"
+        ],
+        "4": [
+          "local:annual_paper:2022-B:26df481d8696"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2022-B:3d952181e3ec",
+        "local:annual_paper:2022-B:2bf981fdfde3",
+        "local:annual_paper:2022-B:26df481d8696"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2022-B:3d952181e3ec",
+          "paper_title": "无人机遂行编队飞行中的纯方位无源定位",
+          "source_path": "2022/B030(已优化).pdf",
+          "pages": 42,
+          "extraction_method": "ocr_full",
+          "review_flags": [
+            "missing_questions:3,4"
+          ],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页；标记：missing_questions:3,4"
+        },
+        {
+          "evidence_id": "local:annual_paper:2022-B:2bf981fdfde3",
+          "paper_title": "基于计算几何与带阈值启发式搜索的无人机无源定位模型",
+          "source_path": "2022/B035(已优化).pdf",
+          "pages": 41,
+          "extraction_method": "ocr_full",
+          "review_flags": [
+            "missing_questions:2,3,4"
+          ],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页；标记：missing_questions:2,3,4"
+        },
+        {
+          "evidence_id": "local:annual_paper:2022-B:26df481d8696",
+          "paper_title": "基于局部最优模型的无人机位置调整策略与仿真定位",
+          "source_path": "2022/B086(已优化).pdf",
+          "pages": 32,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [
+        "local:annual_paper:2022-B:3d952181e3ec:missing_questions:3,4",
+        "local:annual_paper:2022-B:2bf981fdfde3:missing_questions:2,3,4"
+      ],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2022_C",
+      "year": 2022,
+      "problem": "C",
+      "title": "古代玻璃制品的成分分析与鉴别",
+      "paradigm": "组成数据统计与分类",
+      "source_paradigm": "组成数据统计与分类",
+      "problem_essence": "考古成分数据的缺失处理、差异检验与材质分类",
+      "source_problem_essence": "考古成分数据的缺失处理、差异检验与材质分类",
+      "transfer_boundary": "百分比成分属于组成数据，直接欧氏分析可能失真，必要时采用对数比变换。",
+      "source_transfer_boundary": "百分比成分属于组成数据，直接欧氏分析可能失真，必要时采用对数比变换。",
+      "question_dependency": [
+        "Q1 处理成分闭合并分析风化关系、预测风化前成分",
+        "Q2 用 Q1 变换后的成分完成大类与亚类划分",
+        "Q3 复用 Q2 分类器识别未知样本",
+        "Q4 分类型研究成分关联"
+      ],
+      "consensus_chain": [
+        "无效样本与零值处理",
+        "闭合成分的对数比变换",
+        "风化差异检验与回推",
+        "监督分类和亚类聚类",
+        "类型内关联分析"
+      ],
+      "paper_route_comparison": [
+        "仅一篇证据：CLR+卡方/校正卡方处理 Q1，决策树和 R/Q 型聚类处理 Q2-Q3，灰色关联处理 Q4；没有跨论文路线可交叉确认。"
+      ],
+      "result_disagreements": [
+        "仅一篇，无法判断数值共识；决策树精确率、召回率、准确率和 F1 均为 1，需优先排查样本小、划分泄漏和树深过拟合。"
+      ],
+      "assumption_risks": [
+        "成分零值如何替换、风化样本是否可配对、闭合约束、类别样本量和灰色关联对组成数据的适用性决定结论。"
+      ],
+      "required_solution_checks": [
+        "闭合和逆变换后总和为 100%",
+        "零值替换敏感性",
+        "分层交叉验证与剪枝",
+        "聚类扰动稳定性",
+        "以 log-ratio 相关或 bootstrap 复核 Q4"
+      ],
+      "figure_story": [
+        "三元/对数比双标图展示成分结构",
+        "风化前后箱线或配对图解释变化",
+        "树与聚类热图展示分类规则",
+        "未知样本概率图和相关网络收束"
+      ],
+      "writing_blueprint": [
+        "先解释普通相关为何不适合闭合成分，再写 CLR 及逆变换；任何 100% 指标都必须紧接验证划分和样本数。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2022-C:aa07c1f60238"
+        ],
+        "2": [
+          "local:annual_paper:2022-C:aa07c1f60238"
+        ],
+        "3": [
+          "local:annual_paper:2022-C:aa07c1f60238"
+        ],
+        "4": [
+          "local:annual_paper:2022-C:aa07c1f60238"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2022-C:aa07c1f60238"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2022-C:aa07c1f60238",
+          "paper_title": "基于成分数据的古代玻璃制品的成分分析与鉴别",
+          "source_path": "2022/C155(已优化).pdf",
+          "pages": 41,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2022_D",
+      "year": 2022,
+      "problem": "D",
+      "title": "气象报文信息卫星通信传输",
+      "paradigm": "通信时隙调度与概率可靠性",
+      "source_paradigm": "压缩编码与链路可靠性",
+      "problem_essence": "有限时隙容量和随机成功率下的多站报文共享调度",
+      "source_problem_essence": "短报文的压缩编码、纠错与链路可靠性设计",
+      "transfer_boundary": "适合具有明确时隙容量和独立发送成功率的信息共享调度；消息不可拆分、信道相关或存在发送冲突时需重建容量与概率模型。",
+      "source_transfer_boundary": "适合结构化短报文；实际协议还需遵循帧格式与硬件复杂度约束。",
+      "question_dependency": [
+        "Q1 求主站气象报文全共享的最短轮次和构造方案",
+        "Q2 在 Q1 调度中加入副站 80% 成功率和冗余发送",
+        "Q3 改变副站报文拆分/成功规则后重算容量和期望"
+      ],
+      "consensus_chain": [
+        "报文与时隙容量计数",
+        "轮次下界证明",
+        "达到下界的显式调度",
+        "独立成功概率与冗余",
+        "接收数量期望"
+      ],
+      "paper_route_comparison": [
+        "仅一篇证据，采用分类计数证明和构造性调度，不是自动案例卡所写的压缩编码/纠错码路线。"
+      ],
+      "result_disagreements": [
+        "仅一篇：Q1 N=9 时 K=6；Q2 K=7 时 N=9，两个期望为 6.2325、13.12；Q3 K=8 时 N=8，期望为 7.50208、11.008。需复算而不能视为跨论文共识。"
+      ],
+      "assumption_risks": [
+        "1.5 条和 2/3 条报文的可拆分性、80% 独立同分布、各站同时发送、首轮无额外间隔，会决定轮次下界和概率。"
+      ],
+      "required_solution_checks": [
+        "信息量下界与构造方案一致",
+        "每时隙容量和冲突逐条核验",
+        "每个主站最终覆盖全部消息",
+        "概率枚举/蒙特卡罗复核期望",
+        "相关失效情景"
+      ],
+      "figure_story": [
+        "时隙—站点矩阵是核心结果",
+        "信息持有集合演化图解释共享",
+        "冗余发送概率树解释 96%",
+        "理论下界与实际轮次表证明最短"
+      ],
+      "writing_blueprint": [
+        "不要泛写通信模型；先给下界，再给达到下界的排程，最后逐站验收。概率部分明确独立性和随机变量定义。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2022-D:2dceb586ef91"
+        ],
+        "2": [
+          "local:annual_paper:2022-D:2dceb586ef91"
+        ],
+        "3": [
+          "local:annual_paper:2022-D:2dceb586ef91"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2022-D:2dceb586ef91"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2022-D:2dceb586ef91",
+          "paper_title": "气象报文信息卫星通信传输",
+          "source_path": "2022/D999(已优化).pdf",
+          "pages": 25,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2022_E",
+      "year": 2022,
+      "problem": "E",
+      "title": "小批量物料的生产安排",
+      "paradigm": "需求预测与库存生产决策",
+      "source_paradigm": "柔性生产与组合调度",
+      "problem_essence": "不确定周需求下兼顾服务水平与库存资金的滚动生产计划",
+      "source_problem_essence": "多品种小批量生产的工序排程与设备分配",
+      "transfer_boundary": "适合具有历史需求和固定提前期的小批量滚动生产；产能、批量或多级供应约束显著时需加入库存控制与多期规划。",
+      "source_transfer_boundary": "适合柔性作业车间；设备故障和动态插单明显时需在线重调度。",
+      "question_dependency": [
+        "Q1 从 284 种物料筛出 6 种并预测周需求",
+        "Q2 用 Q1 预测值和一周提前期递推生产、库存、缺货和服务水平",
+        "Q3 调整安全库存/参数以权衡占用资金和服务水平",
+        "Q4 把提前期改为两周及一般 k 周后重算"
+      ],
+      "consensus_chain": [
+        "重点物料筛选",
+        "滚动时间序列预测",
+        "生产—库存—缺货状态递推",
+        "安全库存与服务水平约束",
+        "提前期推广"
+      ],
+      "paper_route_comparison": [
+        "Q1 一篇用三次指数平滑并按趋势手调参数，另一篇比较移动平均、指数平滑和 ARIMA 后选误差最小者；Q2-Q4 分别采用参数强化/联合调整或安全库存搜索与资金—服务曲线。"
+      ],
+      "result_disagreements": [
+        "一条路线服务水平多数接近 100% 但物料 6004021055 平均库存达 198.63，调整后库存 45.51、服务水平 82.91%；另一条路线搜索安全库存 23，并以曲线斜率选资金—服务平衡点。目标不是同一标量，不能只比服务率。"
+      ],
+      "assumption_risks": [
+        "初始库存和缺货均为零、生产恰好按期可用、不计生产成本和损耗、用历史 101—177 周边预测边评估，以及手调参数，会低估真实部署风险。"
+      ],
+      "required_solution_checks": [
+        "严格滚动预测避免未来信息",
+        "库存与欠货递推守恒",
+        "服务水平定义和零需求处理",
+        "预测误差与库存策略联合回测",
+        "k 周提前期和突发需求压力测试"
+      ],
+      "figure_story": [
+        "需求趋势与滚动预测误差组图",
+        "库存/缺货/生产三联时序",
+        "服务水平—占用资金前沿",
+        "不同提前期下策略退化图"
+      ],
+      "writing_blueprint": [
+        "先把预测模型和库存策略分开评价，再说明预测误差如何传入库存；Q3 用 Pareto 或拐点解释权衡，Q4 写成状态方程的一般化而非只改参数。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2022-E:d76fb7b7dde4",
+          "local:annual_paper:2022-E:a4fdcb749a34"
+        ],
+        "2": [
+          "local:annual_paper:2022-E:a4fdcb749a34"
+        ],
+        "3": [
+          "local:annual_paper:2022-E:a4fdcb749a34"
+        ],
+        "4": [
+          "local:annual_paper:2022-E:a4fdcb749a34"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2022-E:d76fb7b7dde4",
+        "local:annual_paper:2022-E:a4fdcb749a34"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2022-E:d76fb7b7dde4",
+          "paper_title": "基于时间序列预测的物料生产安排模型",
+          "source_path": "2022/E014(已优化).pdf",
+          "pages": 24,
+          "extraction_method": "ocr_full",
+          "review_flags": [
+            "missing_questions:2,3,4"
+          ],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页；标记：missing_questions:2,3,4"
+        },
+        {
+          "evidence_id": "local:annual_paper:2022-E:a4fdcb749a34",
+          "paper_title": "基于时间序列预测的动态生产优化模型",
+          "source_path": "2022/E029(已优化).pdf",
+          "pages": 22,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [
+        "local:annual_paper:2022-E:d76fb7b7dde4:missing_questions:2,3,4"
+      ],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2023_A",
+      "year": 2023,
+      "problem": "A",
+      "title": "定日镜场的优化设计",
+      "paradigm": "几何光学与布局优化",
+      "source_paradigm": "几何光学与布局优化",
+      "problem_essence": "太阳位置驱动的镜场光学效率计算与布局优化",
+      "source_problem_essence": "太阳位置驱动的镜场光学效率计算与布局优化",
+      "transfer_boundary": "适合几何光学近似；高精度工程设计需校准大气衰减和设备误差。",
+      "source_transfer_boundary": "适合几何光学近似；高精度工程设计需校准大气衰减和设备误差。",
+      "question_dependency": [
+        "Q1 建立太阳位置和单镜效率并计算给定镜场年均性能",
+        "Q2 用 Q1 效率模型优化定高镜场布局",
+        "Q3 在 Q2 上增加镜面尺寸、高度等变量联合优化"
+      ],
+      "consensus_chain": [
+        "太阳位置与坐标变换",
+        "镜面法向",
+        "余弦/大气/阴影遮挡/截断效率",
+        "年均功率",
+        "布局与尺寸优化"
+      ],
+      "paper_route_comparison": [
+        "遮挡与截断用几何光锥、网格/蒙特卡罗离散；布局有同心圆、蜂窝和分区；优化采用 GA、蒙特卡罗和变步长搜索。"
+      ],
+      "result_disagreements": [
+        "Q1 年平均功率出现约 24.04MW 与 32.76MW 等差异，主要来自镜面网格、光锥离散、遮挡/截断算法和时间采样。Q2-Q3 的面积或效率需先统一额定功率约束。"
+      ],
+      "assumption_risks": [
+        "仅晴天直射、反射率恒定、忽略散射、地形和建设成本，会高估年均性能和布局可实施性。"
+      ],
+      "required_solution_checks": [
+        "太阳角和坐标系特例",
+        "单镜能量上界",
+        "遮挡/截断采样收敛",
+        "额定功率约束",
+        "参数及气象敏感性"
+      ],
+      "figure_story": [
+        "太阳—镜面—塔光路图",
+        "典型时刻效率分解图",
+        "镜场布局与低效区域图",
+        "采样收敛和优化前后对比"
+      ],
+      "writing_blueprint": [
+        "按单镜到镜场逐层扩展，每个效率因子都说明物理含义和计算口径；优化结果同时报告功率、面积效率和可建性。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2023-A:926643de8205",
+          "local:annual_paper:2023-A:55fc7d42c469",
+          "local:annual_paper:2023-A:da004af57e87",
+          "local:annual_paper:2023-A:da164f91921b"
+        ],
+        "2": [
+          "local:annual_paper:2023-A:926643de8205",
+          "local:annual_paper:2023-A:55fc7d42c469",
+          "local:annual_paper:2023-A:da164f91921b"
+        ],
+        "3": [
+          "local:annual_paper:2023-A:926643de8205",
+          "local:annual_paper:2023-A:55fc7d42c469",
+          "local:annual_paper:2023-A:da164f91921b"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2023-A:926643de8205",
+        "local:annual_paper:2023-A:55fc7d42c469",
+        "local:annual_paper:2023-A:da004af57e87",
+        "local:annual_paper:2023-A:da164f91921b"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2023-A:926643de8205",
+          "paper_title": "定日镜场的优化设计",
+          "source_path": "2023/A092.pdf",
+          "pages": 53,
+          "extraction_method": "text",
+          "review_flags": [],
+          "quality_note": "原生文本抽取，正文可检索"
+        },
+        {
+          "evidence_id": "local:annual_paper:2023-A:55fc7d42c469",
+          "paper_title": "定日镜场的输出功率优化定日镜场的输出功率优化",
+          "source_path": "2023/A127.pdf",
+          "pages": 58,
+          "extraction_method": "text",
+          "review_flags": [],
+          "quality_note": "原生文本抽取，正文可检索"
+        },
+        {
+          "evidence_id": "local:annual_paper:2023-A:da004af57e87",
+          "paper_title": "基于机理分析法的定日镜场优化设计模型",
+          "source_path": "2023/A165.pdf",
+          "pages": 45,
+          "extraction_method": "text",
+          "review_flags": [
+            "missing_questions:2,3"
+          ],
+          "quality_note": "原生文本抽取，正文可检索；标记：missing_questions:2,3"
+        },
+        {
+          "evidence_id": "local:annual_paper:2023-A:da164f91921b",
+          "paper_title": "定日镜场的优化设计模型",
+          "source_path": "2023/A175.pdf",
+          "pages": 39,
+          "extraction_method": "text",
+          "review_flags": [],
+          "quality_note": "原生文本抽取，正文可检索"
+        }
+      ],
+      "source_review_flags": [
+        "local:annual_paper:2023-A:da004af57e87:missing_questions:2,3"
+      ],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2023_B",
+      "year": 2023,
+      "problem": "B",
+      "title": "多波束测线问题",
+      "paradigm": "覆盖几何与路径优化",
+      "source_paradigm": "覆盖几何与路径优化",
+      "problem_essence": "地形覆盖约束下的测线规划与总航程优化",
+      "source_problem_essence": "地形覆盖约束下的测线规划与总航程优化",
+      "transfer_boundary": "适合连续地形覆盖；存在禁航区或复杂转弯代价时需加入路径可行性约束。",
+      "source_transfer_boundary": "适合连续地形覆盖；存在禁航区或复杂转弯代价时需加入路径可行性约束。",
+      "question_dependency": [
+        "Q1 推导二维坡面覆盖宽度",
+        "Q2 将 Q1 推广到三维任意航向",
+        "Q3 用 Q1/Q2 为规则坡面布线",
+        "Q4 在复杂海底插值/分区后联合优化航线"
+      ],
+      "consensus_chain": [
+        "波束几何与覆盖宽度",
+        "航向—坡向夹角修正",
+        "重叠率递推布线",
+        "复杂地形插值/分区",
+        "覆盖和航程联合优化"
+      ],
+      "paper_route_comparison": [
+        "Q4 有等深线分区+局部平面拟合+贪心/PSO，也有插值或随机森林重建地形+改进飞蛾算法；是否计转弯及越界差异明显。"
+      ],
+      "result_disagreements": [
+        "Q3 出现 34 条、约 68 海里/125936m，也有 466394.4m 且漏测 2.3%；航线定义、单位、覆盖边界和总长度是否含转场必须先统一。"
+      ],
+      "assumption_risks": [
+        "船姿平稳、声速直线且无噪声、开角固定、输入地形代表真实海底，都会影响重叠率和漏测。"
+      ],
+      "required_solution_checks": [
+        "平地/同向特例",
+        "覆盖率与漏测面积",
+        "重叠超过 20% 的长度",
+        "越界和转弯成本",
+        "地形插值误差传播"
+      ],
+      "figure_story": [
+        "波束原理与坐标图",
+        "宽度/重叠随深度和夹角变化图",
+        "航线覆盖叠图",
+        "漏测、过密和算法误差图"
+      ],
+      "writing_blueprint": [
+        "先统一米、海里和线段长度口径；Q4 逐图展示地形重建、分区、布线和验收，结果必须同时回答航程、漏测和过度重叠。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2023-B:745564303adb",
+          "local:annual_paper:2023-B:8ee845c5c5ae",
+          "local:annual_paper:2023-B:4e210659f2fd"
+        ],
+        "2": [
+          "local:annual_paper:2023-B:745564303adb",
+          "local:annual_paper:2023-B:8ee845c5c5ae",
+          "local:annual_paper:2023-B:4e210659f2fd"
+        ],
+        "3": [
+          "local:annual_paper:2023-B:745564303adb",
+          "local:annual_paper:2023-B:8ee845c5c5ae",
+          "local:annual_paper:2023-B:4e210659f2fd"
+        ],
+        "4": [
+          "local:annual_paper:2023-B:745564303adb",
+          "local:annual_paper:2023-B:8ee845c5c5ae",
+          "local:annual_paper:2023-B:4e210659f2fd"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2023-B:745564303adb",
+        "local:annual_paper:2023-B:8ee845c5c5ae",
+        "local:annual_paper:2023-B:4e210659f2fd"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2023-B:745564303adb",
+          "paper_title": "多波束测深系统是由单波束测深发展而来的水深测量系统，研究多波束测线布设",
+          "source_path": "2023/B226.pdf",
+          "pages": 51,
+          "extraction_method": "text",
+          "review_flags": [],
+          "quality_note": "原生文本抽取，正文可检索"
+        },
+        {
+          "evidence_id": "local:annual_paper:2023-B:8ee845c5c5ae",
+          "paper_title": "基于主要目标法的测线设计问题",
+          "source_path": "2023/B311.pdf",
+          "pages": 34,
+          "extraction_method": "text",
+          "review_flags": [],
+          "quality_note": "原生文本抽取，正文可检索"
+        },
+        {
+          "evidence_id": "local:annual_paper:2023-B:4e210659f2fd",
+          "paper_title": "多波束测深合理探测方案的设计及效果分析",
+          "source_path": "2023/B477.pdf",
+          "pages": 50,
+          "extraction_method": "text",
+          "review_flags": [],
+          "quality_note": "原生文本抽取，正文可检索"
+        }
+      ],
+      "source_review_flags": [],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2023_C",
+      "year": 2023,
+      "problem": "C",
+      "title": "蔬菜类商品的自动定价与补货决策",
+      "paradigm": "时序预测与定价补货联动",
+      "source_paradigm": "时序预测与定价补货联动",
+      "problem_essence": "需求相关性驱动的销量预测、补货与动态定价",
+      "source_problem_essence": "需求相关性驱动的销量预测、补货与动态定价",
+      "transfer_boundary": "适合零售历史数据；价格与销量存在内生性时，相关关系不能直接解释为因果。",
+      "source_transfer_boundary": "适合零售历史数据；价格与销量存在内生性时，相关关系不能直接解释为因果。",
+      "question_dependency": [
+        "Q1 清洗聚合并识别销量分布、季节和相关结构",
+        "Q2 基于 Q1 品类规律预测销量/成本并联合补货定价",
+        "Q3 将 Q2 下沉到可售单品并加入陈列数量约束",
+        "Q4 从 Q1-Q3 的失效因素反推应补采数据"
+      ],
+      "consensus_chain": [
+        "数据清洗与品类聚合",
+        "季节/相关/长尾结构",
+        "销量与批发价预测",
+        "价格弹性",
+        "补货定价联合优化"
+      ],
+      "paper_route_comparison": [
+        "预测从季节分解、Bayesian/VAR、Prophet 到 LSTM；需求价格关系用线性或双对数弹性；优化用模拟退火、PSO、NSGA-II 或混合整数规划。"
+      ],
+      "result_disagreements": [
+        "一篇给出 Q2 七日收益 5105.60 元、Q3 29 种单品和 1282.2631 元；其他论文用不同目标、候选集和收益基线，不能直接比较。分歧主要在损耗、售罄和价格内生性。"
+      ],
+      "assumption_risks": [
+        "历史规律延续、当日售罄、损耗率固定、策略不反向改变需求，会系统性高估利润。"
+      ],
+      "required_solution_checks": [
+        "严格时间外预测",
+        "价格弹性符号和稳定性",
+        "库存/销量守恒",
+        "与历史或朴素策略同口径比较",
+        "需求和损耗情景敏感性"
+      ],
+      "figure_story": [
+        "分布与季节组图",
+        "价格—销量弹性曲线",
+        "策略表和单品构成图",
+        "时间外残差与利润情景图"
+      ],
+      "writing_blueprint": [
+        "问题分析先解释四问如何从认识规律走向决策；每问用事实—模型—中间状态—结果—验证—回答闭环，Q4 应直接对应前三问的不确定来源。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2023-C:ce8c3063ed05",
+          "local:annual_paper:2023-C:feb297327a2a",
+          "local:annual_paper:2023-C:e061df216149",
+          "local:annual_paper:2023-C:cfde6dc33d66"
+        ],
+        "2": [
+          "local:annual_paper:2023-C:ce8c3063ed05",
+          "local:annual_paper:2023-C:e061df216149",
+          "local:annual_paper:2023-C:cfde6dc33d66"
+        ],
+        "3": [
+          "local:annual_paper:2023-C:ce8c3063ed05",
+          "local:annual_paper:2023-C:e061df216149",
+          "local:annual_paper:2023-C:cfde6dc33d66"
+        ],
+        "4": [
+          "local:annual_paper:2023-C:ce8c3063ed05",
+          "local:annual_paper:2023-C:e061df216149",
+          "local:annual_paper:2023-C:cfde6dc33d66"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2023-C:ce8c3063ed05",
+        "local:annual_paper:2023-C:feb297327a2a",
+        "local:annual_paper:2023-C:e061df216149",
+        "local:annual_paper:2023-C:cfde6dc33d66"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2023-C:ce8c3063ed05",
+          "paper_title": "某商超蔬菜类商品动态定价与补货决策研究",
+          "source_path": "2023/C050.pdf",
+          "pages": 44,
+          "extraction_method": "text",
+          "review_flags": [],
+          "quality_note": "原生文本抽取，正文可检索"
+        },
+        {
+          "evidence_id": "local:annual_paper:2023-C:feb297327a2a",
+          "paper_title": "商超蔬菜销售数据的统计分析及建模",
+          "source_path": "2023/C126.pdf",
+          "pages": 74,
+          "extraction_method": "text",
+          "review_flags": [
+            "missing_questions:2,3,4"
+          ],
+          "quality_note": "原生文本抽取，正文可检索；标记：missing_questions:2,3,4"
+        },
+        {
+          "evidence_id": "local:annual_paper:2023-C:e061df216149",
+          "paper_title": "基于价格弹性的蔬菜类商品自动定价与补货决策",
+          "source_path": "2023/C228.pdf",
+          "pages": 70,
+          "extraction_method": "text",
+          "review_flags": [],
+          "quality_note": "原生文本抽取，正文可检索"
+        },
+        {
+          "evidence_id": "local:annual_paper:2023-C:cfde6dc33d66",
+          "paper_title": "基于历史数据的蔬菜类商品定价与补货决策模型",
+          "source_path": "2023/C235.pdf",
+          "pages": 73,
+          "extraction_method": "text",
+          "review_flags": [],
+          "quality_note": "原生文本抽取，正文可检索"
+        }
+      ],
+      "source_review_flags": [
+        "local:annual_paper:2023-C:feb297327a2a:missing_questions:2,3,4"
+      ],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2023_D",
+      "year": 2023,
+      "problem": "D",
+      "title": "圈养湖羊的空间利用率",
+      "paradigm": "容量建模与整数优化",
+      "source_paradigm": "容量建模与整数优化",
+      "problem_essence": "动物行为、空间容量和生产节奏共同约束的养殖配置",
+      "source_problem_essence": "动物行为、空间容量和生产节奏共同约束的养殖配置",
+      "transfer_boundary": "适合确定性圈舍配置；疾病传播和个体差异显著时需加入随机个体仿真。",
+      "source_transfer_boundary": "适合确定性圈舍配置；疾病传播和个体差异显著时需加入随机个体仿真。",
+      "question_dependency": [
+        "Q1 由繁殖周期和栏容量估计理想上限",
+        "Q2 在 Q1 容量逻辑上优化批次间隔与批量",
+        "Q3 将怀孕和孕期随机性加入 Q2，最小化损失"
+      ],
+      "consensus_chain": [
+        "羊群阶段与栏位状态",
+        "理想周期容量",
+        "批次整数决策和逐日占栏",
+        "随机繁殖仿真",
+        "损失评价"
+      ],
+      "paper_route_comparison": [
+        "仅一篇证据：Q2 把非线性整数规划简化为固定批次间隔/数量后遍历，Q3 用蒙特卡罗处理怀孕率和孕期。"
+      ],
+      "result_disagreements": [
+        "仅一篇：Q2 g=22、x=40，调整首批 48，年化 1224、利用率 97.38%；Q3 x=40 时日均损失 3.79。无跨论文数值共识。"
+      ],
+      "assumption_risks": [
+        "批次不重叠、两年三胎、羔羊育肥期无死亡、同批可合栏、孕期均匀分布，可能低估峰值栏位和生物风险。"
+      ],
+      "required_solution_checks": [
+        "112 栏逐日容量",
+        "母羊/公羊/羔羊数量守恒",
+        "峰值情景",
+        "随机分布依据",
+        "蒙特卡罗收敛与置信区间"
+      ],
+      "figure_story": [
+        "生命周期与栏位状态图",
+        "批次甘特图",
+        "逐日栏位占用曲线",
+        "随机损失分布和容量超限概率"
+      ],
+      "writing_blueprint": [
+        "从一批羊完整走一遍状态转移，再推广到多批；结果不能只报年产量，还要报峰值占栏和超限风险。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2023-D:15cd29734e1e"
+        ],
+        "2": [
+          "local:annual_paper:2023-D:15cd29734e1e"
+        ],
+        "3": [
+          "local:annual_paper:2023-D:15cd29734e1e"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2023-D:15cd29734e1e"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2023-D:15cd29734e1e",
+          "paper_title": "圈养湖羊空间利用率的优化问题",
+          "source_path": "2023/D039.pdf",
+          "pages": 31,
+          "extraction_method": "text",
+          "review_flags": [],
+          "quality_note": "原生文本抽取，正文可检索"
+        }
+      ],
+      "source_review_flags": [],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2023_E",
+      "year": 2023,
+      "problem": "E",
+      "title": "黄河水沙监测数据分析",
+      "paradigm": "水文时序与机理约束预测",
+      "source_paradigm": "水文时序与机理约束预测",
+      "problem_essence": "多源水沙时序的清洗、关系识别、趋势预测与调控分析",
+      "source_problem_essence": "多源水沙时序的清洗、关系识别、趋势预测与调控分析",
+      "transfer_boundary": "适合水文时序；结构突变和极端洪水不能只靠常态历史拟合外推。",
+      "source_transfer_boundary": "适合水文时序；结构突变和极端洪水不能只靠常态历史拟合外推。",
+      "question_dependency": [
+        "Q1 清洗缺失并建立流量—含沙量关系",
+        "Q2 在 Q1 序列上识别突变、季节和周期",
+        "Q3 基于 Q2 结构建立预测",
+        "Q4 用 Q1-Q3 结论评价监测和调水调沙"
+      ],
+      "consensus_chain": [
+        "缺失与异常处理",
+        "水沙关系和分段拟合",
+        "突变/季节/周期分析",
+        "时序预测",
+        "监测与调水调沙评价"
+      ],
+      "paper_route_comparison": [
+        "Q1 有分段拟合和双对数回归；Q2 用累积距平、M-K 和小波；Q3 主要为 SARIMA；Q4 用断面流速面积法和政策前后比较。"
+      ],
+      "result_disagreements": [
+        "一篇摘要仅稳定切出 Q1，跨论文的 Q2-Q4 数值覆盖不完整；2018 年结构突变和不同缺失填补会改变趋势与预测，不能把单一序列结果当长期规律。"
+      ],
+      "assumption_risks": [
+        "均值填补会抹平洪峰和周期；忽略仪器误差、断面变化、地理和灾害影响过强；短历史下周期结论不稳。"
+      ],
+      "required_solution_checks": [
+        "缺失机制与多种填补敏感性",
+        "量纲和水沙守恒",
+        "结构突变前后分段",
+        "滚动预测和残差白噪声",
+        "极端年份留出"
+      ],
+      "figure_story": [
+        "缺失分布与修复对比",
+        "流量—含沙量分段关系",
+        "突变/季节/小波组图",
+        "滚动预测和调水调沙前后同口径图"
+      ],
+      "writing_blueprint": [
+        "数据质量必须先于趋势结论；每张周期或突变图后说明它改变了哪个模型选择，预测段给训练窗、测试窗和极端误差。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2023-E:0c621e13971e",
+          "local:annual_paper:2023-E:296445742de3"
+        ],
+        "2": [
+          "local:annual_paper:2023-E:0c621e13971e"
+        ],
+        "3": [
+          "local:annual_paper:2023-E:0c621e13971e"
+        ],
+        "4": [
+          "local:annual_paper:2023-E:0c621e13971e"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2023-E:0c621e13971e",
+        "local:annual_paper:2023-E:296445742de3"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2023-E:0c621e13971e",
+          "paper_title": "基于时间序列分析预测的黄河水沙监测模型",
+          "source_path": "2023/E032.pdf",
+          "pages": 53,
+          "extraction_method": "text",
+          "review_flags": [],
+          "quality_note": "原生文本抽取，正文可检索"
+        },
+        {
+          "evidence_id": "local:annual_paper:2023-E:296445742de3",
+          "paper_title": "基于小波变换和背包模型的小浪底水库最优监测方案研究",
+          "source_path": "2023/E176.pdf",
+          "pages": 56,
+          "extraction_method": "text",
+          "review_flags": [
+            "missing_questions:2,3,4"
+          ],
+          "quality_note": "原生文本抽取，正文可检索；标记：missing_questions:2,3,4"
+        }
+      ],
+      "source_review_flags": [
+        "local:annual_paper:2023-E:296445742de3:missing_questions:2,3,4"
+      ],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2024_A",
+      "year": 2024,
+      "problem": "A",
+      "title": "“板凳龙” 闹元宵",
+      "paradigm": "递推运动学与碰撞优化",
+      "source_paradigm": "递推运动学与碰撞优化",
+      "problem_essence": "刚性链节沿复合曲线运动的递推运动学与碰撞约束优化",
+      "source_problem_essence": "刚性链节沿复合曲线运动的递推运动学与碰撞约束优化",
+      "transfer_boundary": "适合串联刚体沿已知平面曲线运动；柔性变形和三维效应需另建动力学模型。",
+      "source_transfer_boundary": "适合串联刚体沿已知平面曲线运动；柔性变形和三维效应需另建动力学模型。",
+      "question_dependency": [
+        "Q1 建立螺线运动和把手位置/速度递推",
+        "Q2 用 Q1 构型做首次碰撞检测",
+        "Q3 以 Q2 判据搜索可进入调头区的最小螺距",
+        "Q4 把 Q1 递推推广到盘入—调头—盘出分段路径",
+        "Q5 基于 Q4 速度传递限制求龙头最大速度"
+      ],
+      "consensus_chain": [
+        "螺线弧长",
+        "把手位置与速度递推",
+        "板凳矩形碰撞",
+        "临界螺距",
+        "分段调头",
+        "最大速度"
+      ],
+      "paper_route_comparison": [
+        "位置均用弧长与递推；碰撞有点入多边形、距离阈值和分离轴；临界搜索用变步长/二分/PSO；调头路径按相切圆弧分段。"
+      ],
+      "result_disagreements": [
+        "首次碰撞高度一致在约 412.47s；最小螺距约 0.4000m 与 0.4503m；最大龙头速度约 1.246、1.33、1.406m/s。差异来自碰撞范围简化、板凳厚度、路径和搜索区间，个别摘要还有单位 OCR 错误。"
+      ],
+      "assumption_risks": [
+        "刚性板凳、把手理想铰接、龙头恒速、无人工摆动误差，以及只检查少数板凳，会漏掉真实碰撞。"
+      ],
+      "required_solution_checks": [
+        "链长逐节守恒",
+        "临界前后碰撞状态",
+        "最小距离时序",
+        "搜索步长收敛",
+        "全时段全把手速度上界"
+      ],
+      "figure_story": [
+        "相邻把手几何",
+        "易碰撞对象和临界构型",
+        "最小距离时序",
+        "分段路径状态",
+        "速度峰值位置"
+      ],
+      "writing_blueprint": [
+        "轨迹图只作外观；正文重点解释递推、碰撞判据和临界搜索。每个最优值都配阈值两侧反例。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2024-A:d1a5bb480033",
+          "local:annual_paper:2024-A:3ccddf8c2cc9",
+          "local:annual_paper:2024-A:a21a946a9deb",
+          "local:annual_paper:2024-A:3b4e504e782a",
+          "local:annual_paper:2024-A:8acaaa018247"
+        ],
+        "2": [
+          "local:annual_paper:2024-A:d1a5bb480033",
+          "local:annual_paper:2024-A:3ccddf8c2cc9",
+          "local:annual_paper:2024-A:a21a946a9deb",
+          "local:annual_paper:2024-A:8acaaa018247"
+        ],
+        "3": [
+          "local:annual_paper:2024-A:d1a5bb480033",
+          "local:annual_paper:2024-A:3ccddf8c2cc9",
+          "local:annual_paper:2024-A:a21a946a9deb",
+          "local:annual_paper:2024-A:3b4e504e782a",
+          "local:annual_paper:2024-A:8acaaa018247"
+        ],
+        "4": [
+          "local:annual_paper:2024-A:d1a5bb480033",
+          "local:annual_paper:2024-A:3ccddf8c2cc9",
+          "local:annual_paper:2024-A:a21a946a9deb",
+          "local:annual_paper:2024-A:3b4e504e782a",
+          "local:annual_paper:2024-A:8acaaa018247"
+        ],
+        "5": [
+          "local:annual_paper:2024-A:d1a5bb480033",
+          "local:annual_paper:2024-A:3ccddf8c2cc9",
+          "local:annual_paper:2024-A:a21a946a9deb",
+          "local:annual_paper:2024-A:3b4e504e782a",
+          "local:annual_paper:2024-A:8acaaa018247"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2024-A:d1a5bb480033",
+        "local:annual_paper:2024-A:3ccddf8c2cc9",
+        "local:annual_paper:2024-A:a21a946a9deb",
+        "local:annual_paper:2024-A:3b4e504e782a",
+        "local:annual_paper:2024-A:8acaaa018247"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2024-A:d1a5bb480033",
+          "paper_title": "基于几何模型的舞龙队位置和速度分析",
+          "source_path": "2024/A016(已优化).pdf",
+          "pages": 59,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2024-A:3ccddf8c2cc9",
+          "paper_title": "基于自标优化的板凳龙形态调节",
+          "source_path": "2024/A053(已优化).pdf",
+          "pages": 62,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2024-A:a21a946a9deb",
+          "paper_title": "基于几何模型的板凳龙运动路径问题",
+          "source_path": "2024/A163(已优化).pdf",
+          "pages": 45,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2024-A:3b4e504e782a",
+          "paper_title": "题名未可靠识别",
+          "source_path": "2024/A178(已优化).pdf",
+          "pages": 48,
+          "extraction_method": "ocr_full",
+          "review_flags": [
+            "unreliable_title",
+            "missing_questions:2"
+          ],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页；标记：unreliable_title, missing_questions:2"
+        },
+        {
+          "evidence_id": "local:annual_paper:2024-A:8acaaa018247",
+          "paper_title": "基于动态搜索的“板凳龙”运动状态及路线研究",
+          "source_path": "2024/A242(已优化).pdf",
+          "pages": 58,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [
+        "local:annual_paper:2024-A:3b4e504e782a:unreliable_title",
+        "local:annual_paper:2024-A:3b4e504e782a:missing_questions:2"
+      ],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2024_B",
+      "year": 2024,
+      "problem": "B",
+      "title": "生产过程中的决策问题",
+      "paradigm": "随机质量树与动态决策",
+      "source_paradigm": "随机质量树与动态决策",
+      "problem_essence": "检测误差条件下的多阶段质量决策与返工拆解决策",
+      "source_problem_essence": "检测误差条件下的多阶段质量决策与返工拆解决策",
+      "transfer_boundary": "适合可量化检测与返工流程；质量状态相关或批次漂移时不能假设独立同分布。",
+      "source_transfer_boundary": "适合可量化检测与返工流程；质量状态相关或批次漂移时不能假设独立同分布。",
+      "question_dependency": [
+        "Q1 设计接收/拒收抽样方案",
+        "Q2 把 Q1 次品率输入检测、装配、拆解决策",
+        "Q3 将 Q2 扩展到多零件多工序",
+        "Q4 用抽样结果作贝叶斯更新并重算策略"
+      ],
+      "consensus_chain": [
+        "抽样检验",
+        "概率质量树",
+        "期望利润",
+        "动态规划/枚举",
+        "贝叶斯更新"
+      ],
+      "paper_route_comparison": [
+        "Q1 有假设检验和功效函数，也有模拟搜索 (n,c)；决策有期望利润树、动态规划、蒙特卡罗与元启发式。"
+      ],
+      "result_disagreements": [
+        "论文有单件期望利润和 10000 件仿真总利润两种口径，不可直接比较；确定性策略和随机仿真还受抽样误差与拆解规则影响。"
+      ],
+      "assumption_risks": [
+        "次品率独立、检测无误差、0/1 固定决策、拆解后强制检测、模拟代替理论抽样保证，都会影响风险水平。"
+      ],
+      "required_solution_checks": [
+        "抽样方案的两类错误概率",
+        "概率树总和为 1",
+        "成本收益逐路径守恒",
+        "小规模枚举对照动态规划",
+        "后验与先验敏感性"
+      ],
+      "figure_story": [
+        "OC/功效曲线回答抽样可靠性",
+        "质量决策树打开利润来源",
+        "策略热图比较情景",
+        "后验分布与策略切换图说明 Q4"
+      ],
+      "writing_blueprint": [
+        "每个检测或拆解决策先回答为何值得做，再写期望增益；结果表必须标明单位、批量和概率口径。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2024-B:b8ffdf50ca42",
+          "local:annual_paper:2024-B:9f3fbc88c8fb",
+          "local:annual_paper:2024-B:8a9e567e8d68"
+        ],
+        "2": [
+          "local:annual_paper:2024-B:b8ffdf50ca42",
+          "local:annual_paper:2024-B:9f3fbc88c8fb"
+        ],
+        "3": [
+          "local:annual_paper:2024-B:b8ffdf50ca42",
+          "local:annual_paper:2024-B:9f3fbc88c8fb"
+        ],
+        "4": [
+          "local:annual_paper:2024-B:b8ffdf50ca42",
+          "local:annual_paper:2024-B:9f3fbc88c8fb"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2024-B:b8ffdf50ca42",
+        "local:annual_paper:2024-B:9f3fbc88c8fb",
+        "local:annual_paper:2024-B:8a9e567e8d68"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2024-B:b8ffdf50ca42",
+          "paper_title": "生产过程中的决策优化设计",
+          "source_path": "2024/B159(已优化).pdf",
+          "pages": 36,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2024-B:9f3fbc88c8fb",
+          "paper_title": "基于多阶段模拟仿真的生产决策问题",
+          "source_path": "2024/B195(已优化).pdf",
+          "pages": 70,
+          "extraction_method": "ocr_full",
+          "review_flags": [
+            "no_figure_contexts"
+          ],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页；标记：no_figure_contexts"
+        },
+        {
+          "evidence_id": "local:annual_paper:2024-B:8a9e567e8d68",
+          "paper_title": "基于蚁群算法与遗传算法优化的蒙特卡洛模拟在生产决策优化",
+          "source_path": "2024/B196(已优化).pdf",
+          "pages": 28,
+          "extraction_method": "ocr_full",
+          "review_flags": [
+            "missing_questions:2,3,4"
+          ],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页；标记：missing_questions:2,3,4"
+        }
+      ],
+      "source_review_flags": [
+        "local:annual_paper:2024-B:9f3fbc88c8fb:no_figure_contexts",
+        "local:annual_paper:2024-B:8a9e567e8d68:missing_questions:2,3,4"
+      ],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2024_C",
+      "year": 2024,
+      "problem": "C",
+      "title": "农作物的种植策略",
+      "paradigm": "多期种植与情景优化",
+      "source_paradigm": "多期种植与情景优化",
+      "problem_essence": "多地块、多作物、多期轮作与不确定需求下的种植规划",
+      "source_problem_essence": "多地块、多作物、多期轮作与不确定需求下的种植规划",
+      "transfer_boundary": "适合中期农业计划；价格受本方案供给反向影响时需增加市场均衡或弹性模型。",
+      "source_transfer_boundary": "适合中期农业计划；价格受本方案供给反向影响时需增加市场均衡或弹性模型。",
+      "question_dependency": [
+        "Q1 在确定产销参数下制定 2024—2030 种植计划",
+        "Q2 在 Q1 约束上加入销量、产量、成本、价格随机变化和风险",
+        "Q3 在 Q2 上加入作物替代/互补及参数相关性"
+      ],
+      "consensus_chain": [
+        "地块—季节—作物数据",
+        "多期 MILP 与轮作",
+        "滞销/半价情景",
+        "随机规划或 CVaR",
+        "替代互补相关结构"
+      ],
+      "paper_route_comparison": [
+        "确定模型多为 MILP，也有遗传算法；不确定性使用 CVaR、典型情景、蒙特卡罗和灾害扰动；相关关系多由主观系数或相关矩阵注入。"
+      ],
+      "result_disagreements": [
+        "四篇总利润差异较大，来自销售上限、滞销处理、面积分散约束、求解器、随机分布和参数设定；不能以多数票确定方案。"
+      ],
+      "assumption_risks": [
+        "需求按预测售罄、产量/价格/成本分布稳定、相关性可主观量化、轮作和豆类约束简化，会显著改变多期利润。"
+      ],
+      "required_solution_checks": [
+        "面积守恒",
+        "轮作和豆类逻辑",
+        "库存/售罄情景",
+        "确定性基线",
+        "随机参数和 CVaR 敏感性",
+        "多随机种子"
+      ],
+      "figure_story": [
+        "地块作物结构图",
+        "年度种植热图",
+        "利润构成与库存图",
+        "风险—收益前沿",
+        "相关性情景对比"
+      ],
+      "writing_blueprint": [
+        "先把硬约束和经营假设分开；Q2/Q3 每新增一种不确定性都解释其现实来源、数学表示和对方案的改变。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2024-C:e9e9d1e7af4d",
+          "local:annual_paper:2024-C:8451f57abc76",
+          "local:annual_paper:2024-C:db7408347c69",
+          "local:annual_paper:2024-C:5e26f5e57338"
+        ],
+        "2": [
+          "local:annual_paper:2024-C:e9e9d1e7af4d",
+          "local:annual_paper:2024-C:8451f57abc76",
+          "local:annual_paper:2024-C:db7408347c69",
+          "local:annual_paper:2024-C:5e26f5e57338"
+        ],
+        "3": [
+          "local:annual_paper:2024-C:e9e9d1e7af4d",
+          "local:annual_paper:2024-C:8451f57abc76",
+          "local:annual_paper:2024-C:db7408347c69",
+          "local:annual_paper:2024-C:5e26f5e57338"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2024-C:e9e9d1e7af4d",
+        "local:annual_paper:2024-C:8451f57abc76",
+        "local:annual_paper:2024-C:db7408347c69",
+        "local:annual_paper:2024-C:5e26f5e57338"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2024-C:e9e9d1e7af4d",
+          "paper_title": "基于差分遗传算法的农作物种植策略优化",
+          "source_path": "2024/C038(已优化).pdf",
+          "pages": 61,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2024-C:8451f57abc76",
+          "paper_title": "基于优化算法的农作物最优种植模型",
+          "source_path": "2024/C063(已优化).pdf",
+          "pages": 49,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2024-C:db7408347c69",
+          "paper_title": "基于随机优化的农作物种植策略模型",
+          "source_path": "2024/C094(已优化).pdf",
+          "pages": 58,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2024-C:5e26f5e57338",
+          "paper_title": "基于遗传算法的最优种植策略",
+          "source_path": "2024/C234(已优化).pdf",
+          "pages": 45,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2024_D",
+      "year": 2024,
+      "problem": "D",
+      "title": "反潜航空深弹命中概率问题",
+      "paradigm": "概率积分与随机仿真优化",
+      "source_paradigm": "概率积分与随机仿真优化",
+      "problem_essence": "三维随机落点和引爆误差下的命中概率计算与参数优化",
+      "source_problem_essence": "三维随机落点和引爆误差下的命中概率计算与参数优化",
+      "transfer_boundary": "适合误差分布可估计的命中问题；尾部相关和非平稳误差需单独校准。",
+      "source_transfer_boundary": "适合误差分布可估计的命中问题；尾部相关和非平稳误差需单独校准。",
+      "question_dependency": [
+        "Q1 建立单枚深弹误差和命中区域积分",
+        "Q2 在 Q1 上处理静默潜艇状态与引爆条件",
+        "Q3 继承命中概率模型优化投放/引爆参数"
+      ],
+      "consensus_chain": [
+        "三维落点误差分布",
+        "潜艇与爆炸有效区域分情形",
+        "概率积分",
+        "引爆深度/投放参数优化"
+      ],
+      "paper_route_comparison": [
+        "仅一篇证据，采用独立正态误差、几何分区积分和参数搜索，没有跨论文路线可验证。"
+      ],
+      "result_disagreements": [
+        "仅一篇：Q1 约 0.0837，Q2 约 0.0586，Q3 约 0.3232；需复算积分边界和数值误差。"
+      ],
+      "assumption_risks": [
+        "各方向独立正态、静默即静止、深弹互不影响、目标形状和毁伤半径理想化，限制了工程解释。"
+      ],
+      "required_solution_checks": [
+        "解析对称特例",
+        "积分域与概率总量",
+        "数值积分/蒙特卡罗互证",
+        "置信区间和收敛",
+        "最优点边界敏感性"
+      ],
+      "figure_story": [
+        "三维坐标与误差椭球",
+        "不同潜艇位置下命中区域剖面",
+        "积分区域分情形图",
+        "概率—引爆深度曲线与收敛图"
+      ],
+      "writing_blueprint": [
+        "先用几何图定义何谓命中，再列积分域；每种情形单独写边界和概率，最优值后紧接数值验证。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2024-D:418941ead452"
+        ],
+        "2": [
+          "local:annual_paper:2024-D:418941ead452"
+        ],
+        "3": [
+          "local:annual_paper:2024-D:418941ead452"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2024-D:418941ead452"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2024-D:418941ead452",
+          "paper_title": "反潜航空深弹命中概率的优化问题",
+          "source_path": "2024/D033(已优化).pdf",
+          "pages": 55,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2024_E",
+      "year": 2024,
+      "problem": "E",
+      "title": "交通流量管控",
+      "paradigm": "交通状态预测与闭环管控",
+      "source_paradigm": "交通状态预测与闭环管控",
+      "problem_essence": "路网交通状态识别、拥堵演化预测与管控策略优化",
+      "source_problem_essence": "路网交通状态识别、拥堵演化预测与管控策略优化",
+      "transfer_boundary": "适合有连续监测的路网；策略会改变驾驶行为时应使用闭环仿真而非静态外推。",
+      "source_transfer_boundary": "适合有连续监测的路网；策略会改变驾驶行为时应使用闭环仿真而非静态外推。",
+      "question_dependency": [
+        "Q1 从视频/流量数据识别交通状态",
+        "Q2 基于 Q1 状态预测拥堵或确定管控触发",
+        "Q3 设计信号/路线/停车等管控策略",
+        "Q4 用同口径指标评估策略与停车资源"
+      ],
+      "consensus_chain": [
+        "交通数据清洗与状态聚类",
+        "流量/速度/拥堵预测",
+        "信号和路径管控",
+        "停车需求与资源配置",
+        "策略前后评价"
+      ],
+      "paper_route_comparison": [
+        "状态识别含 K-means/DBSCAN/GMM+XGBoost；策略含 PSO、Webster/绿波+GA、MDP；停车用排队或泊松需求。"
+      ],
+      "result_disagreements": [
+        "停车位需求出现约 1287 与 430—450，来自巡游车定义、周转率和泊松口径；管控改善率也因指标和基准时段不同而不可直接合并。"
+      ],
+      "assumption_risks": [
+        "短时流量平稳、车辆行为一致、停车需求线性、信号配时与车速线性，以及策略不诱发绕行，均可能失效。"
+      ],
+      "required_solution_checks": [
+        "时间外验证",
+        "路段流量守恒",
+        "策略前后同一指标/时段",
+        "停车周转和容量边界",
+        "行为响应闭环仿真"
+      ],
+      "figure_story": [
+        "路网与数据覆盖图",
+        "状态聚类和预测误差图",
+        "策略时空热图",
+        "前后速度/排队同口径对比",
+        "停车需求—供给曲线"
+      ],
+      "writing_blueprint": [
+        "先定义每个交通指标和统计窗口；从识别、预测到干预形成闭环，结果段明确改善来自哪条机制而非只报百分比。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2024-E:2e67e55f90bd",
+          "local:annual_paper:2024-E:d86da1897e42",
+          "local:annual_paper:2024-E:b0fa133281fd"
+        ],
+        "2": [
+          "local:annual_paper:2024-E:2e67e55f90bd",
+          "local:annual_paper:2024-E:d86da1897e42",
+          "local:annual_paper:2024-E:b0fa133281fd"
+        ],
+        "3": [
+          "local:annual_paper:2024-E:2e67e55f90bd",
+          "local:annual_paper:2024-E:b0fa133281fd"
+        ],
+        "4": [
+          "local:annual_paper:2024-E:2e67e55f90bd",
+          "local:annual_paper:2024-E:d86da1897e42",
+          "local:annual_paper:2024-E:b0fa133281fd"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2024-E:2e67e55f90bd",
+        "local:annual_paper:2024-E:d86da1897e42",
+        "local:annual_paper:2024-E:b0fa133281fd"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2024-E:2e67e55f90bd",
+          "paper_title": "交通流量管控",
+          "source_path": "2024/E010(已优化).pdf",
+          "pages": 39,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2024-E:d86da1897e42",
+          "paper_title": "基于多目标优化的交通管理评估分析",
+          "source_path": "2024/E061(已优化).pdf",
+          "pages": 32,
+          "extraction_method": "ocr_full",
+          "review_flags": [
+            "missing_questions:3"
+          ],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页；标记：missing_questions:3"
+        },
+        {
+          "evidence_id": "local:annual_paper:2024-E:b0fa133281fd",
+          "paper_title": "基于Python语言的交通流量管控与预测分析",
+          "source_path": "2024/E218(已优化).pdf",
+          "pages": 62,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [
+        "local:annual_paper:2024-E:d86da1897e42:missing_questions:3"
+      ],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2025_A",
+      "year": 2025,
+      "problem": "A",
+      "title": "烟幕干扰弹的投放策略",
+      "paradigm": "运动可见性与时序协同优化",
+      "source_paradigm": "运动可见性与时序协同优化",
+      "problem_essence": "运动目标、遮蔽几何和多平台协同条件下的时序投放优化",
+      "source_problem_essence": "运动目标、遮蔽几何和多平台协同条件下的时序投放优化",
+      "transfer_boundary": "适合规则运动和给定扩散规律；复杂气象条件下需替换烟幕动力学子模型。",
+      "source_transfer_boundary": "适合规则运动和给定扩散规律；复杂气象条件下需替换烟幕动力学子模型。",
+      "question_dependency": [
+        "Q1 计算固定投放下单枚烟幕有效遮蔽时长",
+        "Q2 优化单机单弹投放和起爆",
+        "Q3 在 Q2 上安排单机多弹并合并时间窗",
+        "Q4 扩展到多机协同单目标",
+        "Q5 扩展到多目标分配与联合优化"
+      ],
+      "consensus_chain": [
+        "无人机/导弹/烟幕运动学",
+        "圆柱目标完全遮蔽判定",
+        "连续有效时间窗",
+        "单弹优化",
+        "多弹多机分层优化"
+      ],
+      "paper_route_comparison": [
+        "仅一篇证据；几何上证明只需判断上下底面圆周，并以预测拦截点降维；求解用多起点搜索、PSO 和 DE 互证。"
+      ],
+      "result_disagreements": [
+        "仅一篇：Q1 1.391643s，Q2 4.5873s，Q3 6.93586s，Q4 两算法约 11.13/11.65s，Q5 21.0770s；Q4 算法差需解释收敛与可行性。"
+      ],
+      "assumption_risks": [
+        "质点、无风阻、瞬时理想球云、半径及 20s 能力不变、姿态调整零时间，使结果偏理想。"
+      ],
+      "required_solution_checks": [
+        "投放/起爆/到达事件顺序",
+        "完全遮蔽几何边界",
+        "时间区间取并集而非求和",
+        "圆周离散敏感性",
+        "多算法可行解复算"
+      ],
+      "figure_story": [
+        "三维运动与目标几何",
+        "完全遮蔽判据剖面",
+        "单弹有效窗口",
+        "多弹窗口并集甘特图",
+        "算法收敛与空间轨迹"
+      ],
+      "writing_blueprint": [
+        "先用图把完全遮蔽说清，再把连续判定转成时间窗；多弹章节以窗口拼接为叙事主线，避免只列参数表。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2025-A:bb5106770b13"
+        ],
+        "2": [
+          "local:annual_paper:2025-A:bb5106770b13"
+        ],
+        "3": [
+          "local:annual_paper:2025-A:bb5106770b13"
+        ],
+        "4": [
+          "local:annual_paper:2025-A:bb5106770b13"
+        ],
+        "5": [
+          "local:annual_paper:2025-A:bb5106770b13"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2025-A:bb5106770b13"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2025-A:bb5106770b13",
+          "paper_title": "多情形下无人机烟幕遮蔽策略的建模与优化研究",
+          "source_path": "2025/2025年高教社全国大学生数学建模竞赛优秀论文/A196(已优化).pdf",
+          "pages": 34,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2025_B",
+      "year": 2025,
+      "problem": "B",
+      "title": "碳化硅外延层厚度的确定",
+      "paradigm": "光学机理与参数反演",
+      "source_paradigm": "光学机理与参数反演",
+      "problem_essence": "干涉光谱的峰谷识别、物理反演与多光束效应诊断",
+      "source_problem_essence": "干涉光谱的峰谷识别、物理反演与多光束效应诊断",
+      "transfer_boundary": "适合膜层近似均匀且折射率可知；色散、粗糙度或多层结构明显时需扩展光学模型。",
+      "source_transfer_boundary": "适合膜层近似均匀且折射率可知；色散、粗糙度或多层结构明显时需扩展光学模型。",
+      "question_dependency": [
+        "Q1 从干涉条纹周期建立单层厚度模型",
+        "Q2 用不同入射角数据联合校准和反演",
+        "Q3 判断多光束干涉并改用 Airy 模型修正"
+      ],
+      "consensus_chain": [
+        "光谱清洗和峰谷/频率提取",
+        "折射率与光程差模型",
+        "厚度初值",
+        "双角联合反演",
+        "多光束判别与 Airy 修正"
+      ],
+      "paper_route_comparison": [
+        "一条路线直接用波谷周期+牛顿反演；另一条用 FFT 初值+双角非线性拟合；多光束阶段使用 Airy 模型。"
+      ],
+      "result_disagreements": [
+        "SiC 厚度约 7.295—7.604μm，修正结果另有 7.455μm；Si 约 3.432 与 3.814μm。差异来自折射率/色散、有效波段、基线去除、峰谷选择及双/多光束判断。"
+      ],
+      "assumption_risks": [
+        "膜厚均匀、界面平行、各向同性、低吸收、衬底折射率平稳，若不成立会让条纹周期法产生系统偏差。"
+      ],
+      "required_solution_checks": [
+        "不同角度厚度一致",
+        "残差有无周期结构",
+        "峰谷/频段敏感性",
+        "双光束与 Airy 模型比较",
+        "标准样品或系统误差"
+      ],
+      "figure_story": [
+        "原始/去基线光谱",
+        "FFT 或峰谷间距图",
+        "双角拟合叠图",
+        "残差结构",
+        "厚度对折射率和波段的敏感性"
+      ],
+      "writing_blueprint": [
+        "从物理光程公式开始，数据处理每一步都说明对条纹的影响；厚度值后必须跟单位、波段、折射率模型和不确定度。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2025-B:b1d3a20ad9e7",
+          "local:annual_paper:2025-B:9d4aa08721f5"
+        ],
+        "2": [
+          "local:annual_paper:2025-B:b1d3a20ad9e7",
+          "local:annual_paper:2025-B:9d4aa08721f5"
+        ],
+        "3": [
+          "local:annual_paper:2025-B:b1d3a20ad9e7",
+          "local:annual_paper:2025-B:9d4aa08721f5"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2025-B:b1d3a20ad9e7",
+        "local:annual_paper:2025-B:9d4aa08721f5"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2025-B:b1d3a20ad9e7",
+          "paper_title": "红外干涉法测量外延层厚度的建模分析",
+          "source_path": "2025/2025年高教社全国大学生数学建模竞赛优秀论文/B060(已优化).pdf",
+          "pages": 72,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2025-B:9d4aa08721f5",
+          "paper_title": "碳化硅外延层厚度的双光束和多光束干涉法测量研究",
+          "source_path": "2025/2025年高教社全国大学生数学建模竞赛优秀论文/B157(已优化).pdf",
+          "pages": 67,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2025_C",
+      "year": 2025,
+      "problem": "C",
+      "title": "NIPT 的时点选择与胎儿的异常判定",
+      "paradigm": "纵向统计、风险分层与检测决策",
+      "source_paradigm": "纵向统计、风险分层与检测决策",
+      "problem_essence": "纵向医学检测数据的有效时点决策、分群与异常风险判定",
+      "source_problem_essence": "纵向医学检测数据的有效时点决策、分群与异常风险判定",
+      "transfer_boundary": "同一孕妇多次检测不能随机拆分到训练与测试集；模型只用于竞赛分析，不能替代临床诊断。",
+      "source_transfer_boundary": "同一孕妇多次检测不能随机拆分到训练与测试集；模型只用于竞赛分析，不能替代临床诊断。",
+      "question_dependency": [
+        "Q1 用重复测量模型解释 Y 浓度与孕周/BMI",
+        "Q2 基于 Q1 达标曲线优化 BMI 分组和时点",
+        "Q3 加入年龄等因素扩展 Q2 风险模型",
+        "Q4 独立建立女胎异常判定并进行质控"
+      ],
+      "consensus_chain": [
+        "临床数据质控",
+        "重复测量关系模型",
+        "达标时间/风险曲线",
+        "分组与检测时点优化",
+        "女胎异常判定"
+      ],
+      "paper_route_comparison": [
+        "一篇用 LMM+动态规划+FDR，另一篇用 LMM、GPR/深度生存网络、GA 和堆叠分类；复杂模型非线性更强，但泄漏和过拟合风险更高。"
+      ],
+      "result_disagreements": [
+        "Q2 出现 5 组与 3 组策略，推荐周数随目标准确率明显变化；Q4 一篇报 3 阳性/26 可疑，另一篇报 99.7% 准确率，任务阈值与评价对象不同，不能直接比较。"
+      ],
+      "assumption_risks": [
+        "把同一孕妇多次检测当独立样本、测量误差正态、相近 BMI 规律平滑、4% 阈值稳定，会造成指标虚高或时点偏移。"
+      ],
+      "required_solution_checks": [
+        "按孕妇划分训练测试",
+        "随机效应和残差诊断",
+        "分组边界稳定性",
+        "不平衡指标与概率校准",
+        "医学结论限定于竞赛数据"
+      ],
+      "figure_story": [
+        "描述统计和关系热力图",
+        "随机效应/残差图",
+        "达标概率曲线",
+        "时点台阶图",
+        "异常模型校准和混淆矩阵"
+      ],
+      "writing_blueprint": [
+        "先区分统计关联、预测和临床决策；时点建议必须同时报告风险阈值，女胎结果写成模型筛查而非诊断。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2025-C:5354cc252495",
+          "local:annual_paper:2025-C:6506eeef2449"
+        ],
+        "2": [
+          "local:annual_paper:2025-C:5354cc252495",
+          "local:annual_paper:2025-C:6506eeef2449"
+        ],
+        "3": [
+          "local:annual_paper:2025-C:5354cc252495",
+          "local:annual_paper:2025-C:6506eeef2449"
+        ],
+        "4": [
+          "local:annual_paper:2025-C:5354cc252495",
+          "local:annual_paper:2025-C:6506eeef2449"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2025-C:5354cc252495",
+        "local:annual_paper:2025-C:6506eeef2449"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2025-C:5354cc252495",
+          "paper_title": "基于混合效应模型的NIPT时点优化与胎儿异常判定",
+          "source_path": "2025/2025年高教社全国大学生数学建模竞赛优秀论文/C023(已优化).pdf",
+          "pages": 28,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        },
+        {
+          "evidence_id": "local:annual_paper:2025-C:6506eeef2449",
+          "paper_title": "基于统计建模与元学习的NIPT检测决策优化与异常识别",
+          "source_path": "2025/2025年高教社全国大学生数学建模竞赛优秀论文/C132(已优化).pdf",
+          "pages": 65,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2025_D",
+      "year": 2025,
+      "problem": "D",
+      "title": "矿井突水水流漫延模型与逃生方案",
+      "paradigm": "时变网络流与安全路径",
+      "source_paradigm": "时变网络流与安全路径",
+      "problem_essence": "矿井网络中的水流传播、动态风险与多目标逃生路径",
+      "source_problem_essence": "矿井网络中的水流传播、动态风险与多目标逃生路径",
+      "transfer_boundary": "适合一维巷道网络近似；局部三维淹没和人员拥堵明显时需水动力与人群模型联动。",
+      "source_transfer_boundary": "适合一维巷道网络近似；局部三维淹没和人员拥堵明显时需水动力与人群模型联动。",
+      "question_dependency": [
+        "Q1 从巷道网络和突水点推演漫延",
+        "Q2 在 Q1 水位场上计算人员可通行窗口",
+        "Q3 用时变边权求单突水点逃生路径",
+        "Q4 在第二突水点出现后动态重规划"
+      ],
+      "consensus_chain": [
+        "巷道图与断面",
+        "水量分流和水位传播",
+        "时序可通行性",
+        "时变最短路",
+        "突发事件重规划"
+      ],
+      "paper_route_comparison": [
+        "仅一篇证据，采用节点平均分流、水位递推和时变 Dijkstra；缺少其他水动力或网络流路线交叉验证。"
+      ],
+      "result_disagreements": [
+        "仅一篇；摘要出现很长的灌满时间，需重点复核单位、水量守恒和断面换算。Q4 只概述 3/5 分钟后调路，不能据摘要确认全程可行。"
+      ],
+      "assumption_risks": [
+        "分叉平均分流、固定 30m³/min、零反应时间、0.3m 通行阈值、矩形断面，会决定到达时间和逃生窗口。"
+      ],
+      "required_solution_checks": [
+        "全网逐时水量守恒",
+        "单位和断面面积",
+        "节点到达时间单调",
+        "路径每一时刻均可通行",
+        "切换时刻、备选路和参数扰动"
+      ],
+      "figure_story": [
+        "巷道网络与高程",
+        "水位传播时空图",
+        "节点水量守恒残差",
+        "逃生路径和风险余量",
+        "二次突水后的路径切换时间线"
+      ],
+      "writing_blueprint": [
+        "先解释水如何分配，再解释路何时失效；路径结果逐段列进入/离开时刻、水深和余量，不能只给节点序列。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2025-D:3a3da0908f97"
+        ],
+        "2": [
+          "local:annual_paper:2025-D:3a3da0908f97"
+        ],
+        "3": [
+          "local:annual_paper:2025-D:3a3da0908f97"
+        ],
+        "4": [
+          "local:annual_paper:2025-D:3a3da0908f97"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2025-D:3a3da0908f97"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2025-D:3a3da0908f97",
+          "paper_title": "矿井突水水流漫延模型与逃生方案问题",
+          "source_path": "2025/2025年高教社全国大学生数学建模竞赛优秀论文/D037(已优化).pdf",
+          "pages": 36,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    },
+    {
+      "id": "cumcm_2025_E",
+      "year": 2025,
+      "problem": "E",
+      "title": "AI 辅助智能体测",
+      "paradigm": "姿态时序特征与可解释评分",
+      "source_paradigm": "姿态时序特征与可解释评分",
+      "problem_essence": "视频关键点和动作质量之间的时序特征提取、评分与反馈",
+      "source_problem_essence": "视频关键点和动作质量之间的时序特征提取、评分与反馈",
+      "transfer_boundary": "适合机位和动作标准较稳定的视频；跨设备、跨人群应用前必须重新标定。",
+      "source_transfer_boundary": "适合机位和动作标准较稳定的视频；跨设备、跨人群应用前必须重新标定。",
+      "question_dependency": [
+        "Q1 清洗关键点并识别起跳/落地、计算成绩",
+        "Q2 从 Q1 轨迹构造动作角度和速度特征",
+        "Q3 用 Q2 特征解释/预测成绩和评分",
+        "Q4 输出个体动作诊断与改进预测"
+      ],
+      "consensus_chain": [
+        "关键点平滑",
+        "动作阶段检测",
+        "比例尺与运动学特征",
+        "相关筛选",
+        "回归/随机森林",
+        "个体反馈"
+      ],
+      "paper_route_comparison": [
+        "仅一篇证据，采用像素速度阈值识别事件、比例尺换算、相关分析、随机森林和线性回归；没有跨设备或跨论文验证。"
+      ],
+      "result_disagreements": [
+        "仅一篇；‘调整姿势可提升至 1.201m’是模型反事实预测，不是因果实验结论。"
+      ],
+      "assumption_risks": [
+        "小样本、固定 ±150px/s 阈值、同设备比例、成人儿童混合、同人多帧随机划分，会导致泄漏和泛化失败。"
+      ],
+      "required_solution_checks": [
+        "按受试者划分",
+        "遮挡和关键点置信度",
+        "比例尺误差传播",
+        "评分者一致性",
+        "年龄/身高分组误差",
+        "反事实建议只作预测"
+      ],
+      "figure_story": [
+        "关键点与动作阶段叠图",
+        "速度/高度时序和事件线",
+        "特征—成绩关系图",
+        "按人交叉验证误差",
+        "个体姿势前后预测对比"
+      ],
+      "writing_blueprint": [
+        "从视频像素到物理量逐步交代标定；模型解释与动作建议分开写，建议结论使用‘预测可能提升’而非因果措辞。"
+      ],
+      "question_evidence_ids": {
+        "1": [
+          "local:annual_paper:2025-E:ab1de21d3d03"
+        ],
+        "2": [
+          "local:annual_paper:2025-E:ab1de21d3d03"
+        ],
+        "3": [
+          "local:annual_paper:2025-E:ab1de21d3d03"
+        ],
+        "4": [
+          "local:annual_paper:2025-E:ab1de21d3d03"
+        ]
+      },
+      "evidence_ids": [
+        "local:annual_paper:2025-E:ab1de21d3d03"
+      ],
+      "evidence_quality": [
+        {
+          "evidence_id": "local:annual_paper:2025-E:ab1de21d3d03",
+          "paper_title": "基于姿态识别的AI辅助智能体测研究",
+          "source_path": "2025/2025年高教社全国大学生数学建模竞赛优秀论文/E030(已优化).pdf",
+          "pages": 36,
+          "extraction_method": "ocr_full",
+          "review_flags": [],
+          "quality_note": "全文 OCR，可检索但公式、单位和表格需回看原页"
+        }
+      ],
+      "source_review_flags": [],
+      "manual_status": "reviewed",
+      "review_scope": "跨论文人工综合：逐问摘要、章节证据、假设和图表上下文；不是逐页公式校勘"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mathmodel-agent"
+version = "0.1.0"
+description = "mathmodel-skill 的薄 agent runtime 原型 (skill 即大脑, runtime 即执行器)"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+litellm = ["litellm>=1.40"]
+
+[tool.setuptools.packages.find]
+include = ["mathmodel_agent*"]

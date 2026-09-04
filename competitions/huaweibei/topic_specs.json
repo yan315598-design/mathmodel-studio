@@ -1,0 +1,20 @@
+{
+  "schema_version": "huaweibei-topic-specs-1.0",
+  "competition": "huaweibei",
+  "display_name": "中国研究生数学建模竞赛（华为杯）",
+  "problem_letters": ["A", "B", "C", "D", "E", "F"],
+  "fixed_letter_to_type": false,
+  "classification_rule": "按题面对象、任务、数据、约束和主要失效风险动态分类，不能按 A-F 固定映射题型。",
+  "selection_dimensions": [
+    {"id": "data_readiness", "name": "数据可用度", "description": "附件能否在比赛早期完成读取、单位统一和质量审计"},
+    {"id": "mechanism_clarity", "name": "机理清晰度", "description": "是否能定义中间状态、约束或守恒，而非只有黑箱拟合"},
+    {"id": "validation_strength", "name": "验证可实现度", "description": "是否存在基线、特例、留出、扰动或约束复算"},
+    {"id": "solver_feasibility", "name": "求解可行度", "description": "数据规模、算法复杂度和比赛时间是否匹配"},
+    {"id": "writing_closure", "name": "论文闭环度", "description": "各子问是否能共享中间量并形成连续证据链"},
+    {"id": "team_fit", "name": "团队匹配度", "description": "建模、编程和写作能力是否覆盖主要风险"}
+  ],
+  "historical_case_count": 30,
+  "paper_count": 190,
+  "star_nominee_count": 12,
+  "award_boundary": "仅 2021 年本地目录确认 12 篇数模之星提名；2022-2025 不推测。"
+}

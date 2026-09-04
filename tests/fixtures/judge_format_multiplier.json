@@ -1,0 +1,10 @@
+{
+  "competition": "huashubei",
+  "qualification": [
+    {"item": "匿名与命名要求", "pass": true, "evidence": "pdf_qa --anonymous 无泄密"}
+  ],
+  "blocks": [
+    {"name": "模型", "weight": 100, "deductions": []}
+  ],
+  "format_score": 0
+}

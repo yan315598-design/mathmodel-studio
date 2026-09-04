@@ -1,0 +1,17 @@
+{
+  "_doc": "APMCM stage 8 正面用例，期望 validate ok。",
+  "stage_id": 8,
+  "iteration": 0,
+  "variant": "stage_level",
+  "scores": {
+    "1_abstract_problem_method_result": {"name": "摘要问题-方法-结果链", "score": 8, "evidence": "摘要按子问题给出方法和定量结果"},
+    "2_section_chain": {"name": "章节承接", "score": 8, "evidence": "问题分析、模型、结果、解释连续推进"},
+    "3_model_algorithm_fit": {"name": "模型算法适配", "score": 8, "evidence": "算法选择贴合 APMCM 题型"},
+    "4_visual_explanation": {"name": "图表解释", "score": 8, "evidence": "图表有单位、图注和结论解释"},
+    "5_reproducibility_and_style": {"name": "复现与文风", "score": 8, "evidence": "参数、指标和代码流程可追踪"}
+  },
+  "min_score": 8,
+  "mean_score": 8.0,
+  "issues": [],
+  "verdict": "pass"
+}

@@ -1,0 +1,204 @@
+% 自写模板 — 华数杯全国大学生数学建模竞赛论文骨架 (精简版)
+% 用法: xelatex main.tex (连编两遍); 或
+%       python scripts/render_paper.py --competition huashubei --workspace <paper_workspace>
+% 依据: 华数杯通行论文结构 (摘要页/正文/参考文献/附录)。
+%       注意: 华数杯各届通知对封面字段、页边距、摘要字数等细节略有调整,
+%       投稿前务必按当年竞赛通知核对并修改下方对应段落。
+%       本文件为独立实现, 未参考任何第三方模板源码。
+% 字体: 正文宋体小四, 章节标题黑体; xelatex 下 ctex 自动选用系统字体。
+
+\documentclass[zihao=-4,a4paper]{ctexart}
+
+% ---------- 页面 (默认 2.5cm; 若当年通知另有规定请修改) ----------
+\usepackage{geometry}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+% ---------- 数学 ----------
+\usepackage{amsmath,amssymb}
+
+% ---------- 图表 ----------
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{caption}
+
+% ---------- 代码附录 ----------
+\usepackage{listings}
+\usepackage{xcolor}
+
+% ---------- 其他 ----------
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
+% 章节标题: 黑体
+\ctexset{
+  section = {format = {\Large\bfseries\heiti}},
+  subsection = {format = {\large\bfseries\heiti}},
+  subsubsection = {format = {\bfseries\heiti}},
+}
+
+% 图表标题
+\captionsetup{font={small,bf}, labelsep=quad}
+
+% 代码样式
+\lstset{
+  basicstyle=\small\ttfamily,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{green!50!black},
+  stringstyle=\color{red!60!black},
+  showstringspaces=false,
+  columns=flexible,
+}
+
+\begin{document}
+
+% ============================================================
+% 首页: 题目信息区 + 摘要 (华数杯通常不设独立封面;
+% 若当年通知要求独立封面/承诺书, 在此前自行插入 titlepage)
+% ============================================================
+\pagenumbering{arabic}
+
+\begin{center}
+  {\Large\heiti 论文标题: [论文标题]}\\[0.3em]
+  {\large 题号: [题号]\qquad 参赛队号: [参赛队号]\qquad 学校: [学校名称]}
+\end{center}
+
+\vspace{0.5em}
+
+\begin{center}
+  {\Large\heiti 摘\quad 要}
+\end{center}
+
+% ---- 摘要正文 (篇幅按当年通知, 一般 1 页以内) ----
+% render_paper.py 注入锚: 下一行在渲染时被替换为 abstract 节内容; 手写论文时删除锚点行直接写正文
+% __ABSTRACT__
+
+\vspace{1em}
+\noindent{\heiti 关键词:} [关键词1]; [关键词2]; [关键词3]
+
+\newpage
+
+% ============================================================
+% 正文
+% render_paper.py 注入锚: 下方成对 SECTIONS 锚行之间的
+% 演示正文会被 sections/*.tex 自动替换; 手写论文时删除两个锚点行直接写
+% ============================================================
+% __SECTIONS__
+
+\section{问题重述}
+
+[两到三段交代问题背景与各子问任务, 不照抄题面。]
+
+\section{问题分析}
+
+[逐问分析求解思路, 给出总体技术路线。]
+
+\section{模型假设与符号说明}
+
+\begin{enumerate}
+  \item [假设 1 及其合理性依据];
+  \item [假设 2 及其合理性依据]。
+\end{enumerate}
+
+\begin{table}[H]
+  \centering
+  \caption{符号说明表}
+  \begin{tabular}{cll}
+    \toprule
+    符号 & 含义 & 单位 \\
+    \midrule
+    $i$   & 决策变量编号 & --- \\
+    $x_i$ & 第 $i$ 个决策变量 & [单位] \\
+    $\lambda$ & 模型参数 & [单位] \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{模型建立与求解}
+
+\subsection{[子问题 1] 的模型建立}
+
+[模型推导过程, 示例公式如下。]
+
+\begin{equation}
+  \min \; Z = \sum_{i=1}^{n} c_i x_i
+\end{equation}
+\begin{equation}
+  \text{s.t.}\quad \sum_{i=1}^{n} a_{ij} x_i \le b_j, \quad j = 1,2,\dots,m
+\end{equation}
+
+\subsection{模型求解与结果}
+
+[求解算法与结果分析。]
+
+\begin{table}[H]
+  \centering
+  \caption{[求解结果汇总]}
+  \begin{tabular}{cccc}
+    \toprule
+    方案 & 指标 A & 指标 B & 目标值 \\
+    \midrule
+    方案 1 & [值] & [值] & [值] \\
+    方案 2 & [值] & [值] & [值] \\
+    方案 3 & [值] & [值] & [值] \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% 图占位示例 (实际使用时取消注释并替换路径)
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=0.8\textwidth]{figures/result.png}
+  \fbox{\parbox[c][6cm][c]{0.78\textwidth}{\centering [图占位: 技术路线图 / 结果可视化]}}
+  \caption{[图题: 一句话说明该图支撑的结论]}
+\end{figure}
+
+\section{灵敏度分析}
+
+[关键参数扰动与结论。]
+
+\section{模型评价与推广}
+
+[优点、缺点与改进方向。]
+
+% __END_SECTIONS__
+
+% ============================================================
+% 参考文献 (GB/T 7714 顺序编码制, 手写条目示例)
+% ============================================================
+\begin{thebibliography}{9}
+  \bibitem{ref1} 作者. 论文题目[J]. 期刊名, 2024, 20(3): 1-10.
+  \bibitem{ref2} 作者. 书名[M]. 北京: 出版社, 2023.
+  \bibitem{ref3} Author A. Paper title[J]. Journal Name, 2022, 15(2): 100-110.
+\end{thebibliography}
+
+% ============================================================
+% 附录: 程序代码
+% ============================================================
+\appendix
+
+\section{程序代码}
+
+\begin{lstlisting}[language=Python, caption={求解脚本示例 solve.py}]
+import numpy as np
+from scipy.optimize import linprog
+
+# model parameters
+c = np.array([2.0, 3.0, 1.5])          # cost coefficients
+A_ub = np.array([[1.0, 1.0, 0.0],
+                 [0.0, 2.0, 1.0]])
+b_ub = np.array([40.0, 50.0])
+
+res = linprog(c, A_ub=A_ub, b_ub=b_ub,
+              bounds=[(0, None)] * 3, method="highs")
+print("optimal value:", res.fun)
+print("solution:", res.x)
+\end{lstlisting}
+
+\end{document}
