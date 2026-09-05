@@ -318,18 +318,43 @@ def _score_trace_claims(workspace: Path) -> dict:
 
 
 def _score_figqa(workspace: Path) -> dict:
-    """图表碰撞检测: 质量门 {0=无碰撞, 1=检出碰撞}; rc=2 (输入/渲染错) → error。"""
-    figures_dir = workspace / "figures"
-    if not figures_dir.is_dir():
-        return {"status": "skipped", "reason": "figures/ 目录不存在"}
-    result = _run_tool("figqa.py", [str(figures_dir)])
-    if result.get("exit_code") is None:
-        return result
-    reason = _exit_code_error(result["exit_code"], quality_codes={0, 1})
-    if reason:
-        return _tool_error(reason, result)
-    return {"status": "ok", "exit_code": result["exit_code"],
-            "stdout_tail": _tail(result["stdout"], 600)}
+    """图表碰撞检测: 三个约定目录发现图脚本后逐个调用 figqa.py 聚合。
+
+    目标发现: 工作流约定图脚本可能在 workspace/figures/、workspace/scripts/、
+    workspace/code/ 任一目录 (figures/ 常只放输出图), 取三者顶层 *.py (不递归,
+    与 figqa 自身目录扫描一致跳过 __init__.py)。均无 .py → skipped (目录存在
+    但为空同走此分支)。
+
+    逐脚本调用 figqa.py (加 --strict, 退出码 {0=无碰撞, 1=检出碰撞,
+    2=输入/渲染错}); 不加 --strict 时 figqa 检出碰撞仍退出 0, rc=1 不可达、
+    "有 1 则 1" 的聚合是死逻辑, 故必须 --strict。聚合: 全部退出码 ∈{0,1} →
+    status=ok, exit_code 取最差 (有 1 则 1), stdout_tail 按脚本名标注合并
+    各次尾部; 任一次 ∉{0,1} → status=error (reason 带脚本名与退出码,
+    立即返回不再跑余下脚本)。
+    """
+    search_dirs = (workspace / "figures", workspace / "scripts", workspace / "code")
+    scripts = sorted(
+        script for d in search_dirs if d.is_dir()
+        for script in d.glob("*.py") if script.name != "__init__.py"
+    )
+    if not scripts:
+        return {"status": "skipped",
+                "reason": "figures/ 与 scripts|code/ 均无 .py 图脚本"}
+
+    worst_code = 0
+    tails: list[str] = []
+    for script in scripts:
+        result = _run_tool("figqa.py", ["--strict", str(script)])
+        if result.get("exit_code") is None:
+            return result  # 超时/figqa.py 缺失, _run_tool 已是 status=error
+        reason = _exit_code_error(result["exit_code"], quality_codes={0, 1})
+        if reason:
+            return _tool_error(f"{script.name}: {reason}", result)
+        worst_code = max(worst_code, result["exit_code"])
+        tails.append(f"[{script.relative_to(workspace).as_posix()}] "
+                     f"rc={result['exit_code']}\n{_tail(result['stdout'], 600)}")
+    return {"status": "ok", "exit_code": worst_code,
+            "stdout_tail": "\n".join(tails)}
 
 
 def _find_pdf(workspace: Path) -> Path | None:

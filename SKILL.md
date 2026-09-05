@@ -3,11 +3,11 @@ name: mathmodel-studio
 description: 数学建模竞赛端到端工作流, 用于 CUMCM 国赛 / 中国研究生数学建模竞赛（华为杯）/ 华数杯 / MCM·ICM 美赛 / 电工杯 / APMCM 亚太杯中文赛等竞赛的赛前兵检、选题、相似题与子问检索、建模求解、灵敏度分析、Stage 知识包、统一配色图表、论文证据链、动态写作、去AI味润色、评委模拟器终审与提交打包. Use when the user says 建模、数模、开始建模、研究生数学建模竞赛、研究生赛、华为杯、华数杯、CUMCM、国赛、MCM、ICM、美赛、电工杯、APMCM、亚太杯、相似题、子问检索、模型选择、稳健性检验、摘要写作、图表规划、图表配色、色板、论文证据追踪、终稿 review、panel 审核、评委模拟、扣分制评审、数字冻结、提交检查、打包提交. 5 幕 10 步（Stage -1~9）+ 2 道质量门 + 评委模拟器, LaTeX 6 套自写竞赛模板, 全程编号问答式, 支持多 runtime skill 入口与 AGENTS.md/plugin packaging, state 跨 Codex 与 Claude Code 互通.
 ---
 
-# mathmodel-studio — 数学建模 多竞赛通用 Skill (v2.0.0, 数模工坊 MathModel Studio)
+# mathmodel-studio — 数学建模 多竞赛通用 Skill (v2.2.0, 数模工坊 MathModel Studio)
 
 5 幕 10 步把"3-4 天打 1 篇竞赛论文"工程化, **全程问答式**——用户只需回答编号问题, 不必手敲 bash / python / json。每阶段产出经过 rubric 自评 + section-level patch 精修, 跨阶段一致性回检, 终局多视角 panel。六个一等竞赛分支中，研究生赛、华数杯和国赛共享检索、模型接口与论文证据链，但题目、奖项、经验统计和案例身份严格隔离。
 
-**当前版本 v2.0.0**（2026-09-04）: 版本线统一。历史版本号曾双线混乱（7.5.0 → 1.0.0 品牌重置 → 7.7.0—7.10.0 继续递增），自此版本起废弃双线、严格语义化递增；全部历史更新日志见 `CHANGELOG.md`。
+**当前版本 v2.2.0**（2026-09-05）: 2025 届 21 篇优秀论文全量深读入库 + 评测装置修复（figqa --strict / evidence_ledger）+ 2026 赛制 100h 核验。历史版本号曾双线混乱（7.5.0 → 1.0.0 品牌重置 → 7.7.0—7.10.0 继续递增），自 2.0.0 起废弃双线、严格语义化递增；全部历史更新日志见 `CHANGELOG.md`。
 
 图表能力速览: 数据图 17 件（统一色板 + figqa/figure_lint 硬门，`render_modeling_pack.py --list`）/ 示意图 4 件 + drawio 可编辑模板 6 件（落盘自动过 drawio_check 版式门禁）/ vendor 内嵌 scibox-diagram、scibox-figure、diagram-design 三上游（总路由表见 `references/figure_skill_bridge.md` 顶部；sci-box 许可证注意事项见 `templates/figures/vendor/VENDOR.md`）。
 
@@ -191,7 +191,7 @@ Codex 首屏优先加载 `references/codex_practical_menu.md` 的"比赛工作�
 
 | Competition | 时长 | 语言 | LaTeX | 子问数 IQR | 数据状态 |
 |---|---|---|---|---|---|
-| **huaweibei** | 72h | 中文 | xelatex / ctex | 按当年题面 | **empirical_local_2021_2025（30题+190篇；12篇2021数模之星提名深读）** |
+| **huaweibei** | 100h (2026 通知口径, 赛前以官方通知复核) | 中文 | xelatex / ctex | 按当年题面 | **empirical_local_2021_2025（30题+190篇；33篇深读: 12篇2021提名+21篇2025优秀选）** |
 | **huashubei** | 72h | 中文 | xelatex / ctex | [3, 5] | **empirical_local_6years (6届18题+18篇优秀论文, 国一标准蒸馏)** |
 | cumcm | 72h | 中文 | xelatex / ctexart (自写) | [3, 5] | verified (33 篇论文 + 25 个案例) |
 | mcm | 96h | English | pdflatex / article | [3, 6] | seed v0.1 |
@@ -263,7 +263,7 @@ Codex 首屏优先加载 `references/codex_practical_menu.md` 的"比赛工作�
   - 通用入口: `references/cross_competition_distillation.md`，只共享结构与方法接口
   - stage 1/3/5: `competitions/huaweibei/topic_specs.json` + `case_retrieval.md` + `distilled_modeling.md` + `scripts/retrieve_cases.py --competition huaweibei`
   - stage 5/8 图表: `competitions/huaweibei/distilled_figures.md` + 命中案例 `figure_story`
-  - stage 8 写作: `competitions/huaweibei/{winning_patterns, abstract_template, phrase_bank, paper_skeleton, distilled_structures, distilled_formats, writing_voice}.md`（writing_voice 管语气/摘要定量密度/公式呈现/解释节奏, v2.0.0 起为华为杯写作必载件）；需要提名论文范式时按证据 ID 读取 `papers/manual_paper_reviews.json`
+  - stage 8 写作: `competitions/huaweibei/{winning_patterns, abstract_template, phrase_bank, paper_skeleton, distilled_structures, distilled_formats, writing_voice, writing_playbook, writing_examples}.md`（writing_voice 管语气/摘要定量密度/公式呈现/推导四步叙事/结果分析五步/结论三招, 为华为杯写作必载件; writing_playbook 按 5 题型给公式-推导-结果分析差异化重点; writing_examples 为正反例对照库——三者均 v2.2.0 扩容, 证据基础 33 篇深读）；需要提名（2021）/优秀论文（2025）范式时按证据 ID 读取 `papers/manual_paper_reviews.json`
   - stage 8 评分: 只使用 `empirical.json` 中摘要长度和页数的完整覆盖分位
   - stage 9 终审: `anti_patterns.md` + `rubric_overlay.json` 的五角色 panel，强制检查竞赛键、奖项身份和来源边界
 - **v7.3.0 三赛联合工具**:
@@ -286,7 +286,7 @@ Codex 首屏优先加载 `references/codex_practical_menu.md` 的"比赛工作�
   - 模型选型: stage_03 内嵌"选择卡"人类拍板门; `references/model_catalog.md` §12 失效边界
 - **v7.4.0 新增按需加载**:
   - 赛前 (T-7~T-1): `references/stage_preseason.md` 跑一次兵检, 输出 `state/preseason_report.json`
-  - stage 0: `references/workspace_protocol.md` (唯一工作区/真源 SSOT/会话恢复四步); 检测同竞赛旧工作区必须先编号菜单确认归档
+  - stage 0: `references/workspace_protocol.md` (唯一工作区/真源 SSOT/会话恢复四步); 检测同竞赛旧工作区必须先编号菜单确认归档; 真源 md 的公式/符号/题注/编号格式规范见 `references/md_authoring_spec.md` (v2.2.0, PDF/docx 双链实测口径)
   - stage 2 末尾: 图表规格冻结 (stage_02 内嵌小节), 登记进真源.md 图表登记表
   - 任何并行派发前: `references/parallel_dispatch.md`; 迭代预算耗尽输出 decision_memo
   - 图表任务配色: `references/color_typology.md` + 设计令牌宪法 `references/design_tokens.md` + `templates/figures/style/{palettes.py, mathmodel.mplstyle}`; 模板脚本公共底座 `templates/figures/scripts/figkit.py`; 图表计划记录 `palette` 字段
@@ -294,8 +294,8 @@ Codex 首屏优先加载 `references/codex_practical_menu.md` 的"比赛工作�
   - 外部数据需求 (任何阶段): `references/data_acquisition.md` (数据源优先级/数据集登记 SSOT/网络安全约束/论文数据声明; v2.0.0 新增)
   - stage 5 每问验证后: 写章节草稿卡 `paper_workspace/sections/q{i}_draft.md` (write-as-you-solve, 见 stage_05 E2 节); stage 8 组装时优先复用草稿卡
   - stage 8 每节成稿: `references/ai_flavor_removal.md` 十类自查; 重述/附录用 `templates/shared/{restatement_card.md, appendix_checklist.md}`
-  - stage 9 提交: `references/submission_checklists.md` + `scripts/package_submission.py` (默认 dry-run)
-  - **competition=huaweibei 时**: stage 0 加载 `references/huaweibei_battle_plan_72h.md` (逐小时作战表 + h48 硬冻结 + 独立验收三选二), 与 huashubei 作战表同级
+  - stage 9 提交: `references/submission_checklists.md` + `scripts/package_submission.py` (默认 dry-run); docx 审阅件导出 `scripts/export_docx.py` (md 真源 → submission/ 时间戳 docx, v2.1.0)
+  - **competition=huaweibei 时**: stage 0 加载 `references/huaweibei_battle_plan_72h.md` (逐小时作战表 + h48 硬冻结[72h 基线时点, 2026 100h 赛制按表头映射转换] + 独立验收三选二), 与 huashubei 作战表同级
 
 ---
 
@@ -382,7 +382,7 @@ L2 跨阶段回检 (stage 5/6/8 末尾) 读这个文件主动找冲突, 触发**
 ## 数据来源声明
 
 - **`competitions/huashubei/`**: 用户本地 2020—2025 共 18 题；2023—2025 优秀论文 18 篇。18 题已进入案例索引，2020—2022 明确为 `problem_summary_only`，2023—2025 为 `paper_pattern`；S1-S4 是蒸馏任务链而非原题逐问。图表数量只作样本观察，不是官方门槛
-- **`competitions/huaweibei/`** (v7.2.0): 用户本地 2021—2025 共 30 题、190 篇优秀论文，30 题全量人工复核；12 篇 2021 数模之星提名论文完成摘要、背景、问题分析、假设、逐问正文、结尾和图表逻辑深读。2022—2025 无本地提名身份依据，不推测；A-F 不固定映射题型
+- **`competitions/huaweibei/`** (v7.2.0): 用户本地 2021—2025 共 30 题、190 篇优秀论文，30 题全量人工复核；12 篇 2021 数模之星提名论文完成摘要、背景、问题分析、假设、逐问正文、结尾和图表逻辑深读；2025 届 21 篇优秀论文全量深读（v2.2.0，award=excellent_paper_selection 不推测等级，2022—2024 仍无深读层）。2022—2025 无本地提名身份依据，不推测；A-F 不固定映射题型
 - `competitions/cumcm/`: 32 篇官方展廊论文 + 1 篇可核验国二论文 + 25 个历年题面案例；58 篇旧误标研究生论文已隔离，来源见 `source_manifest.json`
 - `competitions/mcm/`: SEED v0.1, 基于 COMAP 公开 scoring rubric + Outstanding Winner 公开模式手写; empirical 占位
 - `competitions/diangong/`: SEED v0.1, 基于历年题量 + 公开评审标准估算; empirical 占位

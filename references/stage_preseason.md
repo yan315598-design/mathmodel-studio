@@ -43,7 +43,10 @@ next: stage_00_kickoff
 | pandas | 同上 | 无异常 | `pip install pandas` |
 | pypdf | `python -c "import pypdf"` | 无异常 | 可选依赖; 缺失只影响 `package_submission.py` 页数统计, 报 ⚠️ 不报 ❌ |
 | xelatex | `xelatex --version` | 输出版本号 | 安装 TeX Live / MiKTeX; 中文赛另验中文字体（`fc-list :lang=zh` 或编译一次带中文的最小文档） |
+| pandoc | `pandoc --version` | 输出版本号 | 安装 pandoc 后重跑（https://pandoc.org/installing.html 或 `winget install pandoc`）; 缺失只报 ⚠️ 不报 ❌（md→tex 有手工正则回退, docx 仅审阅件）, 不阻塞开赛 |
 | MILP solver | 跑下方冒烟脚本 | `status=optimal` 且 < 60s | 见脚本注释的备选链 |
+
+pandoc 用途备注: `render_paper.py` 的 md→tex 转换与 `export_docx.py` 的 docx 审阅件导出都依赖它。缺失时 render_paper 自动回退手工正则（降级可用，仅告警）; export_docx 无回退、直接失败（exit 2）。
 
 **MILP 冒烟测试（50 变量计时）**:
 
@@ -165,6 +168,17 @@ git add -A && git commit -m "preseason: workspace skeleton"
 | 报名号/队号 | 记录在 state/ 下的备忘文件, 提交命名要用 |
 | 竞赛系统账号 | 提前登录一次, 避免赛中出现账号问题 |
 | 往年通知 | 核对提交格式细节（页数/文件名/附件要求）, 逐项标注 [以当年通知为准] |
+| 写作队员编辑器 | Obsidian（个人免费）或 MarkText（开源）等 WYSIWYG markdown 编辑器安装并试改一段（含 `$...$` 公式预览）; Word 队员用它参与 md 修订（docx 仅审阅件, 见 workspace_protocol §3.1） |
+
+写作队员编辑器选型（免费, 三选一）:
+
+| 编辑器 | 费用/许可 | 适合谁 | 一句话 |
+|---|---|---|---|
+| Obsidian（默认推荐） | 个人使用免费 | 大多数人 | 实时预览模式体验接近 Typora, 公式渲染好, 持续更新 |
+| MarkText | 开源免费 | 想要完全开源 | 界面最像 Typora; 项目 2022 年后停更, 装 0.17.1 够用 |
+| VS Code（兜底） | 免费 | 队里已有代码环境 | 自带 Markdown 预览 (Ctrl+Shift+V), 编辑/预览分栏, 非打字即所见 |
+
+验证口径: 试改一段含 `$...$` 公式与管道表格的 md, 公式正常渲染即过关。
 
 ---
 
@@ -180,19 +194,20 @@ git add -A && git commit -m "preseason: workspace skeleton"
     "python": "3.11.4",
     "packages": {"cvxpy": "1.4.1", "matplotlib": "3.8.2", "pandas": "2.1.4", "pypdf": "4.2.0"},
     "xelatex": true,
+    "pandoc": true,
     "milp_solver": {"name": "GLPK_MI", "status": "optimal", "solve_time_s": 0.8}
   },
   "latex_precompile": {"template": "huashubei", "passed": true, "log_excerpt": ""},
   "case_library_smoke": {"query": "优化", "hits": 3},
   "workspace": {"dirs": ["state", "results", "figures", "code", "paper_workspace"], "decision_log_copied": true},
   "git": {"initialized": true, "initial_commit": "preseason: workspace skeleton"},
-  "materials": {"latex_template": true, "commitment_letter": true, "team_id_recorded": true},
+  "materials": {"latex_template": true, "commitment_letter": true, "team_id_recorded": true, "markdown_editor": true},
   "overall": "pass",
   "blocking_issues": []
 }
 ```
 
-`overall=pass` 条件: 环境兵检无 ❌ 且模板预编译通过。`blocking_issues` 非空时 `overall=fail`。
+`overall=pass` 条件: 环境兵检无 ❌ 且模板预编译通过。`blocking_issues` 非空时 `overall=fail`。pandoc 缺失报 ⚠️ 不报 ❌（render_paper 的 md→tex 有手工正则回退, docx 仅审阅件）, 不阻塞开赛。
 
 ---
 

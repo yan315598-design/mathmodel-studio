@@ -6,7 +6,8 @@
 
 - 2021—2025 年 30 道题。
 - 190 篇本地优秀论文，全文共 12458 页。
-- 2021 年目录确认的 12 篇“数模之星提名奖”论文。
+- 2021 年目录确认的 12 篇“数模之星提名奖”论文，全部完成逐篇深读。
+- 2025 届 6 题 21 篇“优秀论文选”论文全量逐篇深读（v2.2.0 并入）；2022—2024 年仍无深读层。
 - 2022—2025 年论文不推测提名身份。
 
 ## 使用顺序
@@ -21,8 +22,8 @@
 
 - `cases/index.json`：30 道题的检索基础索引。
 - `cases/manual_review_annotations.json`：30 题人工深度复核覆盖层。
-- `papers/manual_paper_reviews.json`：12 篇提名论文逐篇深读。
-- `all_cases_manual_audit.md`、`star_papers_deep.md`：适合人工阅读的总稿。
+- `papers/manual_paper_reviews.json`：12 篇 2021 提名论文 + 21 篇 2025 优秀论文逐篇深读（2025 条目口径见 `field_provenance.papers_2025_*`）。
+- `all_cases_manual_audit.md`、`star_papers_deep.md`（2021 提名 12 篇 + 2025 优秀 21 篇两章）：适合人工阅读的总稿。
 - `distilled_modeling.md`：跨题型的建模链和路线选择。
 - `distilled_figures.md`：结构—机制—结果—可信边界图表逻辑。
 - `distilled_structures.md`、`distilled_formats.md`：章节功能与表达格式。

@@ -73,8 +73,8 @@ next: stage_09_review
 |---|---|---|
 | 摘要 | `<comp>/abstract_template.md`, `<comp>/phrase_bank.md`, stage 5-7 结果 | 中文摘要或 MCM Summary, 含问题分解、方法、关键数值、稳健性、推广价值 |
 | 问题分析 | 题面、stage 2 分解、`paper_skeleton.md` | 每问一段"本质-难点-方法-承接" |
-| 模型段 | stage 3-5 产出、符号表 | 变量、目标函数、约束、算法步骤、求解说明 |
-| 结果解释 | stage 5 结果、stage 6 稳健性 | 数值结论 + 物理意义 + 对题问的回答 |
+| 模型段 | stage 3-5 产出、符号表；huaweibei 另按题型加载 `writing_playbook.md` 对应分册，推导按 `writing_voice.md` §3.5 四步叙事 + 详略分级 | 变量、目标函数、约束、算法步骤、求解说明 |
+| 结果解释 | stage 5 结果、stage 6 稳健性；huaweibei 按 `writing_voice.md` §5 结果分析五步（报→比→归因→分解→边界） | 数值结论 + 物理意义 + 对题问的回答 |
 | 图表规划/生成/说明 | `references/figure_skill_bridge.md`, figures/tables、`distilled_figures.md`(如有) | 图表计划、论文图生成要求、图注、坐标单位检查、正文解释句 |
 
 Codex 子菜单见 `references/codex_practical_menu.md`。如果用户选择"图表规划/生成/质检", 先用 `figure-table-planner` 思路确定 Type 1-4, 再用 `math-figure-generator` 生成论文图, 最后按 `nature-figure` 质检可读性。若用户选择"让我决定", 优先补摘要或结果解释, 因为这两项最影响评委第一印象。

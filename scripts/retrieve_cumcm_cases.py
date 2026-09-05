@@ -123,6 +123,8 @@ def rank_questions(query_text: str, questions: list[dict]) -> list[dict]:
     query_tags = {name for name, pattern in TAG_PATTERNS.items() if re.search(pattern, query_text)}
     evidence_bonus = {
         "star_paper_full_text": 0.12,
+        # 2025 优秀论文选与 2021 提名同为逐篇全文深读，证据粒度与加成一致。
+        "excellent_paper_full_text": 0.12,
         "cross_paper_manual": 0.09,
         "paper_pattern": 0.05,
         "problem_summary_only": 0.0,
@@ -283,7 +285,12 @@ def build_case_questions(cases: list[dict]) -> list[dict]:
 
 
 def load_star_paper_questions(competition: str) -> list[dict]:
-    """加载有全文页码证据的提名论文子问；当前仅研究生赛具备该层。"""
+    """加载有全文页码证据的论文子问；当前仅研究生赛具备该层。
+
+    2021 条目（数模之星提名）标 star_paper_full_text；2025 条目（优秀论文选，
+    v2.2.0 并入）标 excellent_paper_full_text，不冒充提名身份。两种口径均为
+    逐篇全文深读，证据粒度相同。
+    """
     if competition not in ("huaweibei", JOINT_COMPETITION_KEY):
         return []
     path = SKILL_ROOT / "competitions" / "huaweibei" / "papers" / "manual_paper_reviews.json"
@@ -292,6 +299,13 @@ def load_star_paper_questions(competition: str) -> list[dict]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     records = []
     for paper in payload.get("papers", []):
+        # 身份显式分支, 防止未来届别/缺 year/身份未声明条目被隐式误标为优秀论文层
+        if paper.get("year") == 2021 and paper.get("star_status") == "directory_confirmed_nominee":
+            is_nominee, evidence_level = True, "star_paper_full_text"
+        elif paper.get("year") == 2025 and paper.get("award_level") == "excellent_paper_selection":
+            is_nominee, evidence_level = False, "excellent_paper_full_text"
+        else:
+            continue
         for body in paper.get("modeling_body_by_q", []):
             question_id = body.get("question", "Q?")
             records.append({
@@ -311,14 +325,15 @@ def load_star_paper_questions(competition: str) -> list[dict]:
                 "solver_logic": body.get("solver_logic", ""),
                 "intermediate_outputs": body.get("intermediate_outputs", []),
                 "result_interpretation": body.get("result_interpretation", ""),
-                "validation_link": body.get("validation_link", ""),
+                # 2021 条目用 validation_link，2025 条目同义字段为 validation。
+                "validation_link": body.get("validation_link") or body.get("validation", ""),
                 "transition": body.get("transition", ""),
                 "figure_story": [],
                 "transfer_boundary": paper.get("transfer_boundary", ""),
-                "evidence_level": "star_paper_full_text",
+                "evidence_level": evidence_level,
                 "evidence_ids": [paper.get("paper_id")],
                 "evidence_refs": body.get("evidence_refs", []),
-                "source_type": "star_paper_review",
+                "source_type": "star_paper_review" if is_nominee else "excellent_paper_review",
             })
     return records
 

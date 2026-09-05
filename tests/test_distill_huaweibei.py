@@ -432,6 +432,16 @@ def build_knowledge_root(root: Path, dirty: bool, warn_case: bool = False) -> Pa
     else:
         for record in paper_records:
             record["award_tier"] = "star_nominee"
+    # v2.2.0 起深读层两届并存：再补 21 篇 2025 优秀论文选记录（前缀从 20 起
+    # 避开 2021 块的 0-11），clean/dirty 两种模式 tier 均为官方档。
+    for index in range(20, 41):
+        sha = f"{index:012x}" + "0" * 52
+        paper_records.append({
+            "evidence_id": f"graduate:paper:2025-B:{sha[:12]}",
+            "path": f"2025年研究生数学建模竞赛优秀论文选/B题优秀论文/B题-{index:02d}.pdf",
+            "kind": "paper", "award_tier": "official_excellent", "year": 2025, "problem": "B",
+            "sha256": sha, "size_bytes": 100, "extension": ".pdf",
+        })
     problem_record = {
         "evidence_id": "graduate:problem_statement:2021-A:aaaaaaaaaaaa",
         "path": "2021年中国研究生数学建模竞赛赛题/2021年A题/题目.docx", "kind": "problem_statement",
@@ -482,10 +492,11 @@ def build_knowledge_root(root: Path, dirty: bool, warn_case: bool = False) -> Pa
         json.dumps(annotations, ensure_ascii=False), encoding="utf-8")
 
     papers = []
-    for index in range(12):
-        record = paper_records[index]
+    for index, record in enumerate(paper_records):
+        # dirty 注入只命中 index 0-6（均属 2021 块），2025 块保持干净。
         entry = {
             "paper_id": record["evidence_id"],
+            "year": record["year"],
             "sha256": record["sha256"],
             "figure_table_logic": [{"page": 1, "kind": "figure", "caption": "技术路线图"}],
         }
@@ -539,7 +550,7 @@ def test_validate_detects_noise_keys_and_bad_titles(tmp_path, capsys):
     # 深读记录身份类 [major 4]
     assert "paper_id 无法在 manifest 的论文记录中解析" in output
     assert "未指向同一条 manifest 论文记录" in output
-    assert "award_tier 非 star_nominee" in output
+    assert "award_tier 非该届期望 'star_nominee'" in output
     assert "figure_table_logic 为空" in output
     assert "kind 为空" in output
     assert "caption 为空" in output

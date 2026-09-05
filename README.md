@@ -2,7 +2,7 @@
 
 > 数学建模竞赛的论文生产流程 skill：从审题、建模到终审，按阶段带着你走完一篇可提交的论文。支持华为杯（研究生赛）、CUMCM 国赛、华数杯、MCM/ICM 美赛、电工杯、APMCM 亚太杯中文赛。
 
-[![Version](https://img.shields.io/badge/version-v2.0.0-blueviolet)](#开发日志)
+[![Version](https://img.shields.io/badge/version-v2.2.0-blueviolet)](#开发日志)
 [![Competitions](https://img.shields.io/badge/competitions-6-orange)](#支持的竞赛)
 [![Python](https://img.shields.io/badge/python-3.9%2B-3776AB?logo=python&logoColor=white)](./templates/shared/requirements.txt)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)](#license)
@@ -18,7 +18,7 @@
 ## 核心优势
 
 **1. 真实蒸馏的竞赛知识库，不是拍脑袋的"经验"**
-华为杯 2021—2025 全部 30 题 + 190 篇优秀论文（12458 页）逐题人工复核，12 篇数模之星提名论文逐篇深读。蒸馏的对象是**结构、解法与表达习惯**：每题的问题本质、逐问依赖、候选路线比较、假设风险与必做验证、图表叙事、写作骨架（`competitions/*/cases/` 与 `distilled_*.md`）；提名论文的章节逻辑与"摘要六要素"写作纪律（`writing_voice.md`）；以及获奖论文的反模式清单。每条知识的来源文件都有 SHA-256 登记，可用 `scripts/distill_huaweibei_cases.py verify-manifest` 机器核验。国赛 33 篇可核验论文 + 25 个逐题案例、华数杯 18 题 18 篇同样独立成库。
+华为杯 2021—2025 全部 30 题 + 190 篇优秀论文（12458 页）逐题人工复核，33 篇逐篇深读（12 篇 2021 数模之星提名 + 21 篇 2025 优秀论文选全量）。蒸馏的对象是**结构、解法与表达习惯**：每题的问题本质、逐问依赖、候选路线比较、假设风险与必做验证、图表叙事、写作骨架（`competitions/*/cases/` 与 `distilled_*.md`）；深读论文的章节逻辑、推导叙事与"摘要六要素"写作纪律（`writing_voice.md` + 题型分册 `writing_playbook.md` + 正反例库 `writing_examples.md`）；以及获奖论文的反模式清单。每条知识的来源文件都有 SHA-256 登记，可用 `scripts/distill_huaweibei_cases.py verify-manifest` 机器核验。国赛 33 篇可核验论文 + 25 个逐题案例、华数杯 18 题 18 篇同样独立成库。
 
 **2. 评委模拟器终审**
 提交前过一道模拟评审：资格硬规则（如"摘要主张必须可追踪到结果"）任一不过即判不具备获奖资格；通过资格门后按原子扣分清单评分，多席位评委盲评、分差过大自动重派。终审不看感觉，看单子。
@@ -54,7 +54,7 @@
 
 | 竞赛 | 时长 | 语言 | 数据状态 |
 |------|------|------|---------|
-| 研究生赛（华为杯） | 按当届通知 | 中文 | 本地 2021—2025：30 题 + 190 篇优秀论文 + 12 篇提名深读 |
+| 研究生赛（华为杯） | 100h（2026 通知口径） | 中文 | 本地 2021—2025：30 题 + 190 篇优秀论文 + 33 篇深读（12 提名 + 21 优秀选） |
 | 华数杯 | 72h | 中文 | 本地 2020—2025：18 题 + 18 篇 |
 | CUMCM 国赛 | 72h | 中文 | 可核验：33 篇论文 + 25 个案例 |
 | MCM/ICM 美赛 | 96h | English | seed v0.1（公开评审标准 + 教材共识） |
@@ -68,6 +68,28 @@
 - **6 套自写竞赛 LaTeX 模板**（`templates/latex/`）：华为杯、国赛、华数杯、美赛、电工杯、亚太杯，全部通过 xelatex/pdflatex 编译验证，无第三方模板许可证风险。
 - **27 件自写图表模板**（`templates/figures/`）：数据图 17 件（龙卷风灵敏度/帕累托前沿/泰勒图/云雨图等）、示意图 4 件、drawio 可编辑模板 6 件；另收编 MIT 许可的 diagram-design（39 类展示级 HTML/SVG 图表，供答辩）。
 - **起手代码**（`templates/shared/code_starter/`）：优化/预测/评价/分类/仿真五类骨架。
+
+## 论文怎么写、怎么导出
+
+正文以 markdown 为**唯一真源**（`paper_workspace/` 下，写作队员用 Obsidian 或 MarkText 这类免费的所见即所得编辑器即可参与，公式实时预览，不需要记语法）；LaTeX 与 Word 都是它的下游产物：
+
+```text
+                  ┌─→ render_paper.py 自动转 tex → xelatex → PDF   （正式提交件）
+  md（唯一真源）──┤
+    所有修改都在这  └─→ export_docx.py → docx                        （审阅件，给 Word 队员圈批注）
+                                   │
+                   批注/改动由 agent 读取后合回 ──→ md
+```
+
+三条纪律：改论文永远改 md，不手改生成的 tex/docx（下次渲染会被覆盖）；需要精细排版时直接在 md 里写原生 LaTeX 公式/表格，渲染原样通过；终稿最后几小时可"锁版"转纯 tex 手写微调（此后不再从 md 组装）。各赛提交物均为 PDF。
+
+写作队员的编辑器选型（免费，三选一）：
+
+| 编辑器 | 适合谁 | 一句话 |
+| --- | --- | --- |
+| Obsidian（推荐默认） | 大多数人 | 个人使用免费、持续更新、实时预览模式和 Typora 体验几乎一样，公式渲染好 |
+| MarkText | 想要完全开源的 | 免费开源、界面最像 Typora，但项目 2022 年后基本停更，装最新版 0.17.1 够用 |
+| VS Code（兜底） | 队里本来就有代码环境 | 自带 Markdown 预览（Ctrl+Shift+V），不用装新东西，但预览和编辑是分开两栏，不是打字即所见 |
 
 ## 怎么用
 
@@ -123,6 +145,8 @@ docs/architecture.md          # 架构说明
 
 | 版本 | 里程碑 |
 |---|---|
+| 2.2.0 | 2025 届 21 篇优秀论文深读入库 + 评测装置修复 + 2026 赛制核验 |
+| 2.1.0 | docx 审阅件导出 + 审查修复 |
 | 2.0.0 | 开源首发：知识库注水修复、写作层重修、可复现蒸馏流水线、evals、runtime 原型 |
 | 1.4.0 | 图表体系收口：自写模板 + 质检硬门 |
 | 1.0.0 | 全资产自写，许可证干净（MIT） |

@@ -3,7 +3,7 @@ stage: 5
 name: subproblem_loop
 duration_h: 6-12 per Qi
 inputs: [stage.2.subproblem_cards, stage.3.selected_per_subproblem, stage.4.{assumptions, symbols}]
-outputs: [stage.5.sub_problems.{Qi}.{model_name, math_formulation_path, code_path, results_path, figures, key_metrics, physical_meaning_summary, scores, iterations}, stage.5.cross_reference_chain, stage.5.assumption_change_history]
+outputs: [stage.5.sub_problems.{Qi}.{model_name, math_formulation_path, code_path, results_path, figures, key_metrics, physical_meaning_summary, scores, iterations}, stage.5.cross_reference_chain, stage.5.assumption_change_history, state/evidence_ledger.json]
 loads_reference: [model_catalog.md, winning_patterns.md§5, rubrics.md§Stage_5]
 loads_template: [code_starter/<problem_type>.py]
 feedback: [L1_per_Qi, sub_checkpoint, L2_at_end_for_stage_3_4_consistency]
@@ -45,6 +45,7 @@ next: stage_06_robustness
 ## 产出
 
 - 每 Qi 的: 数学模型完整公式 + 求解代码 + 数值结果 + ≥2 张图 + 物理意义讨论 + **章节草稿卡** (`paper_workspace/sections/q{i}_draft.md`, 300-600 字 + 公式草稿 + 图注, 趁热在上下文最新鲜时写)
+- 每问追加一行 `state/evidence_ledger.json` (见 E2/E3, stage 8 paper_plan 的 evidence_ledger 子集, 供 trace_claims 审计)
 - 跨子问题: 复用链显式建立 (Q3 引用 Q1/Q2)
 - 写入 `decision_log.stages.5.sub_problems.{Q1, Q2, Q3, ...}`
 
@@ -62,6 +63,7 @@ for Qi in [Q1, Q2, ..., Qn]:
     D. 子灵敏度 (1h, optional 但建议)
     E. 物理意义 (15 min)
     E2. 章节草稿卡 (20-30 min, write-as-you-solve, 见下)
+    E3. evidence_ledger 追加 (5 min)
     F. L1 自评 + 必要时 diff-only 精修
     G. 输出移交 (写 decision_log)
     H. 子检查点: Qi 是否引用上游? 符号是否与 stage 4 一致?
@@ -79,6 +81,8 @@ for Qi in [Q1, Q2, ..., Qn]:
 5. 移交句: 本问产出给 Q_{i+1} 的中间量清单
 
 写作语气与定量密度按 `competitions/<comp>/writing_voice.md` (华为杯) 或通用写作规范执行。草稿卡数字必须引用已冻结数字, 禁止手抄。
+
+每问草稿卡完成后, 同步向 `state/evidence_ledger.json` 追加该问一行 (JSON 数组, 不存在则新建)。字段: `question` (如 Q1)、`model` (模型名+一句话)、`result` (关键定量结果, 引用冻结数字)、`figure` (图表文件名或结果表编号)、`validation` (验证方式)、`abstract_claim` (该问摘要句, 可先空)、`evidence_ids` (结果/代码文件路径; 溯源元数据——trace_claims 审计前六项, 此字段供人工回查与打包核验, 强烈建议填写)。该文件是 stage 8 paper_plan 的 evidence_ledger 子集, `scripts/trace_claims.py` 两种输入 (`state/paper_plan.json` 或独立 ledger) 均可消费——短程/中断的运行也能被证据链审计。
 
 ---
 

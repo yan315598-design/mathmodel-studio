@@ -19,7 +19,7 @@ python scripts/retrieve_cases.py --competition all --level both --query "<新题
 - `--level`：`case | question | both`。
 - 联合结果始终保留 `competition`。
 - 当 `--competition all` 且 `top-k >= 3` 时，先保证三赛各至少一条，再按相似度补齐，避免高证据赛种挤掉其他分支。
-- 研究生赛的 2021 数模之星提名论文子问使用 `star_paper_full_text`；华数杯蒸馏任务链使用 `paper_pattern` 或 `problem_summary_only`，不得冒充原题逐问。
+- 研究生赛的 2021 数模之星提名论文子问使用 `star_paper_full_text`；2025 届优秀论文选子问（v2.2.0）使用 `excellent_paper_full_text`，两者同为逐篇全文深读但奖项身份不混用；华数杯蒸馏任务链使用 `paper_pattern` 或 `problem_summary_only`，不得冒充原题逐问。
 
 ## 2. Stage 知识包
 

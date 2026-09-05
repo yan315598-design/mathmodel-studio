@@ -1,6 +1,6 @@
 {
   "name": "mathmodel-studio",
-  "version": "2.0.0",
+  "version": "2.2.0",
   "description": "数学建模竞赛论文生产流程：审题、建模、终审，五幕走完一篇可提交的论文。支持华为杯/国赛/华数杯/美赛/电工杯/亚太杯。",
   "author": {
     "name": "yan315598-design",

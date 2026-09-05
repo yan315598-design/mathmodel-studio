@@ -49,6 +49,11 @@
    python evals/run_eval.py compare evals/results/<旧版>.json evals/results/<新版>.json
    ```
 
+   判读提示: 评测工作区若跑到 stage 5 即中止, trace_claims 应能从
+   `state/evidence_ledger.json` 采集 (stage 5 起每问追加, 见
+   `references/stage_05_subproblem_loop.md` E2/E3); 若仍 skipped,
+   说明流程未按 stage_05 E2 执行。
+
 ## 恢复方法
 
 镜像只是新增目录, **随时整目录删除即恢复原状**:

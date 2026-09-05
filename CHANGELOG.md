@@ -24,6 +24,23 @@
 
 正文历史条目保留旧编号原文，按上表对照阅读。
 
+## [2.2.0] — 2026-09-05（2025 届 21 篇深读入库 + 评测装置修复 + 2026 赛制核验）
+
+- **新增（华为杯深读层）**: 2025 届 6 题 21 篇优秀论文全量逐篇深读（章节逻辑/逐问建模链/图表角色实判/可复用-不照搬/页码证据），并入 star_papers_deep.md 与 manual_paper_reviews.json（award=excellent_paper_selection, 不推测等级; figure role 逐图实判; 模板字段 null 或具体观察, 无模板填充）; 深读层现覆盖 2021 提名 12 篇 + 2025 优秀 21 篇
+- **重构（华为杯写作层, 33 篇证据回流）**: writing_voice.md 扩容——新增 §3.5 推导写作（现实关系→符号化→逐条约束翻译→回到对象四步叙事 + 详略分级 + 式后三件套 + 计费口径对齐）、§5 由"结果报告"升级为"结果分析五步"（报→比→归因→分解→边界, 收录恶化逐 case 归因/负结果叙事/p 值裁决等 33 篇实证动作）、§6 结论三招（呼应题问原句/未完成如实写/局限写成条件清单）, 证据基础由 4 篇扩至 33 篇; 新增 writing_playbook.md（优化调度/预测回归/识别重构/监测诊断迁移/主观指标评价 5 题型分册: 公式-推导-结果分析差异化重点+动作+反例）; 新增 writing_examples.md（摘要/语气/公式/推导句/图解/结果归因/结论 7 类正反例对照库）; stage_08 局部写作路由与 SKILL.md 加载行同步
+- **修复（评测装置）**: run_eval figqa 目标发现（figures/scripts/code 三目录扫 .py）+ --strict 使碰撞退出码可达; stage 5 新增 evidence_ledger 逐问追加（trace_claims 在短程评测不再恒 skipped）; holdout_protocol 判读提示
+- **核验（当年规则）**: current_rules.md 依据第二十三届参赛通知全文初核（转载源+高校转发交叉印证, 待研创网原文确认）——赛制 100h（09-23 8:00→09-27 12:00）、MD5/PDF 双窗口提交、奖项结构; AI 披露未见专项条款; 标准文档相关项保持待核验（09-22 补齐）; 72h 作战表加 100h 重映射提示
+- **变更**: distill_huaweibei_cases.py 重跑对齐统计/哈希层
+- **终审修复**: 全库 33 篇深读覆盖口径统一（SKILL 矩阵/stage 00/README/architecture）; retrieve_cumcm_cases 身份显式分支（非 2021 即 2025 的隐式假设消除）; writing_examples 假章节引用改占位符; current_rules 待核验项数量与初核状态口径修正; "100h 实测"改"通知口径"; stage_05 evidence_ids 标注为溯源元数据（trace_claims 审计前六项）
+- **新增（md 格式规范 + 公式编号升级）**: references/md_authoring_spec.md——md 真源的公式/符号/题注/编号规范, 依据 pandoc 3.8 双链实测（公式=Word 原生 OMML 对象、\tag 在 docx 链被静默丢弃、表题注在上/图题注在下天然成立）; render_paper.py 新增编号公式升级——md 中 $$…\qquad (N)$$(及误用的 \tag{N})在 PDF 链自动升级 equation 环境（居中+编号右顶格+自动重排）, docx 链保留块内右侧编号; 编辑器推荐 Typora→Obsidian(个人免费)/MarkText(开源)/VS Code 兜底; README 增"论文怎么写、怎么导出"流程图一节
+
+## [2.1.0] — 2026-09-05（docx 审阅件导出：补齐协议既有承诺）
+
+- **新增**: scripts/export_docx.py——从 paper_workspace md 真源导出带时间戳的 docx 审阅件（pandoc, 数学转 OMML, --reference-doc 样式, --dry-run）; 补齐 workspace_protocol 早已承诺但无实现的 docx 导出
+- **协议**: workspace_protocol.md 新增 "docx 审阅件协议" 一节 (docx=审阅件, md=真源, 批注由 agent 合回, 禁止反向覆盖)
+- **兵检**: 环境检查表加 pandoc 一行; 素材自查表加写作队员编辑器一行
+- **审查修复**: 图片资源路径解析(resource-path)+同分钟覆盖保护+competition 文件名校验+异常路径受控(dry-run/清理/编码)
+
 ## [2.0.0] — 2026-09-04（版本线统一 + 开源前整顿）
 
 自此版本起废弃历史双线版本号（7.5.0 → 1.0.0 品牌重置后又继续 7.7.0—7.10.0 的混乱），统一为语义化版本，后续严格递增。

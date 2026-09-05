@@ -2,7 +2,8 @@
 
 > 华为杯赛制：约 72h 开卷 [以当年通知为准]，A-F 题，**字母不固定映射题型**（`competitions/huaweibei/topic_specs.json` 的 fixed_letter_to_type=false，必须按题面对象/任务/数据/约束/风险动态分类）；题量与子问题数通常比华数杯更大，子问 3-6 问常见 [以当年题面为准]。
 > 若当年通知为更长赛程（约 4 天），按比例后移各冻结时点（h24→h32、h48→h64、h60→h80 类推），并在真源口径冻结单登记实际时点；**以当年通知为准**。
-> 知识库：`competitions/huaweibei/`（30 题 + 190 篇论文蒸馏 + 12 篇数模之星提名深读）。案例检索：`python <skill>/scripts/retrieve_cases.py --competition huaweibei --query "<领域词>" --top-k 3`。
+> **2026 第二十三届已核验为 100h**：09-23 8:00 → 09-27 12:00，MD5 码提交截止=竞赛结束时刻（终稿冻结点），PDF 上传可至 09-28 24:00；72h 表按上行比例条款重映射（h72→h100 锚点：h4→h6、h24→h33、h48→h67、h72→h100 类比例），正文表格不重写。
+> 知识库：`competitions/huaweibei/`（30 题 + 190 篇论文蒸馏 + 12 篇 2021 数模之星提名深读 + 21 篇 2025 优秀论文深读）。案例检索：`python <skill>/scripts/retrieve_cases.py --competition huaweibei --query "<领域词>" --top-k 3`。
 > 工作区纪律全程遵守 `references/workspace_protocol.md`（唯一工作区 + 真源 SSOT + 冻结时点 + 独立验收三选二）。
 > 加载时机：stage 0 kickoff，用户选定 huaweibei 后立即加载，按小时推进。
 

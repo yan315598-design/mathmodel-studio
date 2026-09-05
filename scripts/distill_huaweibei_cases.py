@@ -640,15 +640,26 @@ def validate_annotations(annotations: dict, evidence_ids: set[str]) -> tuple[lis
 
 
 def validate_paper_reviews(reviews: dict, manifest: dict) -> list[str]:
-    """校验 manual_paper_reviews.json 的 12 篇齐全、记录身份一致与图表条目。
+    """校验 manual_paper_reviews.json 的 33 篇齐全、记录身份一致与图表条目。
 
-    paper_id 与 sha256 必须指向 manifest 中同一条 kind=paper 且
-    award_tier=star_nominee 的记录，防止伪造 id 复用其他记录的哈希。
+    深读层两届并存：2021 年 12 篇（star_nominee 提名）+ 2025 年 21 篇
+    （official_excellent 优秀论文选）。paper_id 与 sha256 必须指向 manifest
+    中同一条 kind=paper 且 award_tier 等于该届期望档位的记录，防止伪造 id
+    复用其他记录的哈希。
     """
     failures = []
     papers = reviews.get("papers", [])
-    if len(papers) != 12:
-        failures.append(f"manual_paper_reviews.json 提名论文应为 12 篇，实际 {len(papers)} 篇")
+    expected_by_year = {2021: (12, "star_nominee"), 2025: (21, "official_excellent")}
+    actual_by_year: dict[int, int] = {}
+    for paper in papers:
+        year = paper.get("year")
+        actual_by_year[year] = actual_by_year.get(year, 0) + 1
+    for year, (count, _tier) in sorted(expected_by_year.items()):
+        actual = actual_by_year.pop(year, 0)
+        if actual != count:
+            failures.append(f"manual_paper_reviews.json {year} 届深读应为 {count} 篇，实际 {actual} 篇")
+    for year, actual in sorted(actual_by_year.items(), key=lambda item: str(item[0])):
+        failures.append(f"manual_paper_reviews.json 出现未声明届别的条目: year={year!r} 共 {actual} 篇")
     if len({paper.get("paper_id") for paper in papers}) != len(papers):
         failures.append("manual_paper_reviews.json 存在重复 paper_id")
     provenance = reviews.get("field_provenance")
@@ -664,9 +675,10 @@ def validate_paper_reviews(reviews: dict, manifest: dict) -> list[str]:
         if record is None:
             failures.append(f"manual_paper_reviews.json#{paper_id} paper_id 无法在 manifest 的论文记录中解析")
         else:
-            if record.get("award_tier") != "star_nominee":
+            expected_tier = expected_by_year.get(paper.get("year"), (0, None))[1]
+            if record.get("award_tier") != expected_tier:
                 failures.append(f"manual_paper_reviews.json#{paper_id} 对应 manifest 记录 award_tier "
-                                f"非 star_nominee: {record.get('award_tier')!r}")
+                                f"非该届期望 {expected_tier!r}: {record.get('award_tier')!r}")
             if paper_records_by_sha.get(paper.get("sha256")) is not record:
                 failures.append(f"manual_paper_reviews.json#{paper_id} paper_id 与 sha256 "
                                 f"未指向同一条 manifest 论文记录")
@@ -751,7 +763,7 @@ def cmd_validate(args: argparse.Namespace) -> int:
     case_count = len(annotations.get("cases", []))
     review_count = len(reviews.get("papers", []))
     suffix = f"，另有 {len(annotation_warns)} 处 WARN" if annotation_warns else ""
-    print(f"校验通过：{case_count} 题标注、{review_count} 篇提名深读与案例索引均与 manifest 一致"
+    print(f"校验通过：{case_count} 题标注、{review_count} 篇论文深读与案例索引均与 manifest 一致"
           f"（manifest 证据 {len(evidence_ids)} 条{suffix}）")
     return 0
 

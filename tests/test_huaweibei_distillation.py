@@ -50,29 +50,51 @@ class HuaweibeiDistillationTests(unittest.TestCase):
         self.assertEqual(sum(case["reviewed_paper_count"] for case in self.manual["cases"]), 190)
 
     def test_star_paper_and_question_coverage(self):
-        """12 篇提名论文和 48 个子问逐篇深读完整。"""
-        self.assertEqual(len(self.paper_reviews), 12)
-        self.assertEqual(sum(len(paper["modeling_body_by_q"]) for paper in self.paper_reviews), 48)
+        """12 篇 2021 提名 + 21 篇 2025 优秀论文逐篇深读完整。"""
+        papers_2021 = [paper for paper in self.paper_reviews if paper["year"] == 2021]
+        papers_2025 = [paper for paper in self.paper_reviews if paper["year"] == 2025]
+        self.assertEqual(len(self.paper_reviews), 33)
+        self.assertEqual((len(papers_2021), len(papers_2025)), (12, 21))
+        self.assertEqual(sum(len(paper["modeling_body_by_q"]) for paper in self.paper_reviews), 119)
         self.assertTrue(all(paper["review_status"] == "manually_reviewed" for paper in self.paper_reviews))
 
     def test_all_core_sections_have_page_evidence(self):
-        """摘要、背景、问题分析、假设、结尾和每个子问都有页码证据。"""
+        """摘要、背景、问题分析、假设、结尾和每个子问都有页码证据。
+
+        2021 条目用 evidence_refs[{page}] / [{page_start, page_end}]，2025 条目
+        （v2.2.0 并入）用 page_evidence / 逐问 validation 内嵌页码，两套口径都查。
+        """
         required_sections = {"abstract", "background", "problem_analysis", "assumptions", "conclusion"}
         for paper in self.paper_reviews:
             self.assertTrue(required_sections.issubset(paper["section_logic"]))
             for section_name in required_sections:
-                refs = paper["section_logic"][section_name]["evidence_refs"]
-                self.assertTrue(refs)
-                self.assertTrue(all(ref.get("page") for ref in refs))
+                section = paper["section_logic"][section_name]
+                if paper["year"] == 2021:
+                    refs = section["evidence_refs"]
+                    self.assertTrue(refs)
+                    self.assertTrue(all(ref.get("page") for ref in refs))
+                else:
+                    self.assertTrue(section["page_evidence"])
             for question in paper["modeling_body_by_q"]:
-                self.assertTrue(question["evidence_refs"])
-                self.assertTrue(all(ref.get("page_start") and ref.get("page_end") for ref in question["evidence_refs"]))
+                if paper["year"] == 2021:
+                    self.assertTrue(question["evidence_refs"])
+                    self.assertTrue(all(ref.get("page_start") and ref.get("page_end")
+                                        for ref in question["evidence_refs"]))
+                else:
+                    self.assertTrue(question["validation"])
+                    self.assertTrue(question["transition"])
             self.assertTrue(all(item.get("page") for item in paper["figure_table_logic"]))
 
     def test_award_identity_boundary(self):
-        """只有 2021 年目录证据被标为数模之星提名。"""
-        self.assertTrue(all(paper["year"] == 2021 for paper in self.paper_reviews))
-        self.assertTrue(all(paper["star_status"] == "directory_confirmed_nominee" for paper in self.paper_reviews))
+        """只有 2021 年目录证据被标为数模之星提名；2025 仅优秀论文选身份。"""
+        papers_2021 = [paper for paper in self.paper_reviews if paper["year"] == 2021]
+        papers_2025 = [paper for paper in self.paper_reviews if paper["year"] == 2025]
+        self.assertEqual(len(papers_2021) + len(papers_2025), len(self.paper_reviews))
+        self.assertTrue(all(paper["star_status"] == "directory_confirmed_nominee"
+                            for paper in papers_2021))
+        self.assertTrue(all(paper["award_level"] == "excellent_paper_selection"
+                            and paper["star_status"] == "not_locally_identified"
+                            for paper in papers_2025))
         for case in self.manual["cases"]:
             if case["year"] != 2021:
                 self.assertFalse(case["star_evidence_ids"])

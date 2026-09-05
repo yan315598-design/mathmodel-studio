@@ -62,7 +62,7 @@
 | `competitions/cumcm/source_manifest.json` | 来源、哈希、状态和排除理由 |
 | `competitions/huaweibei/cases/index.json` | 2021—2025 共 30 个研究生赛基础案例 |
 | `competitions/huaweibei/cases/manual_review_annotations.json` | 30 题的逐问依赖、路线比较、假设、验证、图表和写作覆盖层 |
-| `competitions/huaweibei/papers/manual_paper_reviews.json` | 12 篇 2021 数模之星提名论文的逐篇、逐问深读 |
+| `competitions/huaweibei/papers/manual_paper_reviews.json` | 33 篇逐篇逐问深读（12 篇 2021 数模之星提名 + 21 篇 2025 优秀论文选，provenance 分届标注） |
 | `competitions/huashubei/cases/index.json` | 18 题华数杯案例；明确区分论文模式与仅题面摘要 |
 | `scripts/build_huashubei_cases.py` | 从题型规格和论文统计重建华数杯案例索引 |
 | `references/cross_competition_distillation.md` | 研究生赛、华数杯、国赛可共享结构与必须隔离的证据边界 |

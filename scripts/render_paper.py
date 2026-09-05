@@ -161,7 +161,69 @@ def md_to_tex_pandoc(md_text: str) -> str:
     )
     if r.returncode != 0:
         raise RuntimeError(f"pandoc 失败: {r.stderr}")
-    return r.stdout
+    return upgrade_numbered_display_math(r.stdout)
+
+
+# md 源里的 \tag{N} 预归一为规范形式 \qquad (N)——必须在 pandoc 之前做:
+# pandoc 的数学解析器会吞掉 \tag 的反斜杠 (实测输出 "ag{4}"), 之后无法可靠识别
+_MD_TAG_RE = re.compile(r"\$\$(.+?)\\tag\s*\{(\d+)\}\s*\$\$", re.DOTALL)
+
+# pandoc latex 输出的编号 display 数学: \[X \qquad (N)\](归一后唯一形态)。
+# 公式体用"到 \] 为止"的边界匹配 (tempered), 公式内含 ] (如 a_{[i]}) 不截断
+_NUMBERED_DISPLAY_RE = re.compile(
+    r"\\\[((?:(?!\\\]).)*?)\\qquad\s*\((\d+)\)\s*\\\]", re.DOTALL)
+
+# 升级时必须跳过的代码环境 (pandoc 用 verbatim/Highlighting, fallback 用 lstlisting)。
+# 三个捕获组: 定界符/内容/定界符——内容必须捕获, re.split 会丢弃未捕获的匹配文本
+_CODE_ENV_RE = re.compile(
+    r"(\\begin\{(?:verbatim|lstlisting|Highlighting)\*?\})(.*?)(\\end\{(?:verbatim|lstlisting|Highlighting)\*?\})",
+    re.DOTALL)
+
+
+def normalize_md_tag(md_text: str) -> str:
+    """把 md 源中误用的 $$X \\tag{N}$$ 归一为规范形式 $$X \\qquad (N)$$。"""
+    return _MD_TAG_RE.sub(lambda m: f"$${m.group(1).strip()} \\qquad ({m.group(2)})$$", md_text)
+
+
+def upgrade_numbered_display_math(tex: str) -> str:
+    """把 pandoc 输出的 \\[X \\qquad (N)\\] 升级为 equation/align 环境 (跳过代码块)。
+
+    依据 references/md_authoring_spec.md: md 里的手写编号服务 docx 审阅链;
+    PDF 链升级为编号环境后由 LaTeX 自动编号 (居中 + 编号右顶格 + 可引用)。
+    公式体含对齐符 (&) 或换行 (\\\\) 时升级为 align 而非 equation——
+    equation 内出现 & 会直接编译失败 (Misplaced alignment tab)。
+    编号在本节内应逐条 +1 递增, 断档/重复只警告不阻断 (LaTeX 会重排为正确编号)。
+    """
+    segments = _CODE_ENV_RE.split(tex)
+    # split 产出交替结构: [正文, \begin.., 代码内容, \end.., 正文, ...]
+    # 正文段做编号升级; 代码环境三段原样保留 (其中的字面公式是示例代码不是论文公式)
+    out, nums = [], []
+    i = 0
+    while i < len(segments):
+        seg = segments[i]
+        found = _NUMBERED_DISPLAY_RE.findall(seg)
+        nums.extend(int(n) for _, n in found)
+        out.append(_NUMBERED_DISPLAY_RE.sub(_upgrade_match, seg))
+        if i + 3 < len(segments):
+            out.extend(segments[i + 1:i + 4])
+            i += 4
+        else:
+            break
+    if nums:
+        if any(b != a + 1 for a, b in zip(nums, nums[1:])):
+            print(f"[WARN] 公式手写编号非逐条递增: {nums}; LaTeX 将按文档顺序自动重排, "
+                  f"请核对正文'式(N)'引用")
+        else:
+            print(f"[INFO] 本节公式手写编号 {nums} 已升级自动编号环境; "
+                  f"正文'式(N)'引用请以编译后 PDF 实际编号为准")
+    return "".join(out)
+
+
+def _upgrade_match(m):
+    body = m.group(1).strip()
+    if "&" in body or "\\\\" in body:
+        return f"\\begin{{align}}\n{body}\n\\end{{align}}"
+    return f"\\begin{{equation}}\n{body}\n\\end{{equation}}"
 
 
 def md_to_tex_fallback(md_text: str) -> str:
@@ -176,6 +238,8 @@ def md_to_tex_fallback(md_text: str) -> str:
 
     def replace_eq(m):
         body = m.group(1).strip()
+        # 手写编号 (\qquad (N) / \tag{N}) 剥离, 交给 equation 自动编号, 避免双重编号
+        body = re.sub(r"(?:\\qquad\s*\(\d+\)|\\tag\{\d+\})\s*$", "", body).strip()
         if "\\\\" in body or "&" in body:
             return f"\\begin{{align}}\n{body}\n\\end{{align}}"
         return f"\\begin{{equation}}\n{body}\n\\end{{equation}}"
@@ -238,6 +302,8 @@ def md_to_tex_fallback(md_text: str) -> str:
 
 
 def md_to_tex(md_text: str, prefer_pandoc: bool = True) -> str:
+    # \tag{N} 预归一为 \qquad (N)——pandoc 数学解析器会吞 \tag 的反斜杠, 必须在转换前修
+    md_text = normalize_md_tag(md_text)
     if prefer_pandoc and has_pandoc():
         try:
             return md_to_tex_pandoc(md_text)

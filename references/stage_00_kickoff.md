@@ -140,7 +140,7 @@ cp <skill>/templates/shared/decision_log.json state/decision_log.json   # 仅当
 确认 (按 competition 分支):
 | competition | LaTeX 模板 | 引擎 | 静态资料 |
 |---|---|---|---|
-| huaweibei | `<skill>/templates/latex/huaweibei/main.tex` | xelatex | 30 题 + 190 篇论文 + 12 篇 2021 数模之星提名深读 |
+| huaweibei | `<skill>/templates/latex/huaweibei/main.tex` | xelatex | 30 题 + 190 篇论文 + 33 篇深读 (12 篇 2021 提名 + 21 篇 2025 优秀选) |
 | huashubei | `<skill>/templates/latex/huashubei/main.tex` | xelatex | 6 届 18 题 + 18 篇优秀论文 |
 | cumcm | `<skill>/templates/latex/cumcm/main.tex` | xelatex | 33 篇可核验论文 + 25 个逐题案例 |
 | mcm | `<skill>/templates/latex/mcm/main.tex` | pdflatex | seed v0.1 |

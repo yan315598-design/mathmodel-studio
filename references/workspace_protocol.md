@@ -99,7 +99,15 @@ FACT = 题面/数据给定的事实（有误须用户确认才改）; CHOICE = �
 | 复制多份摘要/正文对比 | 真源修订记录保留版本行，正文只留当前版 |
 | 旧文件散落各目录 | `_archive/` 只进不出：移入不改名，移入后不回移 |
 
-导出：定稿导出 docx/pdf 一律带时间戳进 `submission/`（如 `submission/huaweibei_20260911_1430.pdf`），由 `scripts/package_submission.py` 统一管理。文件名时间戳只用于区分导出快照，**不承载版本语义**——版本语义只在真源修订记录里。
+导出：定稿导出 docx/pdf 一律带时间戳进 `submission/`（如 `submission/huaweibei_20260911_1430.pdf`），统一写入 `submission/`：docx 审阅件由 `scripts/export_docx.py` 导出，PDF 终检与提交包由 `scripts/package_submission.py` 管理。文件名时间戳只用于区分导出快照，**不承载版本语义**——版本语义只在真源修订记录里。
+
+### 3.1 docx 审阅件协议
+
+> v2.1.0 新增。补齐本节"导出"承诺的 docx 侧实现（此前只有约定、没有脚本）；md 是唯一真源，docx 仅作审阅件。md 真源的公式/符号/题注/编号写法一律遵守 `references/md_authoring_spec.md`（v2.2.0，双链实测口径）——公式是 Word 原生公式对象，编号公式统一 `$$…\qquad (N)$$`（禁 `\tag`，docx 链会丢编号），表题注在上、图题注在下由 md 写法天然保证。
+
+1. **docx = 审阅件，md = 真源**：docx 只用于导出给只会 Word 的队员圈批注；正文修订永远发生在 `paper_workspace/` 的 md 真源上（原地修订 + 真源修订记录追加版本行，同 §3 上表纪律）。
+2. **导出走 `scripts/export_docx.py`**：输出 `<竞赛>_review_<时间戳>.docx` 进 `submission/`（时间戳只区分快照、不承载版本语义，同上）；`--reference-doc` 可挂样式基准文档，`--dry-run` 可预览将执行的 pandoc 命令。
+3. **批注人工合回，禁止反向覆盖**：Word 队员的批注/改动由 agent 读取后转述，人工合回 md 真源；**禁止用 pandoc 把 docx 反向转换为 md 覆盖真源**。
 
 ---
 

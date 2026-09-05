@@ -50,13 +50,18 @@ class V73KnowledgeWorkflowTest(unittest.TestCase):
                             for case in payload["cases"]))
 
     def test_joint_case_and_question_inventory(self):
-        """联合检索应覆盖三赛并保留 48 个提名论文子问。"""
+        """联合检索应覆盖三赛并保留 48+71 个论文全文子问。"""
         cases = self.retrieval.load_cases("all")
         self.assertEqual(73, len(cases))
         self.assertEqual({"cumcm", "huaweibei", "huashubei"}, {case["competition"] for case in cases})
         star_questions = self.retrieval.load_star_paper_questions("all")
-        self.assertEqual(48, len(star_questions))
-        self.assertTrue(all(item["evidence_level"] == "star_paper_full_text" for item in star_questions))
+        self.assertEqual(119, len(star_questions))
+        by_level = {}
+        for item in star_questions:
+            by_level[item["evidence_level"]] = by_level.get(item["evidence_level"], 0) + 1
+        # 2021 提名（star_paper_full_text）与 2025 优秀论文选
+        # （excellent_paper_full_text）分标签计数，后者不得冒充提名身份。
+        self.assertEqual({"star_paper_full_text": 48, "excellent_paper_full_text": 71}, by_level)
 
     def test_huashubei_retrieval(self):
         """华数杯查询应命中对应历史案例。"""
