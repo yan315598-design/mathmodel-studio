@@ -8,7 +8,7 @@
 
 FAIL（硬伤）: 文字溢出、元素越界、id 重复、实心盒重叠、连线穿盒、内嵌位图。
 WARN（建议）: 端点压盒边、有填充无文字的疑似空盒、字号档数过多、填充色发散;
-  v7.9.1 新增平庸检测 —— 全字加粗（字重层级被抹平）、实心盒 >20（密度超预算,
+  1.3.1 新增平庸检测 —— 全字加粗（字重层级被抹平）、实心盒 >20（密度超预算,
   建议拆总览+细节）、连线描边 >2.0（连线过重, 强调用色不用粗）。
 
 中文字宽模型（与 sci-box check_layout 一致, 比生成器的 1.45/0.72 保守估值
@@ -112,7 +112,7 @@ def check_file(path: str, *, max_font_tiers: int = DEFAULT_MAX_FONT_TIERS,
 
     boxes: list[dict] = []
     edge_paths: list[tuple[str, list[tuple[float, float]]]] = []
-    edge_styles: list[tuple[str, dict[str, str]]] = []   # v7.9.1: 全量连线样式（线重检查）
+    edge_styles: list[tuple[str, dict[str, str]]] = []   # 1.3.1: 全量连线样式（线重检查）
     ids: dict[str, int] = {}
 
     for cell in root.iter("mxCell"):
@@ -216,7 +216,7 @@ def check_file(path: str, *, max_font_tiers: int = DEFAULT_MAX_FONT_TIERS,
     if len(fills) > max_fills:
         warns.append(f"填充色 {len(fills)} 种, 配色发散, 建议同语义同族同色")
 
-    # ---- v7.9.1 平庸检测（WARN 级: 机器查不出"平庸", 但能查到这三个信号）----
+    # ---- 1.3.1 平庸检测（WARN 级: 机器查不出"平庸", 但能查到这三个信号）----
     # 1) 全字加粗: ≥5 个带文字顶点且 >90% 加粗 → 字重层级被抹平
     #    （design_tokens §4.5: 加粗只给标题条/徽章/卡片标题, 正文常规）
     text_boxes = [b for b in boxes if b["txt"].strip()]

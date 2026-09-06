@@ -49,6 +49,10 @@ next: stage_03_model_selection
 
 **质询子 agent（红队）**：三查完成后，按 `references/parallel_dispatch.md` 花名册派一个"审题质询员"（独立 context，只给题面+三查清单，不给你的结论），任务是找茬：边界漏项、目标误读、假设过强、子问遗漏。质询输出逐条处理（采纳/驳回+理由），写入真源.md 修订记录。无子 agent 能力时主 agent 换视角自审并标注 `manual_fallback`。
 
+**必停点登记 (v2.3.0)**: 审题呈现（三查 + 质询结论）向用户呈现并确认后，写入 `decision_log.checkpoints.analysis_confirm`（`{"status": "answered", "asked_at": "<ISO>", "answer": "<用户确认/修正摘要>", "source": "chat"}`；source 缺失或非 chat/user_cli 视为未答，check_gate 拦截）；进入分解操作流程前必须 `python scripts/check_gate.py --checkpoint analysis_confirm` 放行（只查该必停点登记，不查 scores——本阶段评分材料要到分解后才产生，此时强查 `--gate 2` 会死锁；`--gate 2` 留到本阶段末尾退出条件处再跑，见下）。
+
+**分解确认后写 qi_count (v2.3.0)**: 用户确认子问题分解后（与 analysis_confirm 同一问答环节），agent 以**实际子问数**原子写入 `decision_log.stages.5.qi_count`（int；不取 stage 1 的预估 `problem_meta.estimate_qi_count`，两者不一致以实际为准），并按 stage 5 规则重建 `qi_weights` = `[1.0] * qi_count`（默认均匀），同时在 `events.log` 记一条 `qi_count_confirmed` 事件。**gate 5 的三来源对齐检查以该实际值为准**；stage 5 加载时若发现 `qi_count` 与题面实际子问不一致，回到本阶段修正。
+
 ---
 
 ## 操作流程
@@ -176,7 +180,7 @@ Q3: max E_ξ [ Σ_i p_i * x_i - C(x) - λ * Var(...) ]
 
 ---
 
-## 图表规格冻结 (v7.4.0 新增)
+## 图表规格冻结 (0.7.4 新增)
 
 解析完题面 (Step 1-6) 即定图表规格, 不等出结果后临时规划。历史实战教训：图表规格未提前冻结导致多轮返工，初版一图 2-3 条线信息密度过低。
 
@@ -186,7 +190,7 @@ Q3: max E_ξ [ Σ_i p_i * x_i - C(x) - λ * Var(...) ]
 2. 每张图在 `真源.md` 图表登记表 (`references/workspace_protocol.md` §2) 登记四要素:
    - **回答什么问题** (无论证价值的图不画)
    - **数据源** (`results/` 哪个文件或哪段中间状态)
-   - **色板** — 取自 `templates/figures/style/palettes.py` 八套之一 (默认 academic_blue; 另有 v7.7 期刊板 npg / aaas / lancet / nejm), 选用规则见 `references/color_typology.md`
+   - **色板** — 取自 `templates/figures/style/palettes.py` 八套之一 (默认 academic_blue; 另有 1.1.0 期刊板 npg / aaas / lancet / nejm), 选用规则见 `references/color_typology.md`
    - **类型** — 过程图 (机理 / 中间状态 / 算法行为) 还是结果图
 3. 信息密度标准: 每图 ≥2 个信息维度 (如 对比+趋势 / 灵敏度+排序), 过程图:结果图 ≈ 1:2。
 4. 规格 24h 后冻结; 变更须在 `真源.md` 修订记录登记 (时间/原因/影响)。
@@ -223,5 +227,6 @@ Q3: max E_ξ [ Σ_i p_i * x_i - C(x) - λ * Var(...) ]
 3. 数据 schema 扫描完成
 4. Q3 复用关系明确 (是 / 否,有理由)
 5. L1 rubric 全维 ≥7
+6. `python scripts/check_gate.py --gate 2` exit 0（必停点 analysis_confirm 已登记 + scores["2"] 已落盘；阶段中途的呈现确认用 `--checkpoint analysis_confirm`，见审题门节）
 
 → 跳转 `stage_03_model_selection.md`

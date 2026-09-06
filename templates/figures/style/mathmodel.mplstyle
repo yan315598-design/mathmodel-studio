@@ -1,4 +1,4 @@
-# mathmodel-skill v7.7.0 统一图表基础样式
+# mathmodel-studio 1.1.0 统一图表基础样式
 # 用法: plt.style.use(r'<skill>/templates/figures/style/mathmodel.mplstyle')
 #   模板脚本内请走 figkit.apply_style() (带内联回退)
 # 配套色板: 同目录 palettes.py | 配色规范: references/color_typology.md
@@ -21,7 +21,7 @@ axes.spines.top    : False
 axes.spines.right  : False
 axes.axisbelow     : True
 
-# --- 刻度 (v7.7.0): 朝外 + 次级刻度, 期刊惯例 ---
+# --- 刻度 (1.1.0): 朝外 + 次级刻度, 期刊惯例 ---
 xtick.direction    : out
 ytick.direction    : out
 xtick.minor.visible: True
@@ -53,6 +53,6 @@ savefig.bbox       : tight
 savefig.transparent : False
 
 # --- 矢量导出: 文字保留为文本不转路径, 改稿不重渲染 ---
-# 见 references/figure_skill_bridge.md 导出三格式纪律 (v7.7.0 起 PDF 由 figkit.save_fig 实际落盘)
+# 见 references/figure_skill_bridge.md 导出三格式纪律 (1.1.0 起 PDF 由 figkit.save_fig 实际落盘)
 svg.fonttype       : none
 pdf.fonttype       : 42

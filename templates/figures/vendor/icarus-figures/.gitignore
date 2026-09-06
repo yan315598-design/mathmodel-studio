@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Generated figures (keep the dir, not the artifacts)
+outputs/figures/*.pdf
+outputs/figures/*.png
+outputs/figures/*.svg
+outputs/figures/*.eps
+
+# Example outputs: keep the PNG (shown in README), drop the regenerable vectors
+examples/*.pdf
+examples/*.svg
+
+# LaTeX build (TikZ hero figures): ship the .tex (build with pdflatex), not the PDF
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+examples/hero_tikz/*.pdf
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.obsidian/

@@ -1,4 +1,4 @@
-# Golden Gallery · 视觉回归基线（v7.8.0）
+# Golden Gallery · 视觉回归基线（1.2.0）
 
 本目录收录全部图表模板的**参考样图**，用途：
 
@@ -6,7 +6,7 @@
    重新渲染同名模板并肉眼/像素对比本目录基线，防止审美悄悄退化。
 2. **选型预览**：规划图表时先翻这里挑模板，再去 `scripts/render_*_pack.py --list` 查参数。
 
-> v7.8.0 起配色分两类：**数据图**走高饱和数据色板（PALETTES），
+> 1.2.0 起配色分两类：**数据图**走高饱和数据色板（PALETTES），
 > **示意图/流程图**走浅底色族（DIAGRAM_FAMILIES），见 `references/color_typology.md`。
 
 ## 数据图（14 件，PNG 基线；shap_summary / chord_diagram 依赖第三方库不入基线）

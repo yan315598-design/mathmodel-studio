@@ -62,7 +62,7 @@
 - [ ] 检索相似案例支撑选型：`retrieve_cases.py --competition huaweibei --level question --query "<子问关键词>"`。
 - [ ] **图表规格定稿**（`workspace_protocol.md` §2/§5，`stage_02_analysis.md` 图表规格冻结节；h24 前可修订，h24 起硬冻结）：
   - 每问张数预算（多子问题赛制总量 10-20 张起步）。
-  - 每图登记四要素：回答什么问题 / 数据源 / 色板（`templates/figures/style/palettes.py` 八套之一，含 v7.7 期刊板 npg/aaas/lancet/nejm；规则见 `references/color_typology.md`）/ 过程图或结果图。
+  - 每图登记四要素：回答什么问题 / 数据源 / 色板（`templates/figures/style/palettes.py` 八套之一，含 1.1.0 期刊板 npg/aaas/lancet/nejm；规则见 `references/color_typology.md`）/ 过程图或结果图。
   - 信息密度标准：**每图 ≥2 个信息维度，过程图:结果图 ≈ 1:2**（华数杯教训：初版一图 2-3 条线信息密度过低，一天返工 5 轮）。
 - [ ] 写入真源.md 图表登记表。
 

@@ -1,11 +1,11 @@
-"""package_submission.py — 竞赛提交物终检与打包 (v7.4.0 新增)
+"""package_submission.py — 竞赛提交物终检与打包 (0.7.4 新增)
 
 功能:
 1. 读 cwd/state/decision_log.json 得 competition (--competition 可覆盖)
 2. 按 references/submission_checklists.md 对应竞赛节做机器可查项:
    - 论文 PDF 存在性 (默认自动搜索, --paper 可指定)
    - 代码附件 (code/ 目录或工作区 *.py)
-   - pdf_qa 终检 (v7.5.0 并入, scripts/pdf_qa.py import 调用): 页数上限/
+   - pdf_qa 终检 (0.7.5 并入, scripts/pdf_qa.py import 调用): 页数上限/
      重复图表编号/匿名扫描/空白页, 页数口径统一走 pdf_qa; 其 ❌(error)
      违例纳入 blocking_fail (--apply 拒打包 exit 1); pypdf 缺失时该步
      整体 ⚠️ 跳过, 不阻断
@@ -191,7 +191,7 @@ def run_checks(workspace: Path, comp: str, paper_arg: str):
         else:
             results.append(("ok", "文件名规范", rules["filename_hint"]))
 
-        # pdf_qa 终检 (v7.5.0 并入): 页数/重复图题/匿名/空白页, 单一口径
+        # pdf_qa 终检 (0.7.5 并入): 页数/重复图题/匿名/空白页, 单一口径
         if run_pdf_qa_checks(results, paper, comp, rules["page_limit"]):
             blocking_fail = True
 
@@ -250,7 +250,7 @@ def main(argv=None) -> int:
     if hasattr(sys.stdout, "reconfigure"):  # Windows 控制台中文/符号兜底
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser(
-        description="竞赛提交物终检与打包 (v7.4.0); 检查项定义见 references/submission_checklists.md")
+        description="竞赛提交物终检与打包 (0.7.4); 检查项定义见 references/submission_checklists.md")
     parser.add_argument("--competition", choices=VALID_COMPETITIONS,
                         help="覆盖 state/decision_log.json 中的竞赛")
     parser.add_argument("--paper", help="论文 PDF 路径; 缺省时自动搜索工作区")

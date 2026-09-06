@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""draw.io 三栏研究框架图（drawio 模板包 · framework, v7.9.1 语义槽位版）。
+"""draw.io 三栏研究框架图（drawio 模板包 · framework, 1.3.1 语义槽位版）。
 
 与 matplotlib 版 make_diagram_framework_3col.py 同信息架构, 用 drawio
 语言重写: 三栏"子问题 → 方法模型 → 结果产出", 栏头实色标题条
 （族 header 底 + header_stroke 描边 + 白色加粗字）, 三栏分别绑定
-blue/orange/teal 色族, 2-4 行映射。v7.9.1 起升级为语义槽位版式:
+blue/orange/teal 色族, 2-4 行映射。1.3.1 起升级为语义槽位版式:
 
   - 内容卡 = rich_card 两段式: **bold 标题行** + regular 明细行
     （note 档 9px 次级色, 单元格级不加粗, 密度来自内容结构）;
@@ -37,7 +37,7 @@ from drawio_builder import (  # noqa: E402
     get_diagram_families, get_palette, label_html, wrap_text_balanced,
 )
 
-# 示例数据 v7.9.1: 每行 ((问标题, 问明细), (法标题, 法明细), (果标题, 果明细))
+# 示例数据 1.3.1: 每行 ((问标题, 问明细), (法标题, 法明细), (果标题, 果明细))
 # 明细行写"参数/口径/产出形式", 是信息密度的主要来源——换成你的真实内容
 COLUMN_NAMES = ["子问题", "方法模型", "结果产出"]
 COLUMN_FAMILIES = ["blue", "orange", "teal"]   # 三栏绑定的示意图色族

@@ -1,4 +1,4 @@
-"""验证 v7.3 三赛联合检索、知识包、证据链、评分契约和增量更新。"""
+"""验证 0.7.3 三赛联合检索、知识包、证据链、评分契约和增量更新。"""
 
 from __future__ import annotations
 
@@ -21,8 +21,8 @@ def load_module(filename: str, module_name: str):
     return module
 
 
-class V73KnowledgeWorkflowTest(unittest.TestCase):
-    """覆盖 v7.3 八项升级的主要契约。"""
+class KnowledgeWorkflowTest(unittest.TestCase):
+    """覆盖 0.7.3 八项升级的主要契约。"""
 
     @classmethod
     def setUpClass(cls):
@@ -35,7 +35,7 @@ class V73KnowledgeWorkflowTest(unittest.TestCase):
         cls.paper_plan = load_module("generate_paper_plan.py", "generate_paper_plan")
         cls.tracer = load_module("trace_claims.py", "trace_claims")
         cls.updater = load_module("update_knowledge.py", "update_knowledge")
-        cls.scorer = load_module("score_artifact.py", "score_artifact_v73")
+        cls.scorer = load_module("score_artifact.py", "score_artifact_loaded")
 
     def test_huashubei_case_index_has_evidence_boundary(self):
         """华数杯 18 题应区分有论文模式与仅题面摘要。"""

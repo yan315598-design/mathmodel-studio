@@ -12,7 +12,7 @@ academic_blue 主色高亮非支配前沿, 可行解浅灰淡化; 理想点用 L
     2. 复制到项目后改 DEMO_POINTS 与 plot_pareto() 入参。
 
 约定:
-    - v7.7.0: 迁移 figkit + 三格式导出 + 中性色令牌。
+    - 1.1.0: 迁移 figkit + 三格式导出 + 中性色令牌。
     - 样式与色板统一经 scripts/figkit.py 加载（mathmodel.mplstyle + palettes.py,
       两者缺失时 figkit 内置等价内联回退）; 网格改 figkit.ygrid() 仅 y 向。
 
@@ -43,7 +43,7 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 
-# ---- v7.7.0: 头部统一走共享库 figkit（样式/色板/导出/网格/中性色）----
+# ---- 1.1.0: 头部统一走共享库 figkit（样式/色板/导出/网格/中性色）----
 # figkit.py 位于本脚本上二级 scripts/ 目录; 色板回退已内置于 figkit, 不再保留本文件副本
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -166,7 +166,7 @@ def plot_pareto(
     fig, ax = plt.subplots(figsize=(8.0, 5.4))
     fig.subplots_adjust(left=0.115, right=0.975, top=0.93, bottom=0.115)
 
-    # 可行解散点云（中性浅色低饱和, v7.7.0 改令牌取色）; 非支配解单独高亮
+    # 可行解散点云（中性浅色低饱和, 1.1.0 改令牌取色）; 非支配解单独高亮
     ax.scatter(f1, f2, s=16, color=grey, alpha=0.62, linewidths=0,
                label="可行解", zorder=2)
     f1f, f2f = f1[front_idx], f2[front_idx]
@@ -202,7 +202,7 @@ def plot_pareto(
     ax.set_xlabel(xname)
     ax.set_ylabel(yname)
     ax.set_title(title or "双目标优化 Pareto 前沿")
-    ygrid(ax)  # v7.7.0: 散点/前沿图只留极淡 y 向网格
+    ygrid(ax)  # 1.1.0: 散点/前沿图只留极淡 y 向网格
 
     legend = ax.legend(loc="upper right", frameon=True, fontsize=9)
     legend.set_zorder(10)
@@ -210,7 +210,7 @@ def plot_pareto(
 
 
 def _save(fig, out_stem: str | None, default_name: str) -> tuple[Path, Path]:
-    """v7.7.0 经 figkit.save_fig 一次导出 PNG+SVG+PDF 三格式; 返回前两个路径。"""
+    """1.1.0 经 figkit.save_fig 一次导出 PNG+SVG+PDF 三格式; 返回前两个路径。"""
     if out_stem is None:
         out_stem = str(Path(tempfile.gettempdir()) / default_name)
     written = save_fig(fig, out_stem)

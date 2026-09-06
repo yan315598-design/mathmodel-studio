@@ -27,7 +27,7 @@ plt.rcParams['savefig.bbox'] = 'tight'
 plt.rcParams['axes.grid'] = True
 plt.rcParams['grid.alpha'] = 0.3
 
-# 国一配色: 避免彩虹色; v7.4.0 起以 skill 仓库 templates/figures/style/palettes.py 为准 (academic_blue)
+# 国一配色: 避免彩虹色; 0.7.4 起以 skill 仓库 templates/figures/style/palettes.py 为准 (academic_blue)
 import sys
 from pathlib import Path
 try:
@@ -41,12 +41,12 @@ except Exception:  # 导入失败或 __file__ 不可用 (片段在工作区独�
 mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=CHAMPION_PALETTE)
 ```
 
-> **v7.4.0 过渡说明**: 配色已统一到 `references/color_typology.md` 与 `templates/figures/style/palettes.py`。
+> **0.7.4 过渡说明**: 配色已统一到 `references/color_typology.md` 与 `templates/figures/style/palettes.py`。
 > `CHAMPION_PALETTE` 保留为 `academic_blue` 的向后兼容别名（`palettes.get_palette('champion_palette')` 等价生效）;
 > 色值历史来源为历史竞赛工作区实战验证配色, 原 `#A23B72` 已由主色 `#1F4E79` 取代并补中性灰 `#6C757D`。
 > 新代码请直接 `apply_palette('academic_blue')` 并加载 `templates/figures/style/mathmodel.mplstyle`, 下方 14 段代码模板暂保持原样（过渡方案见 color_typology.md §7）。
 
-> **v7.7.0 指引**: 设计令牌统一出口 `references/design_tokens.md`（色板/中性色/字号/间距令牌，脚本禁止另立数值）；流程/机理/路线图优先使用 drawio 可编辑模板 `templates/figures/scripts/render_drawio_pack.py`（roadmap / framework / flow3col / stageflow / swimlane / mechanism 共 6 模板，draw.io 打开微调后导出 PNG/PDF/SVG）；英文投稿/答辩可选四套真期刊色板 npg / aaas / lancet / nejm（`palettes.py` v7.7.0，经 `figkit.load_palette()` 取用，色值以该文件为准）。
+> **1.1.0 指引**: 设计令牌统一出口 `references/design_tokens.md`（色板/中性色/字号/间距令牌，脚本禁止另立数值）；流程/机理/路线图优先使用 drawio 可编辑模板 `templates/figures/scripts/render_drawio_pack.py`（roadmap / framework / flow3col / stageflow / swimlane / mechanism 共 6 模板，draw.io 打开微调后导出 PNG/PDF/SVG）；英文投稿/答辩可选四套真期刊色板 npg / aaas / lancet / nejm（`palettes.py` 1.1.0，经 `figkit.load_palette()` 取用，色值以该文件为准）。
 
 ---
 

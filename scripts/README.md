@@ -5,6 +5,7 @@
 | 脚本 | 用途 |
 |---|---|
 | `score_artifact.py` | 按统一评分契约处理各阶段评分、加权和 verdict |
+| `check_gate.py` | 阶段推进门禁：必停点 checkpoints 登记 + L1 评分落盘双校验，exit 1 拦截并中文列缺失项 (v2.3) |
 | `extract_diff.py` | 生成或应用局部精修 patch |
 | `render_paper.py` | 把论文工作区渲染为 LaTeX/PDF |
 | `retrieve_cases.py` | 三赛联合题目级/子问级检索 |
@@ -14,12 +15,12 @@
 | `trace_claims.py` | 审计问题到摘要主张的完整证据链 |
 | `update_knowledge.py` | 用文件哈希管理增量与知识版本 |
 | `build_huashubei_cases.py` | 重建华数杯 18 题证据分级案例索引 |
-| `package_submission.py` | 提交打包：文件检查 + 页数/命名 + zip + 备份 + MD5 (v7.4) |
-| `freeze_numbers.py` | 数字冻结：claim↔源文件 SHA-256 绑定与 stale 检测 (v7.5) |
-| `run_manifest.py` | 运行清单：脚本/输入/输出哈希链记录与漂移核验 (v7.5) |
-| `figqa.py` | 图表渲染碰撞检测（六类，--strict 硬门，--self-test 自检） (v7.5) |
-| `figure_lint.py` | 图表设计规则 lint（图例/标记/基线/cmap/spines） (v7.5) |
-| `pdf_qa.py` | 渲染后 PDF 终检：页数/重复图题/匿名扫描/空白页 (v7.5) |
+| `package_submission.py` | 提交打包：文件检查 + 页数/命名 + zip + 备份 + MD5 (0.7.4) |
+| `freeze_numbers.py` | 数字冻结：claim↔源文件 SHA-256 绑定与 stale 检测 (0.7.5) |
+| `run_manifest.py` | 运行清单：脚本/输入/输出哈希链记录与漂移核验 (0.7.5) |
+| `figqa.py` | 图表渲染碰撞检测（六类，--strict 硬门，--self-test 自检） (0.7.5) |
+| `figure_lint.py` | 图表设计规则 lint（图例/标记/基线/cmap/spines） (0.7.5) |
+| `pdf_qa.py` | 渲染后 PDF 终检：页数/重复图题/匿名扫描/空白页 (0.7.5) |
 
 相似案例检索：
 

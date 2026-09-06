@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """draw.io 机理示意图（drawio 模板包 · mechanism, 闭环反馈/仓室模型骨架,
-v7.8.0 族化版）。
+1.2.0 族化版）。
 
 中心主体大框（grey 族 accent 浅底 + header_stroke 描边 + 墨黑加粗字）+
 4-6 个环绕要素卡片呈椭圆环等角排布（每要素一族, 族序取

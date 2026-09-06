@@ -1,4 +1,4 @@
-# MCM/ICM Memo 与 Letter 写作指南（v7.5.0 新增）
+# MCM/ICM Memo 与 Letter 写作指南（0.7.5 新增）
 
 > 服务 D/E/F 题的非技术交付物: Memo（提交给利益相关方的备忘录）与 Letter（政策建议信）。
 > 与 `abstract_template.md` 分工: 该文件给**英文骨架模板**, 本文件给**框架与写作纪律**——先读本文件定框架, 再套该文件 §B 模板落英文。

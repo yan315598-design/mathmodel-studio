@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use Icarus Figures in your work, you don't have to cite it, but it's appreciated."
+title: "Icarus Figures: publication-grade scientific figures for papers"
+abstract: >-
+  Reproducible matplotlib data figures and original TikZ method figures, with a
+  quality bar (four axes), composition paradigms, callable archetypes, and
+  journal style presets. LaTeX optional.
+authors:
+  - alias: TAO-QKV
+version: 0.4.0
+license: MIT
+repository-code: "https://github.com/TAO-QKV/Icarus-Figures"
+keywords:
+  - matplotlib
+  - scientific-visualization
+  - data-visualization
+  - publication
+  - tikz

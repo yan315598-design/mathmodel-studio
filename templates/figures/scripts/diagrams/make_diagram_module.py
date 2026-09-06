@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""模块化功能框图（示意图模板包 · module, v7.8.0 示意图色族版）。
+"""模块化功能框图（示意图模板包 · module, 1.2.0 示意图色族版）。
 
 中心"总模型"大框 + 四周 4-6 个卫星模块框（模块呈环状等角排布）; 中心与每个
 卫星之间画双向箭头（数据流名称标在箭头中点旁）。卫星模块只露模块名与
@@ -19,10 +19,10 @@ header_stroke 描边（视觉最稳的浅底重心）, 卫星模块每枚一族
     2. 复制到项目后改 MODULES / CENTER_LINES 数据。
 
 版本:
-    v7.8.0: 迁移示意图色族体系——弃 cool_nature 数据色板, 中心改 grey 族
+    1.2.0: 迁移示意图色族体系——弃 cool_nature 数据色板, 中心改 grey 族
         accent+header_stroke, 卫星每枚一族（GENERIC 序）, 双向箭头取卫星
         族 edge 色, 全字加粗墨黑（去 soft_shadow 扁平化）。
-    v7.7.0: 迁移 figkit + 三格式导出 + 中性色令牌。
+    1.1.0: 迁移 figkit + 三格式导出 + 中性色令牌。
 
 质量门:
     python scripts/figqa.py templates/figures/scripts/diagrams/make_diagram_module.py \\
@@ -51,7 +51,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
 
-# ---- v7.8.0: 头部统一走共享库 figkit（样式/色族/导出/连接器）----
+# ---- 1.2.0: 头部统一走共享库 figkit（样式/色族/导出/连接器）----
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from figkit import (
@@ -114,7 +114,7 @@ def _ray_box_interval(p0, d, center, half) -> tuple[float | None, float | None]:
 def _draw_text_block(ax, lines: list[str], x: float, y: float, va: str,
                      fontsize: float, color: str, ha: str = "left",
                      bold: bool = False, **kw) -> None:
-    """文本块（v7.9.1 字重层级制: 默认常规字重, 标题/徽章调用点显式 bold=True）。"""
+    """文本块（1.3.1 字重层级制: 默认常规字重, 标题/徽章调用点显式 bold=True）。"""
     ax.text(x, y, "\n".join(lines), ha=ha, va=va, fontsize=fontsize,
             color=color, fontweight="bold" if bold else "normal",
             linespacing=1.4, zorder=5, **kw)

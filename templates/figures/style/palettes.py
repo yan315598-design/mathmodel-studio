@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-mathmodel-studio v7.9.0 统一图表配色源
+mathmodel-studio 1.3.0 统一图表配色源
 ================================================================
 全 skill 图表配色以此模块为准（规范文档: references/color_typology.md,
 设计令牌: references/design_tokens.md）。
 
-v7.9.0 起新增示意图版式令牌层（DIAGRAM_GRID 4px 网格 / DIAGRAM_RADIUS 圆角
+1.3.0 起新增示意图版式令牌层（DIAGRAM_GRID 4px 网格 / DIAGRAM_RADIUS 圆角
 阶梯 / DIAGRAM_STROKE_W 描边三档 / DIAGRAM_FONT_RAMP 扁平字阶 /
 DIAGRAM_FONT_MONO 数字标签等宽链 / DIAGRAM_FOCAL_MAX 焦点盒上限）,
 纪律蒸馏自 diagram-design (MIT), 取口 get_diagram_token() / snap4()。
 
-v7.8.0 起配色彻底分类: 数据图表(figure)用下方 PALETTES 高饱和色板区分
+1.2.0 起配色彻底分类: 数据图表(figure)用下方 PALETTES 高饱和色板区分
 数据系列; 示意图(diagram/流程图/架构图/技术路线图)用 DIAGRAM_FAMILIES
 浅底色族表达结构层级, 两套体系并列、互不影响。
 
@@ -27,15 +27,15 @@ v7.8.0 起配色彻底分类: 数据图表(figure)用下方 PALETTES 高饱和�
 中性色令牌 (NEUTRALS): 正文/次级文字/网格/描边/箭头/面板底色统一出口,
   示意图与数据图共用, 禁止在脚本里另行硬编码灰色系。
 
-示意图色族 (DIAGRAM_FAMILIES, v7.8.0): 与数据色板并列的"浅底色族"体系,
+示意图色族 (DIAGRAM_FAMILIES, 1.2.0): 与数据色板并列的"浅底色族"体系,
   色值 1:1 蒸馏自 sci-box scibox-diagram (MIT), 供流程图/架构图等结构类
   示意图表达层级, 不用于数据系列区分。
 
 工具函数:
-  get_palette / apply_palette / get_cmap      取色与注入（v7.4.0 已有）
+  get_palette / apply_palette / get_cmap      取色与注入（0.7.4 已有）
   get_neutral / get_semantic                  中性色与语义角色取色
-  get_diagram_family / get_diagram_families   示意图色族取色（v7.8.0 新增）
-  get_diagram_page                            示意图页面令牌取色（v7.8.0 新增）
+  get_diagram_family / get_diagram_families   示意图色族取色（1.2.0 新增）
+  get_diagram_page                            示意图页面令牌取色（1.2.0 新增）
   tint / shade                                参数化浅化/深化（替代手写浅化常量）
   grayscale_check                             灰度可区分性校验（支持全对模式）
 
@@ -82,7 +82,7 @@ PALETTES: dict[str, dict] = {
                    "#CC79A7", "#56B4E9", "#F0E442", "#000000"],
         "source": "Okabe & Ito (2008) 色盲通用色板, 公共领域标准色值",
     },
-    # ---- v7.7.0 新增: 真·期刊色板, 色值蒸馏自 ggsci 文档公开色值 ----
+    # ---- 1.1.0 新增: 真·期刊色板, 色值蒸馏自 ggsci 文档公开色值 ----
     # NPG (Nature Publishing Group): 高辨识暖冷对撞, 近年 ML/生信论文出镜率最高
     "npg": {
         "colors": ["#E64B35", "#4DBBD5", "#00A087", "#3C5488",
@@ -131,7 +131,7 @@ CMAPS: dict[str, str] = {
 }
 
 # ============================================================
-# 中性色令牌层 (v7.7.0)
+# 中性色令牌层 (1.1.0)
 # ============================================================
 # 示意图/数据图所有"非语义灰色"一律从这里取, 禁止脚本内另行硬编码。
 NEUTRALS: dict[str, str] = {
@@ -159,7 +159,7 @@ SEMANTIC_ROLES: dict[str, str] = {
 
 
 # ============================================================
-# 示意图色族 (v7.8.0): 与数据色板彻底分类的第二套体系
+# 示意图色族 (1.2.0): 与数据色板彻底分类的第二套体系
 # ============================================================
 # 分类原则: 数据图表(figure)用 PALETTES 高饱和色板区分"数据系列";
 # 示意图(diagram/流程图/架构图/技术路线图)用这里的浅底色族表达"结构层级"。
@@ -204,14 +204,14 @@ DIAGRAM_FONT_FAMILY = ["Microsoft YaHei", "SimHei", "PingFang SC", "Noto Sans SC
                        "Arial Unicode MS", "Helvetica"]
 
 # ============================================================
-# 示意图版式令牌 (v7.9.0): 网格/圆角/描边/字阶/mono
+# 示意图版式令牌 (1.3.0): 网格/圆角/描边/字阶/mono
 # 蒸馏自 diagram-design (MIT) 的编辑级排版纪律, 本地化为中文论文示意图:
 #   - 4px 网格硬规则: 一切坐标/宽/高/间距必须可被 4 整除(手排坐标先 snap4)
 #   - 圆角阶梯 sm/md/lg = 4/6/8, 上限 10, 禁止再大(大会显"AI 味")
 #   - 描边四档: 细线 0.8 / 卡片 1.0 / 默认 1.2 / 强调 2.0, 不随手给值
-#     （v7.9.1 新增 card=1.0: 内容卡降重, 密集图里每一笔都不抢戏）
+#     （1.3.1 新增 card=1.0: 内容卡降重, 密集图里每一笔都不抢戏）
 #   - 字阶扁平: 全图 ≤4 档(标题16/标题条12/正文10.5/注释9);
-#     v7.9.1 起字重回层级制: 标题条/徽章/卡片标题加粗, 卡内正文常规字重
+#     1.3.1 起字重回层级制: 标题条/徽章/卡片标题加粗, 卡内正文常规字重
 #   - mono 字体只用于数字/参数/公式标签(如 RMSE=2.31), 节点名一律 sans
 # ============================================================
 DIAGRAM_GRID = 4                      # px, 硬规则
@@ -290,7 +290,7 @@ def get_neutral(name: str) -> str:
 
 
 # ============================================================
-# 示意图色族取色接口 (v7.8.0, 纯 stdlib, 不依赖 matplotlib)
+# 示意图色族取色接口 (1.2.0, 纯 stdlib, 不依赖 matplotlib)
 # ============================================================
 def get_diagram_family(name: str) -> dict[str, str]:
     """按族名取一枝示意图色族（8 角色色值字典的副本）。
@@ -355,7 +355,7 @@ def get_diagram_page(token: str) -> str:
 
 
 # ============================================================
-# 示意图版式令牌取口 (v7.9.0)
+# 示意图版式令牌取口 (1.3.0)
 # ============================================================
 _DIAGRAM_TOKEN_GROUPS = {
     "radius": DIAGRAM_RADIUS,
@@ -402,7 +402,7 @@ def snap4(value: float, grid: int = DIAGRAM_GRID) -> float:
 
 
 # ============================================================
-# 参数化浅化/深化 (v7.7.0): 替代各脚本手写的浅化常量
+# 参数化浅化/深化 (1.1.0): 替代各脚本手写的浅化常量
 # ============================================================
 def _hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
     text = hex_color.strip().lstrip("#")
@@ -530,7 +530,7 @@ def grayscale_check(colors: list[str], min_delta: float = 0.15,
     Args:
         colors: hex 色值列表。
         min_delta: 最小亮度差阈值, 默认 0.15。
-        all_pairs: True 检查全组合, False 只查相邻对 (v7.4.0 行为)。
+        all_pairs: True 检查全组合, False 只查相邻对 (0.7.4 行为)。
 
     Returns:
         (是否全部达标, 警告消息列表)。
@@ -560,7 +560,7 @@ def grayscale_check(colors: list[str], min_delta: float = 0.15,
 # ============================================================
 if __name__ == "__main__":
     print("=" * 62)
-    print("mathmodel-studio v7.8.0 统一色板自测")
+    print("mathmodel-studio 1.2.0 统一色板自测")
     print("=" * 62)
     for name, spec in PALETTES.items():
         colors = spec["colors"]
@@ -581,7 +581,7 @@ if __name__ == "__main__":
     print("别名: get_palette('nature') == get_palette('npg') ->",
           get_palette("nature") == get_palette("npg"))
 
-    # ---- v7.8.0: 示意图色族自测 ----
+    # ---- 1.2.0: 示意图色族自测 ----
     roles = ("fill", "stroke", "accent", "deep", "header", "header_stroke",
              "edge", "chevron")
     print(f"\n[DIAGRAM_FAMILIES] {len(DIAGRAM_FAMILIES)} 族, 角色完备性校验:")
@@ -617,7 +617,7 @@ if __name__ == "__main__":
     else:
         raise AssertionError("未知族名未报错")
 
-    # ---- v7.9.0: 版式令牌自测 ----
+    # ---- 1.3.0: 版式令牌自测 ----
     print(f"\n[DIAGRAM_GRID] {DIAGRAM_GRID}px  [RADIUS] {DIAGRAM_RADIUS}  "
           f"[STROKE_W] {DIAGRAM_STROKE_W}")
     print(f"[FONT_RAMP] {DIAGRAM_FONT_RAMP}  [FOCAL_MAX] {DIAGRAM_FOCAL_MAX}")

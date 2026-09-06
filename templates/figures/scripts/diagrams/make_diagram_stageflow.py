@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""横向阶段流水线图（示意图模板包 · stageflow, v7.8.0 示意图色族版）。
+"""横向阶段流水线图（示意图模板包 · stageflow, 1.2.0 示意图色族版）。
 
 4-6 个阶段框在画布中部等距排开, 框间画粗箭头表示流转方向; 每框上方
 一个圆形编号徽章（1/2/3...）, 框下方一行说明文字。阶段族序取
@@ -10,7 +10,7 @@ header_stroke 描边 + 白色加粗字）, 编号徽章 = 族 chevron 底 + 族 
 （不再叠数据色板的橙色强调）。
 
 确定性布局: 画布逻辑坐标 = 像素（dpi=100）, 画布宽随阶段数自动伸缩, 画布
-高按内容实际底部（最高说明块）+ 少量 padding 自顶向下推导（v7.8.0 修复
+高按内容实际底部（最高说明块）+ 少量 padding 自顶向下推导（1.2.0 修复
 底部大片空白带）, 中文字宽估算换行, 不依赖任何 GUI/字体测量, 输出可复现。
 阶段名/说明过长时自动缩小字号（下限 8.5/7.5pt）, 仍放不下打印 [警告] 溢出
 提示。
@@ -22,10 +22,10 @@ header_stroke 描边 + 白色加粗字）, 编号徽章 = 族 chevron 底 + 族 
     2. 复制到项目后改 STAGES 数据。
 
 版本:
-    v7.8.0: 迁移示意图色族体系——阶段框改实色标题条样式, 徽章改族
+    1.2.0: 迁移示意图色族体系——阶段框改实色标题条样式, 徽章改族
         chevron 底墨黑字, 说明文字墨黑加粗, --highlight 改族 accent 描边
         （弃 academic_blue 深底白字 + 橙色数据色强调）。
-    v7.7.0: 迁移 figkit + 三格式导出 + 中性色令牌。
+    1.1.0: 迁移 figkit + 三格式导出 + 中性色令牌。
 
 质量门:
     python scripts/figqa.py templates/figures/scripts/diagrams/make_diagram_stageflow.py \\
@@ -53,7 +53,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, FancyBboxPatch
 
-# ---- v7.8.0: 头部统一走共享库 figkit（样式/色族/导出/换行）----
+# ---- 1.2.0: 头部统一走共享库 figkit（样式/色族/导出/换行）----
 # figkit.py 位于本脚本上级 scripts/ 目录; 色族回退已内置于 figkit
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -205,7 +205,7 @@ def plot_stageflow(stages: list[tuple[str, str]],
         ax.text(centers[i], badge_cy, str(i + 1), ha="center", va="center",
                 fontsize=11.5, color=ink, fontweight="bold", zorder=5)
 
-    # 框间箭头（阶段框中线高度; 取左侧阶段的族 edge 色; v7.9.1 降重:
+    # 框间箭头（阶段框中线高度; 取左侧阶段的族 edge 色; 1.3.1 降重:
     # 连线退居二线, lw 1.6 + 小箭头头, 强调用色不用粗）
     for i in range(n - 1):
         ax.annotate(
@@ -216,7 +216,7 @@ def plot_stageflow(stages: list[tuple[str, str]],
                             shrinkA=0, shrinkB=0, mutation_scale=13),
         )
 
-    # 框下说明文字（不落色块; v7.9.1 字重层级制: 说明文字常规字重 + 次级色,
+    # 框下说明文字（不落色块; 1.3.1 字重层级制: 说明文字常规字重 + 次级色,
     # 行距 1.35 紧凑排版, 用建图前算好的行)
     for i, (lines, fs) in enumerate(cap_fit):
         h = len(lines) * fs * LINE_PITCH * 1.35

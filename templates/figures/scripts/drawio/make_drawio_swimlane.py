@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""draw.io 泳道流程图（drawio 模板包 · swimlane, v7.8.0 族化版）。
+"""draw.io 泳道流程图（drawio 模板包 · swimlane, 1.2.0 族化版）。
 
 横排 3-4 条泳道（数据层/模型层/求解层/应用层, 族序取 DIAGRAM_ORDER_GENERIC）:
 每条泳道为族 fill 浅底色带, 左端道名徽章（族 chevron 浅底 + 族 stroke 描边 +

@@ -10,7 +10,7 @@ cool_nature 色板（冷色 Nature/IEEE 期刊风）。
     2. 复制到项目后改 SCENARIOS/BASELINE 与 plot_robustness() 入参。
 
 约定:
-    - v7.7.0: 迁移 figkit + 三格式导出 + 中性色令牌。
+    - 1.1.0: 迁移 figkit + 三格式导出 + 中性色令牌。
     - 样式与色板统一经 scripts/figkit.py 加载（mathmodel.mplstyle + palettes.py,
       两者缺失时 figkit 内置等价内联回退）; 网格改 figkit.ygrid() 仅 y 向。
 
@@ -37,7 +37,7 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 
-# ---- v7.7.0: 头部统一走共享库 figkit（样式/色板/导出/网格）----
+# ---- 1.1.0: 头部统一走共享库 figkit（样式/色板/导出/网格）----
 # figkit.py 位于本脚本上二级 scripts/ 目录; 色板回退已内置于 figkit, 不再保留本文件副本
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -126,7 +126,7 @@ def plot_robustness(
     lo, hi = min(all_values), max(all_values)
     span = (hi - lo) or 1.0
     ax.set_ylim(lo - span * 0.15, hi + span * 0.28)
-    ygrid(ax)  # v7.7.0: 箱线/小提琴对比只留极淡 y 向网格
+    ygrid(ax)  # 1.1.0: 箱线/小提琴对比只留极淡 y 向网格
 
     # 基准参考线: 虚线横贯, 文字放在线上方右侧留白处
     ax.axhline(baseline, color=red, linestyle="--", linewidth=1.4)
@@ -153,7 +153,7 @@ def plot_robustness(
 
 
 def _save(fig, out_stem: str | None, default_name: str) -> tuple[Path, Path]:
-    """v7.7.0 经 figkit.save_fig 一次导出 PNG+SVG+PDF 三格式; 返回前两个路径。"""
+    """1.1.0 经 figkit.save_fig 一次导出 PNG+SVG+PDF 三格式; 返回前两个路径。"""
     if out_stem is None:
         out_stem = str(Path(tempfile.gettempdir()) / default_name)
     written = save_fig(fig, out_stem)

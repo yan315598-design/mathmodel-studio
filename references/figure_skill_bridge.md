@@ -4,28 +4,34 @@
 
 ---
 
-## 图表能力总路由（v7.10.0 起以此为准）
+## 图表能力总路由（1.4.0 起以此为准）
 
-mathmodel-studio 图表体系 = 自写模板库（下节）+ **vendor 内嵌的三个上游 skill 原样副本**
+mathmodel-studio 图表体系 = 自写模板库（下节）+ **vendor 内嵌的四个上游 skill / 项目原样副本**
 （`templates/figures/vendor/`, 出处与许可证见 `vendor/VENDOR.md`）。按需求路由:
 
 | 需求 | 首选 | 备选/说明 |
 |---|---|---|
-| **论文示意图/技术路线图/研究框架图/阶段流程图**（要密集信息架构、drawio 可编辑、答辩级质量） | `vendor/scibox-diagram/` 4 模板（content JSON 驱动: roadmap-5band / framework-3col / stageflow-3col / taskflow-land）, 体检走其自带 `scripts/check_layout.py` | 快速出轻量小图用自写 `render_drawio_pack.py` 6 模板（v7.9.1 两段式卡版, 落盘过 drawio_check 门禁）; matplotlib 直出 PNG 用 `render_diagram_pack.py` 4 模板 |
+| **论文示意图/技术路线图/研究框架图/阶段流程图**（要密集信息架构、drawio 可编辑、答辩级质量） | `vendor/scibox-diagram/` 4 模板（content JSON 驱动: roadmap-5band / framework-3col / stageflow-3col / taskflow-land）, 体检走其自带 `scripts/check_layout.py` | 快速出轻量小图用自写 `render_drawio_pack.py` 6 模板（1.3.1 两段式卡版, 落盘过 drawio_check 门禁）; matplotlib 直出 PNG 用 `render_diagram_pack.py` 4 模板 |
 | **照着参考图复刻示意图** | `vendor/scibox-diagram/references/replication.md` 高保真复刻路径（像素标定 + 四件中间产物 + ≥3 轮迭代） | — |
 | **数据图（论文正文 Type 3/4）** | 自写 `render_modeling_pack.py` 17 件（统一色板 + figqa/figure_lint 硬门） | 图型不在库内时走 `vendor/scibox-figure/`（cv-roc-ci / paired-raincloud / tpe-surface / marginal-grid 等差异图型, `scripts/render_template.py --list`） |
+| **复杂多面板论文主图（hero panel + insets, 证据链式构图）** | `vendor/icarus-figures/`: paperfig 包（§I 构图范式 P1–P6 + `examples/complex_panels.py` 三套范例照抄结构换数据） | 竞赛里定位"每篇 1 张主图", 不当默认风格; 版面紧张（页数贴线）时降级回单件模板组合 |
+| **物理场·动力学图（等高线场/流场/相图/轨迹/频谱/三元图）与网络集合流图（桑基/弦图/网络图/venn）** | `vendor/icarus-figures/` paperfig 48 函数直调（`contour_field` / `streamplot_field` / `phase_portrait` / `trajectory` / `spectrum` / `sankey` / `chord` / `network_graph` 等, 自写 17 件无对应） | ML 诊断（roc/pr/calibration/convergence）优先自写库, 缺件才走 icarus |
+| **TikZ 框架图/技术路线图（与正文同源 LaTeX, 嵌入真实方法对象而非纯方块箭头）** | `vendor/icarus-figures/examples/hero_tikz/` 5 个可编译范例 + 其 `references/framework-figures.md`（§K 原创独立 TikZ → `\includegraphics`, 零编译风险） | drawio 路线图（scibox-diagram / 自写 6 件）仍是默认; xelatex/ctex 链下 TikZ 中文节点需先冒烟编译一张 |
 | **答辩 PPT / 网页 / 海报级图表** | `vendor/diagram-design/`（39 类编辑级 HTML/SVG, 4px 网格 + 焦点色纪律） | 不进 LaTeX 正文; 中文内容注意其字体链为英文系, 需自行换栈 |
 | **交互式 HTML** | `math-figure-generator` 的 plotly/pyecharts 轨道 | — |
 
-> **开源分发版注意（v2.0.0）**：`vendor/scibox-diagram/` 与 `vendor/scibox-figure/` 因上游未附正式 LICENSE，**不进入 git 公开仓库与分发包**（`vendor/diagram-design/` 为 MIT，正常随附）。克隆/分发版中上述两个目录不存在时，路由自动降级：论文示意图走自写 drawio 6 模板（`render_drawio_pack.py`）+ matplotlib 4 模板（`render_diagram_pack.py`）；差异数据图型（cv-roc-ci / tpe-surface 等）在分发版不可用，或自行获取 sci-box 放入 `vendor/` 后恢复完整路由。
+> **开源分发版注意（v2.0.0, v2.3.0 增补）**：`vendor/scibox-diagram/` 与 `vendor/scibox-figure/` 因上游未附正式 LICENSE，**不进入 git 公开仓库与分发包**（`vendor/diagram-design/` 与 `vendor/icarus-figures/` 均为 MIT，正常随附）。克隆/分发版中上述两个目录不存在时，路由自动降级：论文示意图走自写 drawio 6 模板（`render_drawio_pack.py`）+ matplotlib 4 模板（`render_diagram_pack.py`）；差异数据图型（cv-roc-ci / tpe-surface 等）在分发版不可用，或自行获取 sci-box 放入 `vendor/` 后恢复完整路由。icarus-figures 路由在分发版保持可用；其使用约束（不启用 journal 列宽 / 产物出 vendor / 双质量门）见 `vendor/VENDOR.md` 第 6 条。
 
 **vendor 使用纪律**: 不改写 vendor 内文件; scibox-figure 默认把输出写在其自身
 `绘图复刻/outputs/` 目录, 出图后把产物移动到 `paper/figures/` 或 `results/`
-对应位置, 不要把论文引用指向 vendor 内部路径。
+对应位置, 不要把论文引用指向 vendor 内部路径。icarus-figures 路由的图
+（paperfig / TikZ）同样适用: 先读其 `.claude/skills/icarus-figures/SKILL.md`
+的硬规则（可复现脚本 + 三格式矢量 + 单位/不确定度上屏）, 产物落 cwd,
+再过本 skill figqa/figure_lint 门。
 
 ---
 
-## 本地图表模板库 (v7.7.0 自写版, 优先复用)
+## 本地图表模板库 (1.1.0 自写版, 优先复用)
 
 **在调用外部 skill 之前, 先检查 `<skill>/templates/figures/scripts/` 是否有现成模板可用.** 现库 17 件数据图模板（`templates/`）+ 4 件示意图模板（`diagrams/`）+ 6 件 drawio 可编辑模板（`drawio/`），全部为本 skill 自写的确定性脚本, 统一接入 `templates/figures/style/palettes.py` 色板与 mathmodel.mplstyle, 直接用能节省时间且保证可复现.
 
@@ -38,13 +44,13 @@ mathmodel-studio 图表体系 = 自写模板库（下节）+ **vendor 内嵌的�
 | `robustness` | 多场景稳健性对比 (箱线/小提琴+参考线) | 稳健性/多场景分析 (Stage 6) |
 | `flowchart` | 技术路线图 (确定性布局+中文换行) | 问题分析章/Our Work 流程图 |
 
-> 下表为初始 4 件历史常用模板；**完整 17 件数据图模板清单及别名以 `render_modeling_pack.py --list` 为准**（v7.7.0 新增 roc-pr / taylor-diagram / raincloud / circular-heatmap / confusion-matrix / shap-summary / chord-diagram 7 件）。
+> 下表为初始 4 件历史常用模板；**完整 17 件数据图模板清单及别名以 `render_modeling_pack.py --list` 为准**（1.1.0 新增 roc-pr / taylor-diagram / raincloud / circular-heatmap / confusion-matrix / shap-summary / chord-diagram 7 件）。
 
 **使用约定**:
 - 调用 `render_modeling_pack.py --list` 看完整清单（含每个模板推荐的 figqa 命令）
 - 每个模板经 `figkit.save_fig()` 一次落盘 PNG(300dpi) + SVG + PDF 三格式, 确定性种子可复现
 - 模板自带"示例数据", 替换为真实结果数据后再进论文; 色板与样式默认取 `templates/figures/style/`, 自定义须符合 `references/color_typology.md`
-- 出图后按 v7.5.0 硬门跑 figqa 与 `scripts/figure_lint.py`; figqa 命令**分模板**:
+- 出图后按 0.7.5 硬门跑 figqa 与 `scripts/figure_lint.py`; figqa 命令**分模板**:
   - `flowchart`（技术路线图）: 盒内文字是合法版式, 固定加豁免 `python <skill>/scripts/figqa.py <图脚本/目录> --strict --allow-box-labels`
   - 其余模板（tornado / allocation / robustness）及 math-figure-generator 产出: `python <skill>/scripts/figqa.py <图脚本/目录> --strict`
 
@@ -131,7 +137,7 @@ Stage 9 或用户要求"终审图表"时, 使用 `nature-figure` 的质检思想
 - 同一模型或方法在全文是否保持同一颜色。
 - 是否有可编辑 SVG/PDF 版本。
 
-### 3.5 示意图双门: 机器体检 + 渲染目检（v7.9.1, 流程图/框架图/路线图必走）
+### 3.5 示意图双门: 机器体检 + 渲染目检（1.3.1, 流程图/框架图/路线图必走）
 
 机器体检只能查"硬伤"（溢出/越界/重叠/穿盒），查不出"平庸"（密度低、
 层级平、重心散）。所有示意图（流程图/架构图/技术路线图/机理图）进论文前
@@ -210,15 +216,15 @@ Stage 9 或用户要求"终审图表"时, 使用 `nature-figure` 的质检思想
 
 > v6.4 新增字段 `template_used`: 记录每张图用了哪个本地模板 (路径相对 skill 根). 没用本地模板 (纯 math-figure-generator 生成) 时填 `null`, 方便 stage_09_review 回溯图表来源.
 
-> v7.4.0 新增字段 `palette`: 该图使用的色板, 取 `templates/figures/style/palettes.py` 八套之一 (v7.7.0: academic_blue/cool_nature/muted_earth/okabe_ito + npg/aaas/lancet/nejm), 选型规则见 `references/color_typology.md`.
+> 0.7.4 新增字段 `palette`: 该图使用的色板, 取 `templates/figures/style/palettes.py` 八套之一 (1.1.0: academic_blue/cool_nature/muted_earth/okabe_ito + npg/aaas/lancet/nejm), 选型规则见 `references/color_typology.md`.
 
-> v7.4.0 两套 schema 不混用: **图表计划** (`generate_paper_plan.py` 输出, 进 decision_log) 五要素 = role / supports_claim / upstream_data / required_checks / palette; **生成输出契约** (上图 Type 3 论文图 JSON) 五要素 = claim_supported / source_artifact / caption / qa / palette. 计划描述"要什么图", 契约描述"生成了什么图", 字段名各自独立, 不得互相搬用.
+> 0.7.4 两套 schema 不混用: **图表计划** (`generate_paper_plan.py` 输出, 进 decision_log) 五要素 = role / supports_claim / upstream_data / required_checks / palette; **生成输出契约** (上图 Type 3 论文图 JSON) 五要素 = claim_supported / source_artifact / caption / qa / palette. 计划描述"要什么图", 契约描述"生成了什么图", 字段名各自独立, 不得互相搬用.
 
 ---
 
-## 图原型四分类（v7.5.0 新增）
+## 图原型四分类（0.7.5 新增）
 
-> v7.4.0 的 Type 1-4 按**去处**分（诊断/对比/论文/附录）; 图原型按**画布构成**分, 回答"这张图的版面长什么样"。两者正交: 每张 Type 3 论文图都要再登记一个原型。每个图表计划（五要素 schema）新增备注 `layout_prototype` 字段登记原型。
+> 0.7.4 的 Type 1-4 按**去处**分（诊断/对比/论文/附录）; 图原型按**画布构成**分, 回答"这张图的版面长什么样"。两者正交: 每张 Type 3 论文图都要再登记一个原型。每个图表计划（五要素 schema）新增备注 `layout_prototype` 字段登记原型。
 
 | 原型 | 画布构成 | 适用 | 典型例 |
 |---|---|---|---|
@@ -233,9 +239,9 @@ Stage 9 或用户要求"终审图表"时, 使用 `nature-figure` 的质检思想
 2. 定量网格里每个 panel 证据贡献不同才并列; 同质 panel（只换了个参数值）合并为一个 panel + 图例。
 3. 原型登记后改版面构成 = 改图表计划, 走计划修订, 不只改脚本。
 
-## 导出三格式纪律（v7.5.0 新增, v7.7.0 兑现）
+## 导出三格式纪律（0.7.5 新增, 1.1.0 兑现）
 
-论文图统一一次导出三格式。**v7.7.0 起由 `figkit.save_fig(fig, out_prefix)` 落盘**：默认一次写出 `{prefix}.png`（300dpi）+ `{prefix}.svg` + `{prefix}.pdf` 三文件并返回路径列表，模板脚本与手写图统一走这一入口，不再逐图手写 `savefig`。
+论文图统一一次导出三格式。**1.1.0 起由 `figkit.save_fig(fig, out_prefix)` 落盘**：默认一次写出 `{prefix}.png`（300dpi）+ `{prefix}.svg` + `{prefix}.pdf` 三文件并返回路径列表，模板脚本与手写图统一走这一入口，不再逐图手写 `savefig`。
 
 | 格式 | 用途 | 关键设置 |
 |---|---|---|
@@ -243,6 +249,6 @@ Stage 9 或用户要求"终审图表"时, 使用 `nature-figure` 的质检思想
 | PDF | LaTeX 排版嵌入 | `pdf.fonttype = 42`（TrueType, 嵌入字体可复制可检索） |
 | PNG 300dpi | 存档 / Word 稿 / 检查预览 | `savefig.dpi = 300` |
 
-两项字体设置 `templates/figures/style/mathmodel.mplstyle` 已内置（v7.5.0 起补齐 `svg.fonttype: none` 与 `pdf.fonttype: 42`）, 加载 mplstyle 后无需逐图设置; 用其他样式出图时须手动补这两项。设置动机: 文字不转路径 → 改稿期改字号/措辞**不用重渲染**, 直接在 SVG/PDF 编辑器里改; 重渲染意味着重跑数据链, 违反最小改动纪律。
+两项字体设置 `templates/figures/style/mathmodel.mplstyle` 已内置（0.7.5 起补齐 `svg.fonttype: none` 与 `pdf.fonttype: 42`）, 加载 mplstyle 后无需逐图设置; 用其他样式出图时须手动补这两项。设置动机: 文字不转路径 → 改稿期改字号/措辞**不用重渲染**, 直接在 SVG/PDF 编辑器里改; 重渲染意味着重跑数据链, 违反最小改动纪律。
 
-输出契约的 `output_files` 三格式齐列（svg/pdf/png），直接取 `save_fig()` 返回的文件路径列表；至少 svg + png 两联，要求 LaTeX 嵌入时 pdf 同批落盘（v7.7.0 起 `save_fig` 默认已含 pdf，不再需要稿后补导出）。
+输出契约的 `output_files` 三格式齐列（svg/pdf/png），直接取 `save_fig()` 返回的文件路径列表；至少 svg + png 两联，要求 LaTeX 嵌入时 pdf 同批落盘（1.1.0 起 `save_fig` 默认已含 pdf，不再需要稿后补导出）。

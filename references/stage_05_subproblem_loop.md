@@ -20,7 +20,7 @@ next: stage_06_robustness
 
 为每个子问题 Qi 跑一遍完整的 mini-pipeline: **建模 → 求解 → 子结果分析 → 子灵敏度**, 同时**强制建立子问题间的复用链** (winning_patterns §5)。这是论文的主体, 也是最容易翻车的阶段。
 
-**并行加速 (v7.4.0 新增)**: 题面无依赖的 Qi（见 stage 2 的 `subproblem_dependency`）可按 `references/parallel_dispatch.md` 派子 agent 并行求解——并行前先冻结 stage 4 符号表与假设表（写锁）, 合并时做符号/单位/编号冲突检查; 有依赖的 Qi（如 Q3 用 Q2 的输出）保持串行, 沿用本章单 Qi 循环。
+**并行加速 (0.7.4 新增)**: 题面无依赖的 Qi（见 stage 2 的 `subproblem_dependency`）可按 `references/parallel_dispatch.md` 派子 agent 并行求解——并行前先冻结 stage 4 符号表与假设表（写锁）, 合并时做符号/单位/编号冲突检查; 有依赖的 Qi（如 Q3 用 Q2 的输出）保持串行, 沿用本章单 Qi 循环。
 
 ---
 
@@ -30,6 +30,8 @@ next: stage_06_robustness
 - stage 3 选定模型 + toy demo 通过
 - stage 4 假设/符号/术语
 - (Q2 / Q3 进入时) 上游 Qi-1 的结果
+
+**加载时核对 (v2.3.0)**: 进入 stage 5 前先核对 `decision_log.stages.5.qi_count` 与题面实际子问数是否一致（该值在 stage 2 分解确认后按实际子问数写入，见 `references/stage_02_analysis.md`）；不一致时不要开始循环，先回到 stage 2 修正分解与 `qi_count`/`qi_weights`，否则 gate 5 的三来源对齐检查必然拦截。
 
 ### 三赛子问级案例约束
 
@@ -44,12 +46,12 @@ next: stage_06_robustness
 
 ## 产出
 
-- 每 Qi 的: 数学模型完整公式 + 求解代码 + 数值结果 + ≥2 张图 + 物理意义讨论 + **章节草稿卡** (`paper_workspace/sections/q{i}_draft.md`, 300-600 字 + 公式草稿 + 图注, 趁热在上下文最新鲜时写)
+- 每 Qi 的: 数学模型完整公式 + 求解代码 + 数值结果 + 物理意义讨论 + **章节草稿卡** (`paper_workspace/sections/q{i}_draft.md`, 300-600 字 + 公式草稿 + 图注, 趁热在上下文最新鲜时写)。图表口径: 默认每问 ≥2 图；经 D.1 显式确认且 checkpoint 登记 exception/reason 的 Qi 可用 0/1 图 + 表格证据替代，不计扣分。
 - 每问追加一行 `state/evidence_ledger.json` (见 E2/E3, stage 8 paper_plan 的 evidence_ledger 子集, 供 trace_claims 审计)
 - 跨子问题: 复用链显式建立 (Q3 引用 Q1/Q2)
 - 写入 `decision_log.stages.5.sub_problems.{Q1, Q2, Q3, ...}`
 
-图表生成必须遵守 `references/figure_skill_bridge.md` 和 `references/knowledge_workflow_v73.md`：先写 `role / supports_claim / upstream_data / required_checks`，再用 `math-figure-generator` 生成 Type 3 论文图或 Type 4 附录图，不把默认 matplotlib 草图直接放进正文。
+图表生成必须遵守 `references/figure_skill_bridge.md` 和 `references/knowledge_workflow.md`：先写 `role / supports_claim / upstream_data / required_checks`，再用 `math-figure-generator` 生成 Type 3 论文图或 Type 4 附录图，不把默认 matplotlib 草图直接放进正文。
 
 ---
 
@@ -61,6 +63,7 @@ for Qi in [Q1, Q2, ..., Qn]:
     B. 求解实现 (2-4h)
     C. 结果验证 (30 min)
     D. 子灵敏度 (1h, optional 但建议)
+    D.1 图表选择菜单 (必停点, 用户拍板后才出图, 见下)
     E. 物理意义 (15 min)
     E2. 章节草稿卡 (20-30 min, write-as-you-solve, 见下)
     E3. evidence_ledger 追加 (5 min)
@@ -196,7 +199,7 @@ else:  # 贪心基线利润为 0 时相对提升无定义, 输出绝对差并标
 
 ### D. 子灵敏度 (1h, 强烈建议)
 
-只对本子问题做局部灵敏度 (全局留 stage 6):
+只对本子问题做局部灵敏度 (全局留 stage 6)。**本步只计算并落盘结果, 不出图**——图表要等 D.1 菜单用户确认后在 D.2 生成:
 
 ```python
 # 对单价 p 做 ±10% 扰动
@@ -208,16 +211,29 @@ for d in deltas:
     profit_d = (p_perturb - c) @ x_star  # 用同一 x*, 看新参数下利润
     profits.append(profit_d)
 
-plt.plot(deltas, profits, 'o-')
-plt.xlabel("p 扰动比例")
-plt.ylabel("利润 (元)")
-plt.title("Q1 子灵敏度: 单价扰动")
-plt.savefig("figures/Q1_sensitivity.png", dpi=300)
+# 只落盘机器可读结果; 画图在 D.1 确认后的 D.2 做
+pd.DataFrame({"delta": deltas, "profit": profits}).to_csv(
+    "results/Q1_sensitivity.csv", index=False)
 ```
+
+### D.1 图表选择菜单 (必停点, v2.3.0)
+
+每个子问 Qi 求解并验证通过后（Step C 通过、进入图表生成之前，与 E2 草稿卡写作相对顺序自定但必须在出图前），agent **必须**向用户呈现"图表选择菜单"，用户选定后才生成图表：
+
+1. **本问图表数量**: `1) 0 张  2) 1 张  3) 2 张  4) 3+ 张  5) 让我决定`（0 张意味着该问以表格呈现结果，需用户显式选）。
+2. **样式风格**（选项取自 `references/figure_skill_bridge.md` 顶部总路由表）: 自写 17 件数据图（统一色板）/ vendor icarus 多面板主图 / 物理场·网络流图 / 示意图 drawio / TikZ 框架图，菜单给编号 + 兜底"让我决定"。
+
+**菜单确认前禁止任何正式图落盘**（"不问不出图"）。诊断图（调试残差/收敛等）如确需，仅存 `results/figures_diagnostic/` 且**不可进稿**。
+
+**0/1 张的硬门例外机制**: L1 rubric 的硬门是每问 ≥2 图（见下方 rubric 表维度 4）。用户选 0/1 张时 agent 必须先提示该硬门与扣分风险；用户坚持则放行，但 `figure_menu["Q<i>"]` 条目须追加 `"count": <0|1>, "exception": true` 与理由（条目形如 `{"status": "answered", "asked_at": "<ISO>", "answer": "1 张", "source": "chat", "count": 1, "exception": true, "reason": "<用户理由>"}`），并在 `真源.md` 图表登记表同步标注例外；L1 评分时经用户确认的例外不计入图数扣分。
+
+用户选择写入 `decision_log.checkpoints.figure_menu["Q<i>"]`，条目形如 `{"status": "answered", "asked_at": "<ISO>", "answer": "2 张, icarus 多面板主图", "source": "chat", "count": 2}`（count 为该问图表数量，int 0-9 必填；source 缺失或非 chat/user_cli 视为未答，check_gate 拦截——runtime 侧经 CLI answer 登记的条目 source 为 user_cli，同形）。**不问不出图**——这是五个必停点之一，`check_gate.py --gate 5` 与 `--checkpoint figure_menu.Q<n>` 会逐问校验。
+
+**与 Stage 2 图表规格冻结的衔接**: stage 2 冻结的是规格框架（真源.md 图表登记表：每图回答什么问题 / 数据源 / 色板 / 类型）；本节菜单是逐问落实（数量 + 样式路由的最终确认）。两者不冲突——菜单结果若与登记表规格冲突，以菜单为准并回写登记表修订记录。
 
 ### D.2 图表契约与生成 (30 min)
 
-每个 Qi 至少生成:
+每个 Qi 的图表数量: 默认每问 ≥2 图（典型组合如下）；经 D.1 显式确认且 checkpoint 登记 exception/reason 的 Qi 可用 0/1 图 + 表格证据替代，不计扣分。
 - 1 张 Type 3 论文图: 支撑本问核心结论。
 - 1 张 Type 2/Type 4 图: 用于方法对比或附录稳健性。
 
@@ -235,7 +251,7 @@ CUMCM 或研究生赛命中案例存在 `figure_story` 时，优先将图表组�
 - Output: SVG primary + PNG secondary
 ```
 
-随后按 `math-figure-generator` 的规范生成 `paper/figures/*.svg` 和 `paper/figures/*.png`。若只是调试残差、异常值或收敛, 标为 Type 1 诊断图并留在 `results/figures_diagnostic/`, 不放正文。
+随后按 `math-figure-generator` 的规范生成 `paper/figures/*.svg` 和 `paper/figures/*.png`。Step D 的子灵敏度图（若 D.1 菜单为该问选定了灵敏度图）在此步从 `results/Qi_sensitivity.csv` 生成。若只是调试残差、异常值或收敛, 标为 Type 1 诊断图并留在 `results/figures_diagnostic/`, 不放正文。
 
 ### E. 物理意义讨论 (15 min)
 
@@ -306,7 +322,7 @@ CUMCM 或研究生赛命中案例存在 `figure_story` 时，优先将图表组�
 | 1. 模型与问题契合 | 目标/变量/约束 与题面 1:1 |
 | 2. 数学严谨性 | 符号一致, 推导无跳跃 |
 | 3. 求解正确性 | 代码运行 + sanity check 通过 |
-| 4. 结果可视化 | ≥2 图 (流程+结果) + 1 表 |
+| 4. 结果可视化 | 默认每问 ≥2 图 (流程+结果) + 1 表；经 D.1 显式确认且 checkpoint 登记 exception/reason 的 Qi（`figure_menu` 条目带 `exception: true` 与理由, 真源.md 图表登记表已标注）可用 0/1 图 + 表格证据替代，不计扣分 |
 | 5. 物理意义讨论 | ≥1 段, 含 baseline 对比 |
 
 ## L1 Rubric (Stage-level)
@@ -316,7 +332,7 @@ CUMCM 或研究生赛命中案例存在 `figure_story` 时，优先将图表组�
 | 1. 子问题完整性 | 所有 Qi 都跑完 |
 | 2. 复用链 | Q3 显式引用 Q1/Q2 (若题目允许) |
 | 3. 符号一致 | 全 Qi 用同一套 stage 4 符号 |
-| 4. 视觉密度 | 每 Qi ≥2 图 + 1 表 |
+| 4. 视觉密度 | 默认每问 ≥2 图；经 D.1 显式确认且 checkpoint 登记 exception/reason 的 Qi 可用 0/1 图 + 表格证据替代，不计扣分 |
 | 5. 时间预算 | 未超 stage 5 预算 30% |
 
 ## 常见坑
@@ -378,6 +394,8 @@ python scripts/score_artifact.py --mode aggregate_qi --qi-results state/qi_resul
 # 输出: {verdict, weighted_min, weighted_mean, qi_status, review_qis, refine_qis}
 ```
 
+**评分落盘与 gate 5 双路径口径 (v2.3.0)**: `aggregate_qi` 只打印聚合结果、不写回 `decision_log.scores["5"]`；agent 须把 `qi_status`/`review_qis`/`refine_qis` 手工写回 `decision_log.stages["5"]`。`check_gate.py --gate 5` 的评分检查按双路径放行：`scores["5"]`（stage-level，跑过 `--stage 5` 不带 variant 的 critique）非空且结构合法，**或** `scores["5_per_qi"]`（每问 `--variant per_qi --qi-id Q<i>` 落盘）非空、覆盖全部 Qi 且结构合法——满足其一即可。
+
 脚本出 `verdict` 后, agent **问用户一次**确认 (Claude Code: AskUserQuestion; Codex CLI: 编号列表):
 
 ```
@@ -393,9 +411,11 @@ python scripts/score_artifact.py --mode aggregate_qi --qi-results state/qi_resul
 
 用户回复后 agent 自动执行, **不要**让用户编辑 decision_log 或重跑脚本。
 
+**qi_verdict 的登记口径 (v2.3.0, 防伪造逐问确认)**: qi_verdict 是**逐问即问即登记**的——每个 Qi 的 per-Qi L1 评分产出该问 verdict 时（refine_partial 则在问清修哪问之后），就向用户确认该问结论并写入 `decision_log.checkpoints.qi_verdict["Q<i>"]`（必停点, 条目形如 `{"status": "answered", "asked_at": "<ISO>", "answer": "Q1 pass, 用户确认", "source": "chat"}`；source 缺失或非 chat/user_cli 视为未答，check_gate 拦截）。**聚合后的整体决策**（如本节编号菜单的选择）登记进 `decision_log.stages["5"]` 既有字段（`qi_status` 与 `events.log`），**不得复制登记进 qi_verdict 的任何条目**——一次问答复制到所有 Qi 等于伪造逐问确认。`check_gate.py --gate 5` 按 Qi 逐问校验 qi_verdict，见 SKILL.md 必停点协议。
+
 ### qi_weights 调整时机
 
-默认 `[1.0] * qi_count` 由 stage 1 锁题后初始化。用户可在 stage 5 第一个 Qi 完成时根据题目重要性调整 (e.g., `[1.0, 1.5, 1.0]` 若 Q2 是核心)。调整后写回 `decision_log.stages.5.qi_weights`, 后续聚合按新权重。
+默认 `[1.0] * qi_count` 由 stage 2 分解确认后按实际子问数重建（`decision_log.stages.5.qi_count` 取 stage 2 分解出的实际子问数，runtime 侧由 `confirm_qi_count` 原子迁移并记 `qi_count_confirmed` 事件）。用户可在 stage 5 第一个 Qi 完成时根据题目重要性调整 (e.g., `[1.0, 1.5, 1.0]` 若 Q2 是核心)。调整后写回 `decision_log.stages.5.qi_weights`, 后续聚合按新权重。
 
 ---
 

@@ -148,8 +148,7 @@ next: stage_02_analysis
 
 **同步写 root 字段**:
 - `decision_log.task_type` ← `topic_specs.json[selected].task_type_key` (e.g. `A_optimization` for cumcm-A)
-- `decision_log.stages.5.qi_count` ← `topic_specs.json[selected].expected_subproblem_count` 中位 (供 stage 5 时间预算 + per-Qi 加权初始化)
-- `decision_log.stages.5.qi_weights` ← `[1.0] * qi_count` (默认均匀, 用户后续可在 stage 5 调整)
+- `decision_log.problem_meta.estimate_qi_count` ← 预估子问数（可选）: `topic_specs.json[selected].expected_subproblem_count` 的中位（区间且中位非整数十则不写；specs 无该字段不写）。仅为预估，供 stage 2 分解时参考。**stage 1 不再直接写 `stages.5.qi_count` / `qi_weights`**——stage 5 实际使用的 `qi_count` 在 stage 2 分解确认后按实际子问数写入（见 `stage_02_analysis.md`），gate 5 以该实际值为准。
 
 **锁定承诺**: 24h 内不允许更改。如必须更改 (附件数据完全不可用等),需 L2 强触发 + 用户二次确认。
 

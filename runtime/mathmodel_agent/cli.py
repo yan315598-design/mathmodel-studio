@@ -1,4 +1,6 @@
-"""CLI 入口: python -m mathmodel_agent run --workspace <dir> [--mock] ..."""
+"""CLI 入口: python -m mathmodel_agent run --workspace <dir> [--mock] ...
+            python -m mathmodel_agent answer --workspace <dir> --key <key> --answer "<回答>"
+"""
 from __future__ import annotations
 
 import argparse
@@ -10,13 +12,13 @@ from .config import AgentConfig
 from .llm import LiteLLMClient
 from .loop import StageDriver
 from .mockllm import MockLLM
-from .state import DecisionLog
+from .state import DecisionLog, StateSaveError
 
 DEFAULT_SKILL_ROOT = Path(__file__).resolve().parents[2]
 # 对齐 references/workspace_protocol.md 的工作区骨架
 WORKSPACE_DIRS = ("state", "results", "figures", "code", "paper_workspace",
                   "_archive", "inputs", "_runtime")
-# 退出码: 0 成功; 2 参数/一致性错误; 3 质量门 blocked; 4 状态写盘失败
+# 退出码: 0 成功; 2 参数/一致性错误; 3 质量门 blocked 或 check_gate 门禁 paused; 4 状态写盘失败
 EXIT_USAGE, EXIT_BLOCKED, EXIT_SAVE_FAILED = 2, 3, 4
 
 
@@ -43,6 +45,22 @@ def build_parser() -> argparse.ArgumentParser:
                      help="只打印 prompt 摘要, 不调用 LLM")
     run.add_argument("--force", action="store_true",
                      help="允许 --from-stage 与 state.current_stage 不一致 (记 backtrack 事件)")
+    answer = sub.add_parser("answer", help="人工应答必停点 (trusted 写入 checkpoints)")
+    answer.add_argument("--workspace", required=True, help="工作区目录 (一题一目录)")
+    answer.add_argument("--key", required=True,
+                        help="必停点键: kickoff_5q / analysis_confirm / card_decision / "
+                             "figure_menu.Q<n> / qi_verdict.Q<n>")
+    answer.add_argument("--answer", required=True, help="用户对该必停点的回答")
+    answer.add_argument("--note", default=None, help="可选备注, 随条目保存")
+    answer.add_argument("--count", type=int, default=None,
+                        help="figure_menu.Q<n> 专用: 该问图表数量 (0-9 的整数)")
+    answer.add_argument("--exception", action="store_true",
+                        help="figure_menu.Q<n> 专用: D.1 例外确认标记 (count≤1 时必须)")
+    answer.add_argument("--reason", default=None,
+                        help="figure_menu.Q<n> 专用: D.1 例外理由 (count≤1 时必须非空)")
+    answer.add_argument("--force", action="store_true",
+                        help="人工管理覆盖: 忽略 pending_checkpoint 匹配要求、"
+                             "允许覆盖已有 answered 值 (会清除 pending)")
     return parser
 
 
@@ -79,7 +97,58 @@ def cmd_run(args: argparse.Namespace) -> int:
     print(f"\n[done: {status}] competition={state.data.get('competition')} "
           f"current_stage={state.data.get('current_stage')} "
           f"tokens={budget.get('tokens_used')}/{budget.get('tokens_cap')}")
-    return {"blocked": EXIT_BLOCKED, "save_failed": EXIT_SAVE_FAILED}.get(status, 0)
+    # paused = check_gate 门禁拦截或必停点待人工应答, 与 blocked 同级停机
+    if status == "paused":
+        pending = state.data.get("pending_checkpoint")
+        if pending:
+            print(f"必停点待人工应答 (pending: {pending})。运行: "
+                  f"python -m mathmodel_agent answer --workspace <dir> "
+                  f"--key {pending} --answer \"<用户回答>\" 后重跑 run")
+        else:
+            print("check_gate 门禁未放行: 补齐缺失项 (必停点问答/scores 落盘) 后重跑 run")
+    return {"blocked": EXIT_BLOCKED, "paused": EXIT_BLOCKED,
+            "save_failed": EXIT_SAVE_FAILED}.get(status, 0)
+
+
+def cmd_answer(args: argparse.Namespace) -> int:
+    """answer 子命令: 人工应答必停点, trusted 路径写入 checkpoints 后提示重跑 run。"""
+    workspace = Path(args.workspace).resolve()
+    state = DecisionLog.load(workspace)
+    if state is None:
+        print(f"[FAIL] {workspace / 'state' / 'decision_log.json'} 不存在; 先 run 初始化工作区")
+        return EXIT_USAGE
+    has_structured = (args.count is not None or args.exception or args.reason is not None)
+    if has_structured and not args.key.startswith("figure_menu.Q"):
+        print(f"[FAIL] --count/--exception/--reason 仅对 figure_menu.Q<n> 键有效 "
+              f"(当前键: {args.key!r})")
+        return EXIT_USAGE
+    pending = state.data.get("pending_checkpoint")
+    if pending != args.key and not args.force:
+        if pending is None:
+            print(f"[FAIL] 当前无待应答必停点 (pending_checkpoint 缺失)。"
+                  f"answer 只接受流程发起的 checkpoint_request: 先由 run 在必停点暂停, "
+                  f"再针对 pending 键作答; 人工管理覆盖请加 --force")
+        else:
+            print(f"[FAIL] --key {args.key} 与待应答必停点 (pending: {pending}) 不匹配。"
+                  f"应针对 pending 键作答; 人工管理覆盖请加 --force")
+        return EXIT_USAGE
+    if args.force:
+        print(f"[警告] --force 人工管理覆盖: 跳过 pending 匹配校验"
+              f"{'并覆盖已有登记' if state.checkpoint_is_answered(args.key) else ''}, "
+              f"并清除 pending_checkpoint (原值: {pending!r})")
+    try:
+        state.record_checkpoint(args.key, args.answer, note=args.note,
+                                force=args.force, count=args.count,
+                                exception=args.exception, reason=args.reason)
+        if args.force:
+            state.data.pop("pending_checkpoint", None)
+        state.save()
+    except (ValueError, StateSaveError) as exc:
+        print(f"[FAIL] {exc}")
+        return EXIT_USAGE
+    print(f"[ok] checkpoints.{args.key} 已登记 (source=user_cli); "
+          f"重跑 run 从 paused 处继续")
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -89,6 +158,8 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.command == "run":
         return cmd_run(args)
+    if args.command == "answer":
+        return cmd_answer(args)
     return EXIT_USAGE
 
 

@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[extras,dev]"
+      - name: Run tests
+        run: |
+          set +e
+          pytest -q 2>&1 | tee pytest.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            msg="$(printf 'pytest failed on Python %s\n' '${{ matrix.python-version }}'; tail -n 80 pytest.log)"
+            msg="${msg//'%'/'%25'}"
+            msg="${msg//$'\r'/'%0D'}"
+            msg="${msg//$'\n'/'%0A'}"
+            echo "::error title=pytest failed::$msg"
+          fi
+          exit "$status"
+      - name: Render galleries (smoke)
+        run: |
+          python examples/gallery.py
+          python examples/archetypes_gallery.py
+          python examples/paradigms_gallery.py
+          python examples/modern_gallery.py
+          python examples/before_after.py
+          python examples/scientific_gallery.py
+          python examples/showcase_gallery.py
+          python examples/advanced_gallery.py
+          python examples/coverage_gallery.py
+          python examples/complex_panels.py
+          python examples/domain_showcases.py
+          python examples/rich_gallery.py

@@ -12,7 +12,7 @@ next: stage_00_kickoff
 
 # Stage -1 — 赛前兵检 (T-7 ~ T-1 天)
 
-> v7.4.0 新增：把"赛中才发现环境/模板翻车"的风险前移到赛前一次性解决。
+> 0.7.4 新增：把"赛中才发现环境/模板翻车"的风险前移到赛前一次性解决。
 
 **定位**: 比赛开始前 T-7 ~ T-1 天运行一次 | **不消耗赛中时间预算** | **输出**: `state/preseason_report.json`
 
@@ -20,7 +20,7 @@ next: stage_00_kickoff
 
 ## 为什么需要
 
-历史教训集中在环境侧: 早年用过的一批第三方 LaTeX 模板存在编译 bug, 都是赛中第一次编译才暴露, 每次损失 1-3 小时（v7.5 路线 A 已剥离全部第三方模板, 换为 6 套自写模板: cumcm / huaweibei / huashubei / mcm / diangong / apmcm, 均随仓库预编译验证过）。同类风险还有: solver 缺失（GLPK_MI / HIGHS）、中文工具链没装、pypdf 缺失导致页数检查失效。兵检的目标 = 开赛前把这些问题全部暴露并给出绕过方案, 让 Stage 0-9 不再被环境问题打断。
+历史教训集中在环境侧: 早年用过的一批第三方 LaTeX 模板存在编译 bug, 都是赛中第一次编译才暴露, 每次损失 1-3 小时（0.7.5 路线 A 已剥离全部第三方模板, 换为 6 套自写模板: cumcm / huaweibei / huashubei / mcm / diangong / apmcm, 均随仓库预编译验证过）。同类风险还有: solver 缺失（GLPK_MI / HIGHS）、中文工具链没装、pypdf 缺失导致页数检查失效。兵检的目标 = 开赛前把这些问题全部暴露并给出绕过方案, 让 Stage 0-9 不再被环境问题打断。
 
 ---
 
@@ -95,7 +95,7 @@ pdflatex -interaction=nonstopmode main.tex    # 英文赛 (仅 mcm)
 # 通过标准: 生成 main.pdf 且退出码 0; 记录 warning/error 摘要进报告
 ```
 
-**6 套自写模板预编译状态**: v7.5 起仓库内 6 套模板（cumcm / huaweibei / huashubei / mcm / diangong / apmcm）全部为本项目自写资产（ctexart / article 骨架, 无第三方 cls 依赖）, 均已随仓库预编译验证。本机兵检仍须重跑一次空编译——字体（Linux 下中文字体缺失是常见翻车点）、TeX 发行版版本差异只能本机暴露。
+**6 套自写模板预编译状态**: 0.7.5 起仓库内 6 套模板（cumcm / huaweibei / huashubei / mcm / diangong / apmcm）全部为本项目自写资产（ctexart / article 骨架, 无第三方 cls 依赖）, 均已随仓库预编译验证。本机兵检仍须重跑一次空编译——字体（Linux 下中文字体缺失是常见翻车点）、TeX 发行版版本差异只能本机暴露。
 
 原则:
 

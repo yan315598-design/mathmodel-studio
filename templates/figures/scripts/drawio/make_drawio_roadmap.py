@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""draw.io 竖版多层层带技术路线图（drawio 模板包 · roadmap, v7.9.1 语义槽位版）。
+"""draw.io 竖版多层层带技术路线图（drawio 模板包 · roadmap, 1.3.1 语义槽位版）。
 
 与 matplotlib 版 make_diagram_roadmap.py 同信息架构、同一套示例数据,
 用 drawio 语言重写。层带族序取 DIAGRAM_ORDER_ROADMAP（默认 5 层即
-blue/blue/orange/purple/teal, 层数更多时循环取）。v7.9.1 起升级为
+blue/blue/orange/purple/teal, 层数更多时循环取）。1.3.1 起升级为
 语义槽位版式（追平 sci-box roadmap-5band 的信息架构）:
 
   - 每条色带: 族 fill 底 + 点线分带框 + 左侧 圈号+层名 徽章
@@ -48,7 +48,7 @@ from drawio_builder import (  # noqa: E402
     neutral, wrap_text_balanced,
 )
 
-# 示例数据（--config demo）v7.9.1: (层名, 阶段目标, [(标题, 明细), ...])
+# 示例数据（--config demo）1.3.1: (层名, 阶段目标, [(标题, 明细), ...])
 # 明细行写"参数/口径/方法细节", 是信息密度的主要来源——换成你的真实内容
 DEMO_BANDS: list[tuple[str, str, list[tuple[str, str]]]] = [
     ("问题提出", "明确边界", [

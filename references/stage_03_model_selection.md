@@ -193,7 +193,7 @@ print("最优解:", x.value)
 
 ---
 
-## 选择卡（人类拍板门, v7.5.0 新增）
+## 选择卡（人类拍板门, 0.7.5 新增）
 
 短名单定稿到 `decision_log.stages.3` 之前过一道**人类拍板门**: 模型选择是全论文最大的单点决策, 该由用户拍板, 不由 agent 默契通过。
 
@@ -212,6 +212,7 @@ print("最优解:", x.value)
 **decision_log 登记**:
 
 - 用户的选择连同理由写入 `decision_log.stages.3.choice_card`: `{"answers": <用户四问原答>, "chosen": <主模型>, "rationale_user": <用户理由>}`。
+- **必停点登记 (v2.3.0)**: 拍板结果同步写入 `decision_log.checkpoints.card_decision`（`{"status": "answered", "asked_at": "<ISO>", "answer": "<用户拍板摘要>", "source": "chat"}`；source 缺失或非 chat/user_cli 视为未答，check_gate 拦截）；推进 stage 4 前必须 `python scripts/check_gate.py --gate 3` 放行（见 SKILL.md 必停点协议）。
 - AI 可代录**答案原文**, 但**不得代写理由**——理由栏空着就空着, 等用户补; 填 AI 生成的"用户理由"属于伪造决策记录。
 - 被淘汰的方法进 `rejection_log` 归档备注: 记淘汰原因与"何种题目形态下应重新考虑", 防止 Stage 5 遇阻时把已淘汰方法不声不响地捡回来。
 

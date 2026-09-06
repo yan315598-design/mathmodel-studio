@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""draw.io 横向任务流水线图（drawio 模板包 · stageflow, v7.8.0 族化版）。
+"""draw.io 横向任务流水线图（drawio 模板包 · stageflow, 1.2.0 族化版）。
 
 与 matplotlib 版 make_diagram_stageflow.py 同信息架构, 用 drawio 语言重写:
 4-6 个阶段框等距横排（实色标题条样式: 族 header 底 + header_stroke 描边 +

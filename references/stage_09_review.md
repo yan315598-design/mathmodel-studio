@@ -3,7 +3,7 @@ stage: 9
 name: review
 duration_h: 2-6
 inputs: [paper.tex, decision_log_full, decision_log.competition]
-outputs: [stage.9.{anti_patterns_check, panel_scores, weakest_section, redo_log, red_team_record, final_pdf_path, submission_ready}]
+outputs: [stage.9.{anti_patterns_check, panel_scores, weakest_section, redo_log, red_team_record, skill_issues_consumed, final_pdf_path, submission_ready}]
 loads_reference: [competitions/<competition>/anti_patterns.md, competitions/<competition>/rubric_overlay.json, feedback_layer3_panel.md]
 loads_template: [templates/latex/<competition>/]
 feedback: [L1, L3_5_panel, red_team_in_championship]
@@ -24,7 +24,7 @@ next: SUBMIT
 
 ---
 
-## 终审顺序纪律 (v7.5.0 评委模拟器)
+## 终审顺序纪律 (0.7.5 评委模拟器)
 
 评审顺序不可调换: **先过资格门, 再冻结标准, 最后才读论文打分**。顺序反了会出现"看完论文倒推标准"的锚定——这是评委行为研究中确认度最高的偏差。无论走完整流程还是"最后 6 小时"极速终审路径, 前置门都必须先过。
 
@@ -33,7 +33,7 @@ Step 0 资格门 (7 条硬规则, 任一不过 → 不具备获奖资格, 不打
   ↓ 全部通过
 Step 1 冻结本题原子扣分清单 (读题后、读论文前写出来)
   ↓ 清单冻结
-原有检查流程 (极速终审路径 / 操作流程 Step 1-8 / Panel, 编号沿用 v7.4.0 原文)
+原有检查流程 (极速终审路径 / 操作流程 Step 1-9 / Panel, 编号沿用 0.7.4 原文)
 ```
 
 ### Step 0: 资格门 (qualification gate)
@@ -47,7 +47,7 @@ Step 1 冻结本题原子扣分清单 (读题后、读论文前写出来)
 | 3 | 摘要独占页 | 中文赛首页摘要独立成页; mcm 为 Summary Sheet | `submission_checklists.md` 通用终检 10 条 #7 |
 | 4 | 页码起算 | 页码从正文首页起算; 摘要/承诺书/编号页是否计入页数按当年模板 | 对应竞赛节 + LaTeX 模板 |
 | 5 | 匿名性 | 正文/页眉/图例/代码注释无队号以外的身份信息 | 通用终检 10 条 #6 + 对应竞赛节 |
-| 6 | 页数 | 按竞赛动态口径 (v7.4.0, 不回退): mcm 总 PDF ≤25 页 (含附录) 为硬规则; 中文竞赛按当年通知, 通知未明确硬上限时仅提示不计入门 | 通用终检 10 条 #1 |
+| 6 | 页数 | 按竞赛动态口径 (0.7.4, 不回退): mcm 总 PDF ≤25 页 (含附录) 为硬规则; 中文竞赛按当年通知, 通知未明确硬上限时仅提示不计入门 | 通用终检 10 条 #1 |
 | 7 | 引用合规 | 参考文献格式统一; AI 使用披露按当年通知 | 对应竞赛节 (mcm AI 使用报告行) |
 
 任一条不过 → 输出结论 **"不具备获奖资格"**, 列出未过条目与修复动作, 直接返回用户; **不进入打分, 不做分数修补**。资格是入场券不是扣分项——格式再好、模型再新都救不回资格缺失。
@@ -75,6 +75,7 @@ Step 1 冻结本题原子扣分清单 (读题后、读论文前写出来)
   - `rubric_overlay.json` 的 `panel_personas`（研究生赛额外检查竞赛键、奖项身份和证据边界）
 - `config/rating_contract.json`（统一评分、证据政策和硬失败规则）
 - `state/paper_plan.json` 与 `state/evidence_trace.json`（动态骨架和结果证据链）
+- `state/skill_issues.md`（自我纠错台账, workspace_protocol §11——终审必读，见 Step 8）
 
 当 `competition=huaweibei` 时，必须确认当前知识、案例、统计和奖项字段均来自 `competitions/huaweibei/`，并检查 2022—2025 未被推测为数模之星提名。
 
@@ -88,7 +89,7 @@ Step 1 冻结本题原子扣分清单 (读题后、读论文前写出来)
 
 ---
 
-## 评委模拟器评分范式 (v7.5.0 扣分制)
+## 评委模拟器评分范式 (0.7.5 扣分制)
 
 评委行为研究的一致结论: 真实评委是**扣分制**而非给分制——从基准分往下找错, 找到才扣。终审引入扣分制口径, 作为 Panelist 5 (评委视角) 与 red-team 的算术底座; L3 panel 的 1-10 分 schema 与 `config/rating_contract.json` 的 `score_scale` 不变, 两套口径并行记录。
 
@@ -356,9 +357,19 @@ xelatex paper.tex   # 三编 (保险)
 - [ ] 无 underfull/overfull 大量警告
 - [ ] PDF 可正常打开
 
-### Step 8: 最终输出 (5 min)
+### Step 8: skill_issues 台账沉淀 (5 min, v2.3.0)
 
-写入 `decision_log.stages.9`:
+读 `state/skill_issues.md` 台账（不存在则提示跳过）：
+
+1. 筛出"是否建议入版 = 是"的条目（属 skill 设计缺陷，而非本次执行失误）。
+2. 存在时向用户给编号菜单：`1) 逐条确认沉淀到 skill 仓库（反馈给维护者）  2) 仅保留台账留痕  3) 让我决定`——**用户拍板，agent 不擅自改 skill 仓库**。
+3. 用户确认沉淀的条目，整理为条目清单（编号/现象/根因）写入 `state/` 下的反馈文件或按用户指定的渠道交付；台账本身不改写旧条目。
+
+**时序硬约束**: `submission_ready=true` 必须在本步台账消费完成之后才写入（Step 9）——终审没读完自我纠错台账不算结束。
+
+### Step 9: 最终输出 (5 min)
+
+在 Step 8 台账消费完成后，写入 `decision_log.stages.9`:
 ```json
 {
   "anti_patterns_check": {"total": "<按竞赛 anti_patterns 条目数>", "passed": 30, "fixed": 2, "deferred": 0},
@@ -373,6 +384,7 @@ xelatex paper.tex   # 三编 (保险)
   "redo_log": [...],
   "red_team_record": [...],
   "final_pdf_path": "paper.pdf",
+  "skill_issues_consumed": true,
   "submission_ready": true
 }
 ```

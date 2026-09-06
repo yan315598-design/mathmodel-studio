@@ -10,7 +10,7 @@
     2. 复制到项目后改 PARAMS/plot_tornado() 的输入数据。
 
 约定:
-    - v7.7.0: 迁移 figkit + 三格式导出 + 中性色令牌。
+    - 1.1.0: 迁移 figkit + 三格式导出 + 中性色令牌。
     - 样式与色板统一经 scripts/figkit.py 加载（mathmodel.mplstyle + palettes.py,
       两者缺失时 figkit 内置等价内联回退）; 发散色经 figkit.get_cmap("diverging"),
       横向条读数方向在 x, 保留 x 向网格。
@@ -38,7 +38,7 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 
-# ---- v7.7.0: 头部统一走共享库 figkit（样式/色板/导出/colormap 语义/中性色）----
+# ---- 1.1.0: 头部统一走共享库 figkit（样式/色板/导出/colormap 语义/中性色）----
 # figkit.py 位于本脚本上二级 scripts/ 目录; 色板回退已内置于 figkit, 不再保留本文件副本
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -106,7 +106,7 @@ def plot_tornado(
     fig, ax = plt.subplots(figsize=(7.2, 4.5))
     y = np.arange(len(rows))
     bar_h = 0.36
-    cmap = matplotlib.colormaps[get_cmap("diverging")]  # v7.7.0: 发散色经语义出口
+    cmap = matplotlib.colormaps[get_cmap("diverging")]  # 1.1.0: 发散色经语义出口
     vmax = max(np.abs(np.concatenate([lows, highs])).max() * 1.15, 1e-6)
     norm = matplotlib.colors.Normalize(vmin=-vmax, vmax=vmax)
 

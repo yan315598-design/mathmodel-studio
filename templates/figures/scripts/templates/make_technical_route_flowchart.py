@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """技术路线图模板: matplotlib 四阶段列式技术路线图（示意图色族版）。
 
-版式（v7.8.0 整体重写, 复刻 sci-box 扁平风）:
+版式（1.2.0 整体重写, 复刻 sci-box 扁平风）:
     顶部通栏实色标题条（DIAGRAM_PAGE title_bar #4F80BD 白字）→ 其下 4 个
     阶段列, 每列 = 实色标题条（族 header 底白字, diagram_header）+ 虚线
     容器（族 stroke, dash 4 4）内 2-4 张内容卡（浅底 + 同族描边 + 墨黑
@@ -22,10 +22,10 @@
     2. 复制到项目后改 STAGES 数据。
 
 版本:
-    v7.8.0: 整体重写迁移 figkit 示意图族体系——弃内联私有色板副本,
+    1.2.0: 整体重写迁移 figkit 示意图族体系——弃内联私有色板副本,
       卡片全部入盒（消灭裸文本节点压箭头线）, 画布高按内容计算（消灭
       底部大片空白）, apply_style() 后 use_diagram_font() 全字加粗。
-    v7.7.0: 迁移 figkit + 三格式导出 + 中性色令牌。
+    1.1.0: 迁移 figkit + 三格式导出 + 中性色令牌。
 
 质量门:
     python scripts/figqa.py templates/figures/scripts/templates/make_technical_route_flowchart.py \\
@@ -53,7 +53,7 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 
-# ---- v7.8.0: 整体走 figkit 示意图族体系（样式/色族/卡片/标题条/连接器）----
+# ---- 1.2.0: 整体走 figkit 示意图族体系（样式/色族/卡片/标题条/连接器）----
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from figkit import (

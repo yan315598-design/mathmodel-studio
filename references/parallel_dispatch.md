@@ -1,6 +1,6 @@
 # 子 Agent 并行调度协议
 
-> v7.4.0 新增：定义 mathmodel-studio 在哪些阶段可以派子 agent 并行、怎么写 prompt、怎么合并、预算耗尽怎么办。Stage 9 的 5 视角 panel 沿用 `references/feedback_layer3_panel.md`, 本文不重复定义。
+> 0.7.4 新增：定义 mathmodel-studio 在哪些阶段可以派子 agent 并行、怎么写 prompt、怎么合并、预算耗尽怎么办。Stage 9 的 5 视角 panel 沿用 `references/feedback_layer3_panel.md`, 本文不重复定义。
 
 ---
 

@@ -11,7 +11,7 @@
     2. 复制到项目后改 CORR_MATRIX/ROW_NAMES/COL_NAMES 与 plot_heatmap() 入参。
 
 约定:
-    - v7.7.0: 迁移 figkit + 三格式导出 + 中性色令牌。
+    - 1.1.0: 迁移 figkit + 三格式导出 + 中性色令牌。
     - 样式与色板统一经 scripts/figkit.py 加载（mathmodel.mplstyle + palettes.py,
       两者缺失时 figkit 内置等价内联回退）; 发散色取 figkit.get_cmap("correlation"),
       使用时保持 0 居中对称色标。
@@ -43,7 +43,7 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 
-# ---- v7.7.0: 头部统一走共享库 figkit（样式/色板/导出/colormap 语义）----
+# ---- 1.1.0: 头部统一走共享库 figkit（样式/色板/导出/colormap 语义）----
 # figkit.py 位于本脚本上二级 scripts/ 目录; 色板回退已内置于 figkit, 不再保留本文件副本
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -158,7 +158,7 @@ def plot_heatmap(
 
     im = ax.imshow(
         arr,
-        cmap=get_cmap("correlation"),  # v7.7.0: 发散色经 figkit/palettes 语义出口
+        cmap=get_cmap("correlation"),  # 1.1.0: 发散色经 figkit/palettes 语义出口
         vmin=-vmax,
         vmax=vmax,
         aspect="auto",
@@ -206,7 +206,7 @@ def plot_heatmap(
 
 
 def _save(fig, out_stem: str | None, default_name: str) -> tuple[Path, Path]:
-    """v7.7.0 经 figkit.save_fig 一次导出 PNG+SVG+PDF 三格式; 返回前两个路径。"""
+    """1.1.0 经 figkit.save_fig 一次导出 PNG+SVG+PDF 三格式; 返回前两个路径。"""
     if out_stem is None:
         out_stem = str(Path(tempfile.gettempdir()) / default_name)
     written = save_fig(fig, out_stem)

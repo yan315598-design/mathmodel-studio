@@ -31,7 +31,7 @@
 | `agents/openai.yaml` | Codex UI 名称和默认提示 |
 | `references/stage_00..09` | 各阶段工作步骤和检查点 |
 | `references/model_catalog.md` | 跨竞赛候选模型目录 |
-| `references/knowledge_workflow_v73.md` | 三赛联合检索、Stage 知识包、证据链和增量更新协议 |
+| `references/knowledge_workflow.md` | 三赛联合检索、Stage 知识包、证据链和增量更新协议 |
 | `competitions/<comp>/` | 竞赛规则、知识和评分覆盖层 |
 | `config/dim_weights.json` | 竞赛 × 内容型任务 × 阶段的评分权重 |
 | `config/rating_contract.json` | 所有竞赛共享的评分、证据、verdict 和硬失败契约 |

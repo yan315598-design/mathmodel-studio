@@ -429,7 +429,7 @@ def fill_template_cumcm(workspace: Path, template_dir: Path, output_dir: Path,
 
 
 def _inject_section_inputs(main_path: Path, sections_dir: Path) -> None:
-    """把 sections/<sec>.tex 按序注入 main.tex 的锚点 (v7.5.0 修复空壳论文 bug)。
+    """把 sections/<sec>.tex 按序注入 main.tex 的锚点 (0.7.5 修复空壳论文 bug)。
 
     锚点约定 (5 套 main_template 模板均带):
       - % __ABSTRACT__: 单行, 替换为 \\input{sections/abstract}
@@ -579,7 +579,7 @@ def fill_template_main(workspace: Path, template_dir: Path, output_dir: Path,
 
     print(f"[OK] 已复制 {main_dst} + 渲染 {len(SECTION_TO_FILE)} 个 sections/*.tex")
 
-    # 按锚点把 \input{sections/...} 注入 main.tex (v7.5.0 修复空壳论文 bug)
+    # 按锚点把 \input{sections/...} 注入 main.tex (0.7.5 修复空壳论文 bug)
     _inject_section_inputs(main_dst, sections_dir)
     print(f"[OK] 已注入 \\input{{sections/...}} 到 {main_dst}")
     return main_dst

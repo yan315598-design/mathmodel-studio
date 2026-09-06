@@ -11,7 +11,7 @@ academic_blue 色板逐方案填色(alpha 0.15), 指标名沿径向外移防重�
     2. 复制到项目后改 DEMO 数据与 plot_radar() 入参。
 
 约定:
-    - v7.7.0: 迁移 figkit + 三格式导出 + 中性色令牌。
+    - 1.1.0: 迁移 figkit + 三格式导出 + 中性色令牌。
     - 样式与色板统一经 scripts/figkit.py 加载（mathmodel.mplstyle + palettes.py,
       两者缺失时 figkit 内置等价内联回退）; 极坐标自绘参考环, 不走 ygrid。
 
@@ -42,7 +42,7 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 
-# ---- v7.7.0: 头部统一走共享库 figkit（样式/色板/导出/中性色）----
+# ---- 1.1.0: 头部统一走共享库 figkit（样式/色板/导出/中性色）----
 # figkit.py 位于本脚本上二级 scripts/ 目录; 色板回退已内置于 figkit, 不再保留本文件副本
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -184,7 +184,7 @@ def plot_radar(
 
 
 def _save(fig, out_stem: str | None, default_name: str) -> tuple[Path, Path]:
-    """v7.7.0 经 figkit.save_fig 一次导出 PNG+SVG+PDF 三格式; 返回前两个路径。"""
+    """1.1.0 经 figkit.save_fig 一次导出 PNG+SVG+PDF 三格式; 返回前两个路径。"""
     if out_stem is None:
         out_stem = str(Path(tempfile.gettempdir()) / default_name)
     written = save_fig(fig, out_stem)

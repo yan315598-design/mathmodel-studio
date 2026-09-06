@@ -1,5 +1,5 @@
 {
-  "_schema_version": "3.0",
+  "_schema_version": "3.1",
   "_doc": "跨阶段决策日志。每个阶段开头读、结尾写。L2 回检读此文件寻找跨阶段冲突。schema 与 stage_NN.md 实际写入字段一一对齐。",
   "competition": "cumcm",
   "task_type": null,
@@ -14,6 +14,8 @@
     "team_size": null
   },
   "mode": "standard",
+  "interaction": "detailed",
+  "_interaction_doc": "交互密度: detailed (默认) | auto。detailed = 必停点之外的关键自由参数 (假设取舍/图表风格细节/章节侧重) 也要问; auto = 用户明确说'自动模式/少问点/你自己定'时开启, 只减少必停点之外的细节提问密度, 五个必停点永远要问。与 mode (fast/standard/championship, token 档位) 正交, 不得混用。",
   "started_at": null,
   "current_stage": 0,
   "budget": {
@@ -77,7 +79,7 @@
     "5": {
       "_label": "subproblem_loop",
       "qi_count": null,
-      "_qi_count_doc": "题目子问题总数, 由 stage 1 选题后填入. cumcm IQR [3,5], mcm [3,5], diangong [6,8].",
+      "_qi_count_doc": "题目子问题总数, 由 stage 2 分解确认后按实际子问数写入并重建 qi_weights (runtime 侧 confirm_qi_count 原子迁移, 记 qi_count_confirmed 事件). cumcm IQR [3,5], mcm [3,5], diangong [6,8].",
       "qi_weights": [],
       "_qi_weights_doc": "per-Qi 加权聚合权重数组, 长度=qi_count. 默认均匀 [1.0]*qi_count. score_artifact.py compute_stage5_verdict 用此重加权 mean.",
       "qi_status": {},
@@ -143,6 +145,7 @@
       "weakest_section": null,
       "redo_log": [],
       "red_team_record": [],
+      "skill_issues_consumed": false,
       "final_pdf_path": null,
       "submission_ready": false
     }
@@ -161,6 +164,8 @@
     "8": [],
     "9": []
   },
+  "checkpoints": {},
+  "_checkpoints_doc": "必停点登记 (v2.3.0): 唯一登记路径, 由 agent 在真问用户后写入。五个键: kickoff_5q (启动5问) / analysis_confirm (Stage 2 审题呈现确认) / card_decision (Stage 3 选择卡拍板) / figure_menu (Stage 5 每问图表菜单, 值为 {\"Q1\": {...}} 按子问索引) / qi_verdict (Stage 5 每问 verdict, 值同上按子问索引; 每个 Qi 的 per-Qi L1 评分产出 verdict 时即问即登记该问条目, 聚合整体决策登记进 stages[\"5\"] 既有字段, 不复制进 qi_verdict)。条目形如 {\"status\": \"answered\", \"asked_at\": \"<ISO>\", \"answer\": \"<用户选择摘要>\", \"source\": \"chat\"} (主 agent 流程 source=chat; runtime 薄执行器经 CLI answer 的 trusted 写入 source=user_cli)。四项缺一即未答 (check_gate.py is_answered 同时校验 status/可解析的 asked_at/非空 answer/source); source 缺失或非 chat/user_cli (如 model/llm/agent/auto) 视为未答, check_gate 拦截。figure_menu 条目另须 count (int 0-9), count≤1 时须 exception: true + 非空 reason。兼容性: 旧 state (schema 3.0) 无此字段时 check_gate.py 判 FAIL 属预期行为, 需补走必停点问答。",
   "iterations": {
     "_doc": "{stage_key: count_of_iterations}",
     "0": 0,

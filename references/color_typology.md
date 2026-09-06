@@ -1,6 +1,6 @@
-# 统一图表配色体系（v7.4.0 建立 · v7.7.0 扩展 · v7.8.0 示意图色族分类）
+# 统一图表配色体系（0.7.4 建立 · 1.1.0 扩展 · 1.2.0 示意图色族分类）
 
-> 全 skill 图表配色的**单一权威源**。八套标准色板（含 v7.7.0 四套真期刊板）+ 中性色令牌 + 示意图色族（v7.8.0）+ 数据类型映射 + 硬规则 + 灰度校验。
+> 全 skill 图表配色的**单一权威源**。八套标准色板（含 1.1.0 四套真期刊板）+ 中性色令牌 + 示意图色族（1.2.0）+ 数据类型映射 + 硬规则 + 灰度校验。
 > 代码实现: `templates/figures/style/palettes.py` | 基础样式: `templates/figures/style/mathmodel.mplstyle`
 > 设计令牌章程（色值/字阶/版式/反模式全量）: `references/design_tokens.md` | 模板公共底座: `templates/figures/scripts/figkit.py`
 > 色板全部蒸馏自历史竞赛工作区的实战验证配色与 ggsci 公开色值; 示意图色族蒸馏自 sci-box scibox-diagram (MIT), 不是想象的"最佳实践"。
@@ -9,13 +9,13 @@
 
 ## 1. 旧口径废止声明
 
-v7.4.0 前, 配色规范有三处互相矛盾的口径, 自本文件发布起**全部废止**:
+0.7.4 前, 配色规范有三处互相矛盾的口径, 自本文件发布起**全部废止**:
 
 | 旧口径 | 位置 | 处置 |
 |---|---|---|
 | `CHAMPION_PALETTE = ['#2E86AB', '#A23B72', ...]` | `references/huashubei_figure_pack.md` §0 | 保留为 `academic_blue` 的向后兼容别名（`get_palette('champion_palette')` 等价生效）; 色值历史: 历史竞赛工作区实战验证配色, 原 #A23B72 已由主色 #1F4E79 取代并补中性灰 #6C757D |
 | "配色统一（matplotlib + seaborn-deep, 不要默认 tableau）" | `references/stage_09_review.md` Step 2 | 已改为指向本文件 |
-| 11 个模板脚本各自硬编码颜色（Times/Arial 混用, 无中文 fallback） | `templates/figures/scripts/templates/make_*.py` | **已全部改造**（v7.7.0）: 14 个既有模板全部迁移 figkit + palettes, 情况见 §7 |
+| 11 个模板脚本各自硬编码颜色（Times/Arial 混用, 无中文 fallback） | `templates/figures/scripts/templates/make_*.py` | **已全部改造**（1.1.0）: 14 个既有模板全部迁移 figkit + palettes, 情况见 §7 |
 
 **冲突裁决规则**: 任何文件与本文件冲突时, 以本文件 + `palettes.py` 为准。
 
@@ -23,9 +23,9 @@ v7.4.0 前, 配色规范有三处互相矛盾的口径, 自本文件发布起**�
 
 ## 2. 标准色板
 
-v7.4.0 四套（实战蒸馏） + v7.7.0 四套真期刊色板（蒸馏自 ggsci 公开色值），详见下表与 2.1-2.3。
+0.7.4 四套（实战蒸馏） + 1.1.0 四套真期刊色板（蒸馏自 ggsci 公开色值），详见下表与 2.1-2.3。
 
-### 2.0 实战蒸馏四套（v7.4.0）
+### 2.0 实战蒸馏四套（0.7.4）
 
 | 色板 | 色值（顺序即绘制顺序） | 来源与气质 |
 |---|---|---|
@@ -34,7 +34,7 @@ v7.4.0 四套（实战蒸馏） + v7.7.0 四套真期刊色板（蒸馏自 ggsci
 | `muted_earth` | `#506B84 #A77A43 #6E8B74 #8B4F4A #7C8A96 #39444D` | 历史竞赛工作区 `plot_utils.py` PAPER_COLORS。灰蓝金低饱和, 稳重学术; 各色有 `*_light` 浅变体（`#DCE5EC #E6D7BE #DCE7DF #EADAD8`）可作填充底色 |
 | `okabe_ito` | `#0072B2 #E69F00 #009E73 #D55E00 #CC79A7 #56B4E9 #F0E442 #000000` | Okabe-Ito 色盲通用标准色。MCM 英文赛 / 需灰度打印 / 评委可能色弱时的兜底 |
 
-### 2.1 真期刊色板（v7.7.0 新增，蒸馏自 ggsci 公开色值）
+### 2.1 真期刊色板（1.1.0 新增，蒸馏自 ggsci 公开色值）
 
 | 色板 | 色值（顺序即绘制顺序） | 来源与建议场景 |
 |---|---|---|
@@ -45,7 +45,7 @@ v7.4.0 四套（实战蒸馏） + v7.7.0 四套真期刊色板（蒸馏自 ggsci
 
 **场景规则**：期刊色板面向"论文投递/答辩呈现"的审美目标；中文竞赛正文图仍推荐 `academic_blue`（§4）。一篇论文只绑定一套主色板，摘要图与正文图逐色一致；使用期刊板时在图表计划的 `palette` 字段写 `npg/aaas/lancet/nejm` 之一。`npg` 与 `aaas` 自带口语别名（`palettes.get_palette('nature')` / `get_palette('science')`）。
 
-### 2.2 中性色令牌 NEUTRALS（v7.7.0）
+### 2.2 中性色令牌 NEUTRALS（1.1.0）
 
 所有"非语义灰色"（正文、文字层级、网格、描边、箭头、面板底）一律从 `palettes.NEUTRALS` 取，**禁止在脚本里另行硬编码灰色系**。取色走 `get_neutral(name)`（模板脚本走 `figkit.load_neutral(name)`）：
 
@@ -64,7 +64,7 @@ v7.4.0 四套（实战蒸馏） + v7.7.0 四套真期刊色板（蒸馏自 ggsci
 
 语义角色 → 取色规则见 `palettes.SEMANTIC_ROLES`（primary/baseline/accent/risk/ok/reference），role 只约束语义，实际色值由所选色板与 NEUTRALS 共同决定。
 
-### 2.3 参数化浅化/深化（v7.7.0）
+### 2.3 参数化浅化/深化（1.1.0）
 
 替代各模板手写的浅化常量表（`*_light`、`strip_white` 等），同一套 API 由 `palettes.py` 提供、`figkit` 转发：
 
@@ -75,18 +75,18 @@ dark  = shade("#F18F01", 0.20)       # 向黑混合 20% → 描边/徽章压深;
 strip = tint_series("#1F4E79", 5)    # 5 级等差浅化序列 (roadmap 层带默认: lo=0.80 → hi=0.42)
 ```
 
-`grayscale_check(colors, all_pairs=True)` 在 v7.7.0 支持全两两组合校验（默认仍只查相邻对），多系列同图场景用 `all_pairs=True` 更严。
+`grayscale_check(colors, all_pairs=True)` 在 1.1.0 支持全两两组合校验（默认仍只查相邻对），多系列同图场景用 `all_pairs=True` 更严。
 
-### 2.4 示意图（diagram）配色体系（v7.8.0 新增）
+### 2.4 示意图（diagram）配色体系（1.2.0 新增）
 
-**分类原则（本节是 v7.8.0 的核心变更）**：配色按图类彻底分类，两套体系并列、互不影响——
+**分类原则（本节是 1.2.0 的核心变更）**：配色按图类彻底分类，两套体系并列、互不影响——
 
 | 图类 | 用途 | 配色体系 | 设计逻辑 |
 |---|---|---|---|
 | 数据图表（figure） | 折线/柱状/热力图/雷达等**数据系列对比** | §2 的 `PALETTES` 高饱和色板 | 高饱和、高对比，区分的是**数据系列** |
 | 示意图（diagram） | 流程图/架构图/技术路线图/框架图等**结构表达** | 本节 `DIAGRAM_FAMILIES` 浅底色族 | 浅底色 + 同族深描边 + 实色标题条，表达的是**结构层级** |
 
-示意图**禁止**再取数据色板做阶段/泳道/卡片着色（v7.7.0 及之前"一个配色套全部"的用法废止）；数据图表也**不取**色族。中性色令牌（§2.2）两套体系继续共用。
+示意图**禁止**再取数据色板做阶段/泳道/卡片着色（1.1.0 及之前"一个配色套全部"的用法废止）；数据图表也**不取**色族。中性色令牌（§2.2）两套体系继续共用。
 
 7 族色值（每族 8 角色，色值 1:1 蒸馏自 sci-box 的 scibox-diagram 技能包（MIT 许可，风格参考其 roadmap-5band/stageflow/framework-3col 模板实测色），浅底色族为 sci-box 扁平风复刻）：
 
@@ -199,15 +199,15 @@ ink = get_diagram_page("ink")               # 页面令牌
 | Stage 5（建模出图） | 生成任何图之前加载本文件; 图表计划的每张图记录 `palette` 字段 |
 | Stage 8（写作配图） | 正文图按 §4 场景表选板; 图注中颜色词与实际颜色一致（"蓝线为本文模型"就必须是主色蓝） |
 | Stage 9（终审） | 按 §5 硬规则逐条 QA; 特别查规则 1（跨图同色）与规则 6（灰度） |
-| `figure-table-planner` | 规划输出中每张图带 `palette` 字段（八套之一，含 v7.7 期刊板 npg/aaas/lancet/nejm；自定义色需备注原因） |
+| `figure-table-planner` | 规划输出中每张图带 `palette` 字段（八套之一，含 1.1.0 期刊板 npg/aaas/lancet/nejm；自定义色需备注原因） |
 | `nature-figure` | 终审按本文件硬规则出问题清单 |
 | `figure_skill_bridge.md` | 输出契约已含 `palette` 字段, 与本文件闭环 |
 
 ---
 
-## 7. 模板脚本迁移状态（v7.7.0 完成）
+## 7. 模板脚本迁移状态（1.1.0 完成）
 
-v7.4.0 时 `templates/figures/scripts/templates/` 下 11 个模板与 4 件示意图各自硬编码颜色/样式（Times/Arial 混用、无中文 fallback），当时暂不改造以保持模板确定性输出。**v7.7.0 已全部完成迁移**:
+0.7.4 时 `templates/figures/scripts/templates/` 下 11 个模板与 4 件示意图各自硬编码颜色/样式（Times/Arial 混用、无中文 fallback），当时暂不改造以保持模板确定性输出。**1.1.0 已全部完成迁移**:
 
 - **14 个既有模板全部接入 `figkit.py` 公共底座**：删除内联 `PALETTES_FALLBACK`；样式走 `apply_style()`、色板走 `load_palette()`、中性色走 `load_neutral()`、浅化走 `tint()/tint_series()`；数据图模板出图统一 `figkit.ygrid()`（仅 y 向网格）+ `save_fig()` 三格式导出；4 件示意图换 `wrap_text_balanced()` 均衡换行 + `elbow_arrow()` 正交连接器 + `soft_shadow()` 微阴影 + 中性色令牌。
 - **迁移后 figqa 硬门 14/14 通过**（示意图盒内标签合法, 加 `--allow-box-labels` 豁免）；新增 7 件高级模板（roc-pr/taylor-diagram/raincloud/circular-heatmap/confusion-matrix/shap-summary/chord-diagram）与 6 件 drawio 可编辑模板走同一套 figkit/palettes 管线。
@@ -248,7 +248,7 @@ ax.imshow(corr, cmap=get_cmap('correlation'), vmin=-1, vmax=1)  # 相关矩阵�
 
 ---
 
-## 9. 导出与交付（v7.5.0 新增）
+## 9. 导出与交付（0.7.5 新增）
 
 ### 字体嵌入设置（改稿不重渲染）
 
@@ -257,11 +257,11 @@ ax.imshow(corr, cmap=get_cmap('correlation'), vmin=-1, vmax=1)  # 相关矩阵�
 | `svg.fonttype` | `none` | SVG 里文字保留为文本, 不转路径; 改稿期改字号/措辞直接在编辑器里改, 不用重跑数据链 |
 | `pdf.fonttype` | `42` | PDF 嵌入 TrueType 字体, 可复制可检索, 期刊/LaTeX 接受 |
 
-两项 v7.5.0 起已写入 `mathmodel.mplstyle`, 加载 mplstyle（模板脚本经由 `figkit.apply_style()`）即生效; 自定义脚本若绕过 mplstyle 出图, 必须手动补这两项, 否则改稿就要重渲染。
+两项 0.7.5 起已写入 `mathmodel.mplstyle`, 加载 mplstyle（模板脚本经由 `figkit.apply_style()`）即生效; 自定义脚本若绕过 mplstyle 出图, 必须手动补这两项, 否则改稿就要重渲染。
 
 ### 三格式一次导出
 
-v7.7.0 起模板统一走 `figkit.save_fig()`，一次导出 PNG+SVG+PDF 三格式、由同一渲染状态落盘、自动创建输出目录；PDF 由该函数**真正落盘**（不再只是文档承诺）。模板脚本内一行即可:
+1.1.0 起模板统一走 `figkit.save_fig()`，一次导出 PNG+SVG+PDF 三格式、由同一渲染状态落盘、自动创建输出目录；PDF 由该函数**真正落盘**（不再只是文档承诺）。模板脚本内一行即可:
 
 ```python
 from figkit import save_fig

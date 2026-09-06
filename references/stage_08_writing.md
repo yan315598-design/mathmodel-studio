@@ -51,7 +51,7 @@ next: stage_09_review
 - `huaweibei` 如需参考数模之星写法，只按 evidence ID 定向读取 `papers/manual_paper_reviews.json`；2022—2025 不标记或推测提名身份。
 - 每个摘要主张写入前必须在 `evidence_ledger` 中形成 `question → model → result → validation → figure → abstract_claim` 完整链；运行 `scripts/trace_claims.py --strict` 未通过时不得定稿摘要。
 - 华数杯图表数量只作样本观察，不设固定获奖门槛；每张图必须绑定唯一主张、上游数据和必要检查。
-- **现存 6 套自写模板** (v7.5 路线 A 收敛, 旧 13 套第三方模板已全部剥离):
+- **现存 6 套自写模板** (0.7.5 路线 A 收敛, 旧 13 套第三方模板已全部剥离):
   - cumcm / huaweibei / huashubei / mcm / diangong / apmcm, 均为本项目自写资产并预编译验证; 模板存在不代表对应知识分支可混用
   - 英文论文统一用 `templates/latex/mcm/main.tex` (英文仅此 1 套)
   - 全部用 xelatex (中文) 或 pdflatex (英文), 走 `main_template` 模式 (复制 main.tex + 自动注入 sections/<sec>.tex)
@@ -83,7 +83,7 @@ Codex 子菜单见 `references/codex_practical_menu.md`。如果用户选择"图
 
 ## 写作顺序 (反直觉但有效)
 
-**摘要三遍制** (v7.4.0 修订, 与 `references/huashubei_battle_plan_72h.md` 的"摘要写 3 遍"对齐): 骨架期写初稿定主线（6 句式: 问题→方法→关键结果→验证→结论）→ 全部结果完成后按证据账本重写 → 终审前终审润色; 最终版以 `scripts/trace_claims.py --strict` 闭环为准。
+**摘要三遍制** (0.7.4 修订, 与 `references/huashubei_battle_plan_72h.md` 的"摘要写 3 遍"对齐): 骨架期写初稿定主线（6 句式: 问题→方法→关键结果→验证→结论）→ 全部结果完成后按证据账本重写 → 终审前终审润色; 最终版以 `scripts/trace_claims.py --strict` 闭环为准。
 
 ```
 1. 写正文 §1 问题重述         (30 min, 用 templates/shared/restatement_card.md)
@@ -105,7 +105,7 @@ Codex 子菜单见 `references/codex_practical_menu.md`。如果用户选择"图
 
 理由: 初稿防跑偏 (先把 6 句主线定下来, 正文围绕主线展开), 重写防"摘要绑架" (定量结果全部落定后按证据账本重写, 每个数字可追踪), 终审润色只改表达不改数据。
 
-每节成稿后立即跑两个小循环 (v7.4.0 新增):
+每节成稿后立即跑两个小循环 (0.7.4 新增):
 - **引用缺口补查**: 本节需要文献支撑而现有文献不够时, 按 `references/reference_skill_bridge.md` 补查, 硬上限 5 次搜索, 够用即停。
 - **去 AI 味自查**: 按 `references/ai_flavor_removal.md` 的 8 条 yes/no 清单自查本节, 不过就地修改后再进下一节。
 

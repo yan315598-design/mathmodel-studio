@@ -23,7 +23,7 @@
 
 注意: figqa.py 只检测 matplotlib .py 出图脚本, 不支持 .drawio 文件;
 .drawio 的质量门是两层: 落盘后 minidom 自验（XML 合法性 + 节点/连线计数）
-+ v7.9.0 起 finalize() 自动运行 drawio_check.py 版式体检（文字溢出/越界/
++ 1.3.0 起 finalize() 自动运行 drawio_check.py 版式体检（文字溢出/越界/
 重复 id/实心盒重叠/连线穿盒/位图内嵌 = FAIL,  FAIL 即退出码 1;
 MATHMODEL_DRAWIO_CHECK=0 关闭, MATHMODEL_DRAWIO_STRICT=1 时 WARN 也判失败）。
 也可单独体检任意 .drawio: python drawio/drawio_check.py <文件> [--strict]

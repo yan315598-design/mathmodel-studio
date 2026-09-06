@@ -10,7 +10,7 @@ academic_blue 色板（中文竞赛主战色系）。
     2. 复制到项目后改 ALLOCATION / GANTT 数据与 plot_*() 入参。
 
 约定:
-    - v7.7.0: 迁移 figkit + 三格式导出 + 中性色令牌。
+    - 1.1.0: 迁移 figkit + 三格式导出 + 中性色令牌。
     - 样式与色板统一经 scripts/figkit.py 加载（mathmodel.mplstyle + palettes.py,
       两者缺失时 figkit 内置等价内联回退）; 堆叠条网格走 figkit.ygrid() 仅 y 向,
       甘特图按读数方向保留 x 向网格（见 plot_gantt 内注释）。
@@ -38,7 +38,7 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 
-# ---- v7.7.0: 头部统一走共享库 figkit（样式/色板/导出/网格）----
+# ---- 1.1.0: 头部统一走共享库 figkit（样式/色板/导出/网格）----
 # figkit.py 位于本脚本上二级 scripts/ 目录; 色板回退已内置于 figkit, 不再保留本文件副本
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -118,7 +118,7 @@ def plot_stacked(allocation: dict[str, list[float]], out_stem: str | None = None
                 ha="center", va="bottom", fontsize=10)
     ax.set_ylabel(f"分配量（{unit}）")
     ax.set_ylim(0, max(bottoms) * 1.12)
-    ygrid(ax)  # v7.7.0: 堆叠条只留极淡 y 向网格
+    ygrid(ax)  # 1.1.0: 堆叠条只留极淡 y 向网格
     ax.set_title("优化分配结果（按资源类别堆叠）")
     ax.legend(loc="upper right", ncol=2)
     return _save(fig, out_stem, "make_optimization_allocation_stacked")
@@ -178,7 +178,7 @@ def plot_gantt(tasks: list[tuple[str, float, float, str]],
 
 
 def _save(fig, out_stem: str | None, default_name: str) -> tuple[Path, Path]:
-    """v7.7.0 经 figkit.save_fig 一次导出 PNG+SVG+PDF 三格式; 返回前两个路径。"""
+    """1.1.0 经 figkit.save_fig 一次导出 PNG+SVG+PDF 三格式; 返回前两个路径。"""
     if out_stem is None:
         out_stem = str(Path(tempfile.gettempdir()) / default_name)
     written = save_fig(fig, out_stem)

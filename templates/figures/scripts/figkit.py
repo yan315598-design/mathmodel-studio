@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-mathmodel-studio v7.8.0 图表共享工具库 (figkit)
+mathmodel-studio 1.2.0 图表共享工具库 (figkit)
 ================================================================
 所有 make_*.py 模板脚本的公共底座, 取代各脚本内联的重复代码:
 
   - apply_style()        一键加载 ../style/mathmodel.mplstyle (带等价内联回退)
   - load_palette()       动态导入 ../style/palettes.py (失败走内联最小副本)
-  - save_fig()           PNG+SVG+PDF 三格式一次导出 (补齐 v7.4 文档承诺)
+  - save_fig()           PNG+SVG+PDF 三格式一次导出 (补齐 0.7.4 文档承诺)
   - figsize 预设         期刊物理栏宽 mm → inch (89/120/183mm)
   - panel_label()        (a)(b)(c) 子图标签, 全 skill 统一偏移
   - despine() / ygrid()  坐标轴与网格的现代处理
@@ -15,7 +15,7 @@ mathmodel-studio v7.8.0 图表共享工具库 (figkit)
   - soft_shadow()        卡片微阴影 path effect
   - check_cjk_font()     中文字体可用性检查与提示
 
-v7.8.0 新增示意图色族助手（与数据色板彻底分类, 复刻 sci-box 扁平风）:
+1.2.0 新增示意图色族助手（与数据色板彻底分类, 复刻 sci-box 扁平风）:
   - load_diagram_family()/load_diagram_families()/load_diagram_page()
                         取示意图色族/页面令牌（失败走内联副本）
   - load_diagram_order() 取族序（generic/roadmap）
@@ -24,7 +24,7 @@ v7.8.0 新增示意图色族助手（与数据色板彻底分类, 复刻 sci-box
   - diagram_header()     实色标题条（族 header 底 + 白色加粗字）
   - family_edge()        族 edge 色连接器（转调 elbow_arrow）
 
-v7.9.0 新增编辑级版式令牌与连接器纪律（蒸馏自 diagram-design, MIT）:
+1.3.0 新增编辑级版式令牌与连接器纪律（蒸馏自 diagram-design, MIT）:
   - load_diagram_token() 版式令牌（radius 4/6/8, stroke_w 0.8/1.2/2.0,
                         font_ramp 16/12/10.5/9 扁平字阶）
   - snap4()              4px 网格捕捉（坐标/尺寸/间距硬规则）
@@ -118,7 +118,7 @@ _DIAGRAM_ORDER_ROADMAP_FALLBACK = ["blue", "blue", "orange", "purple", "teal"]
 _DIAGRAM_FONT_FALLBACK = ["Microsoft YaHei", "SimHei", "PingFang SC", "Noto Sans SC",
                           "Arial Unicode MS", "Helvetica"]
 
-# ---- v7.9.0 版式令牌内联副本（与 palettes.py 全量同步; 蒸馏自 diagram-design, MIT）----
+# ---- 1.3.0 版式令牌内联副本（与 palettes.py 全量同步; 蒸馏自 diagram-design, MIT）----
 _DIAGRAM_TOKENS_FALLBACK = {
     "radius": {"sm": 4, "md": 6, "lg": 8},
     "stroke_w": {"hairline": 0.8, "card": 1.0, "default": 1.2, "strong": 2.0},
@@ -280,7 +280,7 @@ def shade(hex_color: str, factor: float) -> str:
 
 
 # ============================================================
-# 示意图色族/页面令牌/字体链 (v7.8.0, 优先走 palettes, 失败回退内联副本)
+# 示意图色族/页面令牌/字体链 (1.2.0, 优先走 palettes, 失败回退内联副本)
 # ============================================================
 def load_diagram_family(name: str) -> dict[str, str]:
     """取一枝示意图色族（8 角色色值字典副本）; palettes.py 不可用时回退内联副本。"""
@@ -361,7 +361,7 @@ def load_diagram_order(kind: str = "generic") -> list[str]:
 
 
 # ============================================================
-# 示意图版式令牌取口 (v7.9.0): 网格/圆角/描边/字阶/mono
+# 示意图版式令牌取口 (1.3.0): 网格/圆角/描边/字阶/mono
 # ============================================================
 def load_diagram_token(group: str, key: str):
     """取版式令牌: group=radius/stroke_w/font_ramp, key=档位名。
@@ -467,14 +467,14 @@ FIGSIZE: dict[str, tuple[float, float]] = {
     "double":    mm(183, 120),   # 期刊双栏
     "wide":      mm(183, 92),    # 双栏宽幅 (横向流水线/对比)
     "square":    mm(89, 89),     # 单栏方形 (热力图/相关矩阵)
-    "default":   (7.2, 4.5),     # 沿用 v7.4 竞赛正文图默认
+    "default":   (7.2, 4.5),     # 沿用 0.7.4 竞赛正文图默认
     "roadmap":   (10.0, 7.0),    # 五层技术路线图
     "framework": (11.0, 4.6),    # 三栏研究框架
 }
 
 
 # ============================================================
-# 三格式导出 (补齐 v7.4 文档承诺的 PNG+SVG+PDF)
+# 三格式导出 (补齐 0.7.4 文档承诺的 PNG+SVG+PDF)
 # ============================================================
 def save_fig(fig, out_prefix, formats: tuple[str, ...] = ("png", "svg", "pdf"),
              close: bool = True) -> list[str]:
@@ -550,7 +550,7 @@ def text_width_px(text: str, fontsize: float) -> float:
 
 
 def wrap_text(text: str, max_width_px: float, fontsize: float) -> list[str]:
-    """贪心换行 (v7.4 行为, 保留兼容): 逐字符累积, 超宽即断行。"""
+    """贪心换行 (0.7.4 行为, 保留兼容): 逐字符累积, 超宽即断行。"""
     lines: list[str] = []
     current = ""
     current_w = 0.0
@@ -568,7 +568,7 @@ def wrap_text(text: str, max_width_px: float, fontsize: float) -> list[str]:
 
 
 def wrap_text_balanced(text: str, max_width_px: float, fontsize: float) -> list[str]:
-    """均衡换行 (v7.7 新增): 在贪心行数不变的前提下让各行宽度尽量接近,
+    """均衡换行 (1.1.0 新增): 在贪心行数不变的前提下让各行宽度尽量接近,
     消除"末尾一字独占一行"的吊行。
 
     做法: 先贪心得行数 n; 再以 总宽/n × 1.15 为目标宽度重新贪心,
@@ -586,7 +586,7 @@ def wrap_text_balanced(text: str, max_width_px: float, fontsize: float) -> list[
 
 
 # ============================================================
-# 示意图连接器与装饰 (v7.7 新增)
+# 示意图连接器与装饰 (1.1.0 新增)
 # ============================================================
 def elbow_arrow(ax, xy_from: tuple[float, float], xy_to: tuple[float, float],
                 color: str | None = None, lw: float = 1.3,
@@ -599,7 +599,7 @@ def elbow_arrow(ax, xy_from: tuple[float, float], xy_to: tuple[float, float],
         xy_from/xy_to: 起点/终点 (数据坐标), 通常取盒边中点。
         direction: "vh" 先垂后平 (上下层间), "hv" 先平后垂 (左右栏间)。
         rad: 拐角圆角半径 (数据坐标单位, 0 则为直角)。
-        lw/mutation_scale: v7.9.1 起默认降重 (1.3 / 11)——连线退居二线,
+        lw/mutation_scale: 1.3.1 起默认降重 (1.3 / 11)——连线退居二线,
             内容才是主角（编辑级纪律, §4.6④）; 需强调时显式给大值。
         其余参数同 FancyArrowPatch。
     """
@@ -621,7 +621,7 @@ def elbow_arrow(ax, xy_from: tuple[float, float], xy_to: tuple[float, float],
 
 def straight_arrow(ax, xy_from, xy_to, color: str | None = None,
                    lw: float = 1.3, rad: float = 0.0, **kwargs):
-    """微弧直线连接器 (需要优雅斜线时用, rad 控制弯曲; v7.9.1 降重默认)。"""
+    """微弧直线连接器 (需要优雅斜线时用, rad 控制弯曲; 1.3.1 降重默认)。"""
     from matplotlib.patches import FancyArrowPatch
 
     style = f"arc3,rad={rad}"
@@ -654,7 +654,7 @@ def soft_shadow(patch=None, offset: tuple[float, float] = (1.2, -1.2),
 
 
 # ============================================================
-# 示意图卡片/标题条/族色连接器 (v7.8.0, 复刻 sci-box 扁平风:
+# 示意图卡片/标题条/族色连接器 (1.2.0, 复刻 sci-box 扁平风:
 # 浅底 + 同族描边 + 墨黑加粗字, 全部不加 soft_shadow)
 # ============================================================
 # 多行文本行高估算: 实际行距 ≈ 字号×1.317×行距系数(1.45), 再留余量
@@ -695,7 +695,7 @@ def diagram_box(ax, x: float, y_top: float, w: float, h: float, text: str,
         accent: True 时底色用 family["accent"]（子标题/高亮盒）。
         focal: True 时为焦点盒 —— accent 底 + 族 stroke 描边 2.0（strong 档）。
             每图至多 FOCAL_MAX=2 个（diagram-design focal rule）, 超过等于没有焦点。
-        bold: 字重。v7.9.1 起默认 False（卡内正文常规字重）——加粗只给
+        bold: 字重。1.3.1 起默认 False（卡内正文常规字重）——加粗只给
             标题条/徽章/卡片标题, 全字加粗会把层级抹平（§4.5 字重层级制）。
         text_color: 文字色; 默认 DIAGRAM_PAGE ink(#262626)。
 
@@ -785,7 +785,7 @@ def family_edge(ax, xy_from: tuple[float, float], xy_to: tuple[float, float],
 
 
 # ============================================================
-# 扇出/扇入母线连接器 (v7.9.0): "竖线+横母线+分支"纪律
+# 扇出/扇入母线连接器 (1.3.0): "竖线+横母线+分支"纪律
 # 一分多/多合一不画 N 条独立斜线（sci-box 连接器纪律）;
 # 同源多箭头的附着点按 L*k/(N+1) 扇形排开、间距 ≥12px
 # （diagram-design connector rule 4）。
@@ -866,7 +866,7 @@ def bus_fan_h(ax, origin: tuple[float, float],
 
 
 # ============================================================
-# 结构化零件 (v7.9.1): 两段式富文本卡 / 编号徽章 / 竖排标签 / 脚注条
+# 结构化零件 (1.3.1): 两段式富文本卡 / 编号徽章 / 竖排标签 / 脚注条
 # 信息密度纪律: 内容卡 = "bold 标题行 + regular 明细行"两段式, 明细行走
 # note 档次级色（纯 ASCII 明细可走 mono 链）; 密度来自内容结构, 不来自加粗
 # ============================================================
@@ -1023,7 +1023,7 @@ def check_cjk_font() -> tuple[bool, str]:
 # ============================================================
 if __name__ == "__main__":
     print("=" * 62)
-    print("mathmodel-studio v7.8.0 figkit 自测")
+    print("mathmodel-studio 1.2.0 figkit 自测")
     print("=" * 62)
     ok_style = apply_style()
     print(f"apply_style(): {'加载 mplstyle' if ok_style else '内联回退'}")
@@ -1038,7 +1038,7 @@ if __name__ == "__main__":
     ok_font, font_name = check_cjk_font()
     print(f"中文字体: {font_name} ({'可用' if ok_font else '缺失'})")
 
-    # ---- v7.8.0: 示意图色族助手自测 ----
+    # ---- 1.2.0: 示意图色族助手自测 ----
     fam = load_diagram_family("blue")
     fams = load_diagram_families(n=4)
     print(f"load_diagram_family('blue') edge = {fam['edge']}")
@@ -1075,7 +1075,7 @@ if __name__ == "__main__":
     family_edge(ax, (274, 224), (326, 224), fam, direction="hv", rad=0)
     assert lines1 and fs1 > 0 and lines2 and fs2 > 0
 
-    # ---- v7.9.0: 版式令牌 + focal + 母线 + mono 冒烟 ----
+    # ---- 1.3.0: 版式令牌 + focal + 母线 + mono 冒烟 ----
     assert snap4(13) == 12 and snap4(14, grid=4) == 16
     assert load_diagram_token("radius", "lg") == 8
     assert load_diagram_token("stroke_w", "strong") == 2.0
@@ -1093,9 +1093,9 @@ if __name__ == "__main__":
     bus_fan_h(ax, (270, 146), [(300, 130), (300, 162)], fam)
     mono_text(ax, 480, 60, "RMSE=2.31")
     assert mono_chain()[0] == "Consolas"
-    print("v7.9.0 令牌/focal/bus/mono 冒烟: 通过")
+    print("1.3.0 令牌/focal/bus/mono 冒烟: 通过")
 
-    # ---- v7.9.1: 结构化零件冒烟（两段式卡/编号徽章/竖排标签/脚注条）----
+    # ---- 1.3.1: 结构化零件冒烟（两段式卡/编号徽章/竖排标签/脚注条）----
     fam2 = load_diagram_family("teal")
     rich_box(ax, 30, 110, 240, 64, "灵敏度分析", "Sobol 全局灵敏度", fam2)
     rich_box(ax, 330, 110, 240, 64, "稳健性检验", "n=1000 次扰动", fam2,
@@ -1104,7 +1104,7 @@ if __name__ == "__main__":
     num_badge(ax, 580, 200, 16, "1", fam)
     vlabel(ax, 588, 120, "阶段目标")
     footnote_bar(ax, 330, 40, 240, 28, "本阶段结论: 模型对 ±10% 扰动稳健", fam2)
-    print("v7.9.1 rich_box/num_badge/vlabel/footnote_bar 冒烟: 通过")
+    print("1.3.1 rich_box/num_badge/vlabel/footnote_bar 冒烟: 通过")
 
     # 字号入参校验: inf/nan/非正数须 ValueError（防缩字号循环死循环）
     fig_v, ax_v = plt.subplots(figsize=(3.0, 2.0))

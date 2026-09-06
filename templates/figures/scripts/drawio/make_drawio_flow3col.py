@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """draw.io 多列阶段流程图（drawio 模板包 · flow3col, 默认三/四列泳道,
-v7.8.0 族化版）。
+1.2.0 族化版）。
 
 与 matplotlib 版 make_technical_route_flowchart.py 同信息架构, 用 drawio
 语言重写: N 列阶段泳道（默认 4 列）, 列头实色标题条（族序取

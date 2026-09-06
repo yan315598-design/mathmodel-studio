@@ -1,13 +1,13 @@
-# 设计令牌 (Design Tokens) · mathmodel-studio v7.9.1
+# 设计令牌 (Design Tokens) · mathmodel-studio 1.3.1
 
 > 本文是全 skill 图表/示意图的**审美宪法**。所有 make_*.py 模板、drawio 生成器、
 > 新图表必须从这里取令牌，禁止另行发明色值/字号/间距。
 > 实现出口：配色 `style/palettes.py`，共享工具 `scripts/figkit.py`。
-> v7.8.0：示意图与数据图表配色彻底分类（§1.5 色族 / §4.5 示意图族版式）。
-> v7.9.0：编辑级排版纪律（§4.6）—— 4px 网格 / 圆角·描边·字阶梯 /
+> 1.2.0：示意图与数据图表配色彻底分类（§1.5 色族 / §4.5 示意图族版式）。
+> 1.3.0：编辑级排版纪律（§4.6）—— 4px 网格 / 圆角·描边·字阶梯 /
 > 焦点盒规则 / 连接器六条军规 / 中文排版预算，蒸馏自 diagram-design (MIT)
 > 与 sci-box scibox-diagram (MIT)；drawio 版式体检门禁 `drawio/drawio_check.py`。
-> v7.9.1：追平 sci-box 信息架构 —— 字重层级制取代全字加粗（§4.5）、
+> 1.3.1：追平 sci-box 信息架构 —— 字重层级制取代全字加粗（§4.5）、
 > 两段式富文本卡（`figkit.rich_box` / drawio `rich_card`）、编号徽章/竖排标签/
 > 结论脚注条零件、连线降重（1.3/小箭头头）、描边增 card=1.0 档、
 > drawio_check 三个 WARN 级平庸检测、示意图"机器体检+九区盘点"双门
@@ -18,7 +18,7 @@
 ### 1.1 语义色（数据系列）
 一律走 `palettes.get_palette(name)` / `figkit.load_palette(name)`，按绘制顺序取色。
 可用色板：`academic_blue`(默认) / `cool_nature` / `muted_earth` / `okabe_ito` /
-`npg` / `aaas` / `lancet` / `nejm`（后四套为 v7.7 新增真期刊板，蒸馏自 ggsci 公开色值）。
+`npg` / `aaas` / `lancet` / `nejm`（后四套为 1.1.0 新增真期刊板，蒸馏自 ggsci 公开色值）。
 
 ### 1.2 中性色令牌（非语义灰）
 **禁止硬编码灰色系**，一律 `figkit.load_neutral(name)`：
@@ -45,7 +45,7 @@
 - 强调橙**每图至多一处**；红=风险/劣化，绿=达标/改进；
 - 热力图发散色必须 0 居中（`get_cmap("correlation")` + center=0）。
 
-### 1.5 示意图色族（v7.8.0，与 §1.1 数据色板彻底分类）
+### 1.5 示意图色族（1.2.0，与 §1.1 数据色板彻底分类）
 示意图（流程图/架构图/技术路线图/框架图）**不走 §1.1 数据色板**，一律走
 `palettes.DIAGRAM_FAMILIES` 浅底色族（7 族 × 8 角色，色值蒸馏自 sci-box
 scibox-diagram, MIT；全量色值表见 `color_typology.md` §2.4），
@@ -81,7 +81,7 @@ scibox-diagram, MIT；全量色值表见 `color_typology.md` §2.4），
 
 字体：sans 回退链 Microsoft YaHei → SimHei → PingFang SC → Arial；
 公式走 mathtext（`$\mathrm{...}$`），中英混排时西文不换字体。
-**mono 等宽链**（v7.9.0，`figkit.mono_chain()` / drawio `mono=True`）：
+**mono 等宽链**（1.3.0，`figkit.mono_chain()` / drawio `mono=True`）：
 Consolas → DejaVu Sans Mono → Courier New，**只给数字/参数/公式标签**
 （如 `RMSE=2.31`、`k=5`）；节点名/标题/正文永远 sans，中文不走 mono
 （mono 字体无中文字形）。mono 是"技术性内容"专用，不是 blanket dev 风。
@@ -100,7 +100,7 @@ Consolas → DejaVu Sans Mono → Courier New，**只给数字/参数/公式标�
 
 ## 4. 示意图版式（流程图/框架图）
 
-### 4.1—4.4 通用底座（v7.7.0）
+### 4.1—4.4 通用底座（1.1.0）
 
 - 画布：逻辑坐标=像素（dpi=100），节点盒圆角 `boxstyle="round,pad=...,rounding_size=8"`。
 - 换行：一律 `figkit.wrap_text_balanced()`，消除吊行；盒内文字上下留白 ≥0.35 倍行高。
@@ -108,14 +108,14 @@ Consolas → DejaVu Sans Mono → Courier New，**只给数字/参数/公式标�
   斜线仅在表达"汇聚/分发"语义时用 `straight_arrow(rad=0.08)` 微弧。
 - 标题：图上方居中 12pt bold `ink`，与图体间距 ≥24px；可加 9pt `secondary` 副标题行。
 
-### 4.5 示意图族版式（v7.8.0, sci-box 扁平风; v7.9.1 字重层级制修订）
+### 4.5 示意图族版式（1.2.0, sci-box 扁平风; 1.3.1 字重层级制修订）
 
 - 脚本头部：`apply_style()` 后紧跟 `figkit.use_diagram_font()`（YaHei 真 700 粗体优先）。
 - 内容卡：**两段式富文本卡** `figkit.rich_box()`（drawio 用 `rich_card()`）——
   **bold 标题行**（方法/动作名, body 档 10.5）+ **regular 明细行**（参数/口径/
   产出形式, note 档 9, 次级色; 纯 ASCII 明细可 `detail_mono=True` 走等宽链）。
   信息密度来自内容结构, 不来自加粗。单行卡（diagram_box）只用于标签性短词。
-- **字重层级制**（v7.9.1 起, 取代"全字加粗"）：加粗只给标题条/徽章/卡片标题;
+- **字重层级制**（1.3.1 起, 取代"全字加粗"）：加粗只给标题条/徽章/卡片标题;
   卡内正文与明细一律常规字重。全字加粗 = 没有层级（drawio_check 有
   全字加粗 WARN 兜底）。
 - 标题条 `figkit.diagram_header()`：族 `header` 实色底 + `header_stroke` 描边 +
@@ -124,19 +124,19 @@ Consolas → DejaVu Sans Mono → Courier New，**只给数字/参数/公式标�
   浅底 + 族 `stroke` 描边 + 墨黑加粗字（结构件加粗）。
 - 竖排标签：`figkit.vlabel()` / drawio `vlabel()` 逐字堆叠, 禁 rotate/horizontal=0。
 - 结论脚注条：`figkit.footnote_bar()`（左族色 tick + 左对齐 note 档小字）。
-- 连接器：族 `edge` 色（`figkit.family_edge()`）, 跨族不混色; **v7.9.1 起默认
+- 连接器：族 `edge` 色（`figkit.family_edge()`）, 跨族不混色; **1.3.1 起默认
   降重 lw 1.3 / 小箭头头**（连线退居二线, 内容才是主角; 强调主干用色不用粗）。
 - 虚线分组容器：linestyle `(0,(4,4))`、族 `stroke`、无填充、宽 1.2；
   点线分带：`(0,(1,3))`、`DIAGRAM_PAGE["band_sep"]`（matplotlib 用 ax.plot 画框,
   避免 figqa 盒内标签豁免被容器 patch 误伤; drawio 用 dashed_container()/band_sep()）。
 - **描边宽度体系**（四档, 不再随手给）：hairline 0.8 / **card 1.0**（内容卡,
-  v7.9.1 降重）/ default 1.2（标题条、容器虚线）/ strong 2.0（焦点盒、--highlight）。
+  1.3.1 降重）/ default 1.2（标题条、容器虚线）/ strong 2.0（焦点盒、--highlight）。
 - **字号扁平纪律**（全图不超过 4 档）：图标题 16、标题条 12、卡标题 10.5、
   明细/注释 9。
 - **禁止裸文本节点**：任何节点文字必须落在卡片里（figqa line-through-text /
   text-over-patch 零检出）；画布高按内容推导, 不留底部大片空白。
 
-### 4.6 编辑级排版纪律（v7.9.0, 蒸馏自 diagram-design (MIT) + sci-box (MIT)）
+### 4.6 编辑级排版纪律（1.3.0, 蒸馏自 diagram-design (MIT) + sci-box (MIT)）
 
 以下纪律同时适用于 matplotlib 示意图与 drawio 生成器；令牌实现见
 `palettes.py`（`DIAGRAM_GRID/DIAGRAM_RADIUS/DIAGRAM_STROKE_W/DIAGRAM_FONT_RAMP/
@@ -194,7 +194,7 @@ figkit 同签名转发）。
 **⑦ 版式门禁（drawio）**
 `finalize()` 落盘后自动跑 `drawio/drawio_check.py`：文字溢出/越界/重复 id/
 实心盒重叠（>30% 小盒面积）/连线穿盒/位图内嵌 = **FAIL（退出码 1）**；
-端点压边/疑似空盒/字号 >4 档/填充色发散 = WARN；v7.9.1 起 WARN 新增三个
+端点压边/疑似空盒/字号 >4 档/填充色发散 = WARN；1.3.1 起 WARN 新增三个
 **平庸信号**：全字加粗（>90% 文字元素加粗）、实心盒 >20（密度超预算）、
 连线描边 >2.0。
 `MATHMODEL_DRAWIO_CHECK=0` 关闭，`MATHMODEL_DRAWIO_STRICT=1` 时 WARN 也失败。
@@ -206,13 +206,13 @@ figkit 同签名转发）。
 
 - 生成器输出 .drawio (mxGraph XML)，样式必须与 §1–§4 令牌一一对应：
   圆角 rounded=1，arcSize≈8；连线 edgeStyle=orthogonalEdgeStyle，rounded=1。
-- v7.8.0 族化：示意图类模板的阶段/泳道/卡片/徽章/标题条着色走
+- 1.2.0 族化：示意图类模板的阶段/泳道/卡片/徽章/标题条着色走
   `DIAGRAM_FAMILIES`（`card()/badge()/header_bar()/lane()` 传 `family=族名`,
-  不传保持 v7.7.0 配色行为向后兼容）：族化卡片 fill=族 fill、stroke=族 stroke、
+  不传保持 1.1.0 配色行为向后兼容）：族化卡片 fill=族 fill、stroke=族 stroke、
   `fontStyle=1`、`fontColor=#262626`；族化徽章 chevron 底 + 族 stroke 描边 +
   墨黑加粗字；族化标题条 header 实色底白字；另有 `dashed_container()`（4 4 虚线
   容器）与 `band_sep()`（1 3 点线分带）。
-- v7.9.0 纪律化：`card(focal=True)` 焦点盒（accent 底 + 2.0 描边，每图 ≤2 个）；
+- 1.3.0 纪律化：`card(focal=True)` 焦点盒（accent 底 + 2.0 描边，每图 ≤2 个）；
   `edge(exit_frac=/entry_frac=)` 分数锚点与 `fan_edges()` 一分多扇出
   （附着点 k/(n+1)）；`text(mono=True)` / `edge(mono_label=True)` 等宽数字标签；
   族化卡/标题条默认描边对齐 `DIAGRAM_STROKE_W`（default 1.2 / strong 2.0）；

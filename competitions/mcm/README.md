@@ -41,7 +41,7 @@ Mathematical / Interdisciplinary Contest in Modeling (COMAP)。
 | `phrase_bank.md` | 英文学术句式 + Letter 模板 | seed |
 | `anti_patterns.md` | MCM 反模式 ~15 条 | seed |
 | `abstract_template.md` | 1-page Summary + Letter 双模板 | seed |
-| `memo_letter_guide.md` | Memo/Letter 框架 + 受众差异表 (v7.5.0) | 自写 |
+| `memo_letter_guide.md` | Memo/Letter 框架 + 受众差异表 (0.7.5) | 自写 |
 | `paper_skeleton.md` | 论文骨架 (总 PDF ≤ 25 页, 以当年通知为准) | seed |
 
 ## 数据来源声明

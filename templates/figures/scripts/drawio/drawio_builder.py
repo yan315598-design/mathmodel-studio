@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-"""draw.io 可编辑流程图生成器 · mxGraph XML builder（零第三方依赖, v7.9.0 版式令牌化）。
+"""draw.io 可编辑流程图生成器 · mxGraph XML builder（零第三方依赖, 1.3.0 版式令牌化）。
 
 把"节点/连线"结构序列化为 draw.io 桌面版/网页版可直接打开编辑的 .drawio
 文件（mxfile > diagram > mxGraphModel > root > mxCell 结构, 含 id=0/1 根节点）。
 颜色一律取 templates/figures/style/palettes.py 的色板与中性色令牌
 （references/design_tokens.md §1/§4/§5）, palettes.py 不可用时回退内联
-academic_blue + NEUTRALS + 示意图色族 + 版式令牌最小副本。v7.8.0 起示意图类
+academic_blue + NEUTRALS + 示意图色族 + 版式令牌最小副本。1.2.0 起示意图类
 模板的阶段/泳道/卡片着色走 DIAGRAM_FAMILIES 浅底色族（与数据色板分类）,
 card()/badge()/header_bar()/lane() 均支持 family= 族名（或族字典）:
 不传 family 时保持既有配色行为（向后兼容）。
 
-v7.9.0（编辑级排版纪律, 蒸馏自 diagram-design (MIT) + sci-box (MIT)）:
+1.3.0（编辑级排版纪律, 蒸馏自 diagram-design (MIT) + sci-box (MIT)）:
   - snap4()            4px 网格捕捉（坐标/尺寸/间距硬规则）
   - card(focal=True)   焦点盒: 族 accent 底 + 族 stroke 描边 strong 档 2.0,
                        每图至多 DIAGRAM_FOCAL_MAX=2 个
@@ -215,7 +215,7 @@ except Exception as _exc:  # noqa: BLE001 - 回退路径需要兜住一切导入
                 f"内联页面令牌仅含: {sorted(DIAGRAM_PAGE)}, 未知令牌 '{token}'")
         return DIAGRAM_PAGE[token]
 
-    # ---- v7.9.0/v7.9.1 版式令牌内联副本: 与 style/palettes.py 全量同步 ----
+    # ---- 1.3.0/1.3.1 版式令牌内联副本: 与 style/palettes.py 全量同步 ----
     # （蒸馏自 diagram-design, MIT: 4px 网格/圆角 ≤10/描边四档/扁平字阶/mono 专用）
     DIAGRAM_GRID = 4
     DIAGRAM_RADIUS = {"sm": 4, "md": 6, "lg": 8}
@@ -379,7 +379,7 @@ class Node:
 class Edge:
     """drawio 连线: src/dst 为 Node id, 可带出/入锚点方向便于正交路由。
 
-    exit_frac/entry_frac（v7.9.0）: 与方向联用的分数锚点（0..1 沿边比例）,
+    exit_frac/entry_frac（1.3.0）: 与方向联用的分数锚点（0..1 沿边比例）,
     多条连线共用一条盒边时按 k/(n+1) 扇形排开（diagram-design 连接器
     纪律 4: 任何两条连线不共享同一附着点, 间距 ≥12px）。
     """
@@ -486,7 +486,7 @@ class Diagram:
         exit_frac/entry_frac 与方向联用: 沿该方向边的 0..1 比例处附着
         （down/bottom: exitX=frac,exitY=1; up/top: exitX=frac,exitY=0;
         left: exitX=0,exitY=frac; right: exitX=1,exitY=frac）;
-        不给 frac 时保持边中点（v7.8.0 行为）。
+        不给 frac 时保持边中点（1.2.0 行为）。
         """
         for endpoint in (edge.src, edge.dst):
             if endpoint not in self._index:
@@ -527,14 +527,14 @@ class Diagram:
 
         family 给族名（或族字典）时: 族 fill 底 + 族 stroke 描边 +
         fontStyle 按 bold 参数 + #262626 墨黑字（sci-box 扁平卡片）, 描边默认
-        对齐描边令牌 card 档 1.0（v7.9.1 降重; focal 焦点盒为 strong 档 2.0）;
+        对齐描边令牌 card 档 1.0（1.3.1 降重; focal 焦点盒为 strong 档 2.0）;
         显式传入的 fill/stroke/text_color/bold/stroke_width 仍可覆盖族默认。
-        v7.9.1 起族化卡默认 **常规字重**（bold=False）——加粗只给标题条/
+        1.3.1 起族化卡默认 **常规字重**（bold=False）——加粗只给标题条/
         徽章/卡片标题, 全字加粗会把层级抹平（design_tokens §4.5）。
-        不传 family 保持白底 + edge 描边 + 常规墨字（v7.7.0 行为, 向后兼容,
+        不传 family 保持白底 + edge 描边 + 常规墨字（1.1.0 行为, 向后兼容,
         描边默认 1.0）。
 
-        focal=True（v7.9.0, diagram-design focal rule）: 焦点盒 = 族 accent
+        focal=True（1.3.0, diagram-design focal rule）: 焦点盒 = 族 accent
         底 + 族 stroke 描边 strong 档 2.0。每图至多 2 个焦点, 超过等于
         没有焦点（DIAGRAM_FOCAL_MAX）。
         """
@@ -672,7 +672,7 @@ class Diagram:
              align: str = "center", mono: bool = False) -> Node:
         """无框注释文字（默认 9pt secondary, 下限 8pt 见 §2）。
 
-        mono=True（v7.9.0）: 等宽字体链, 仅用于数字/参数/公式标签
+        mono=True（1.3.0）: 等宽字体链, 仅用于数字/参数/公式标签
         （如 "RMSE=2.31"）; 节点名/说明文字不给 mono（diagram-design
         纪律: mono 是"技术性内容"专用, 不是 blanket dev 风）。
         """
@@ -698,7 +698,7 @@ class Diagram:
         Args:
             exit_dir/entry_dir: 锚点方向 down/up/left/right（entry 亦接受
                 top/bottom 别名）, 给定时连线端点确定, 便于层间下行/栏间右行。
-            exit_frac/entry_frac: 分数锚点（v7.9.0）: 多条连线共用一条盒边时
+            exit_frac/entry_frac: 分数锚点（1.3.0）: 多条连线共用一条盒边时
                 按 k/(n+1) 扇形排开, 不共享同一附着点（diagram-design 纪律 4）;
                 可直接用 fan_edges() 自动分配。
             bidirectional: 双向箭头（机理图数据流）。
@@ -758,7 +758,7 @@ class Diagram:
                   family, title_fs: float | None = None,
                   detail_fs: float | None = None, focal: bool = False,
                   detail_mono: bool = False) -> Node:
-        """两段式富文本卡（v7.9.1）: bold 标题行 + regular 明细行（次级色小字）。
+        """两段式富文本卡（1.3.1）: bold 标题行 + regular 明细行（次级色小字）。
 
         信息密度来自内容结构而不是加粗: 单元格级 fontStyle=0, 标题经
         <b> 加粗, 明细经 <font> 降档（note 档 9px, 次级色 #46535F）;
@@ -793,7 +793,7 @@ class Diagram:
     def vlabel(self, node_id: str, text: str, x: float, y: float,
                w: float, h: float, *, font_size: float = 9,
                color: str | None = None, bold: bool = False) -> Node:
-        """竖排标签（v7.9.1）: 逐字 <br> 堆叠, 禁用 horizontal=0
+        """竖排标签（1.3.1）: 逐字 <br> 堆叠, 禁用 horizontal=0
         （sci-box 纪律: 旋转会让中文躺倒）。用于色带右侧阶段目标标注。"""
         return self.text(node_id, "<br>".join(text), x, y, w, h,
                          font_size=font_size, color=color, bold=bold)
@@ -896,7 +896,7 @@ def finalize(diagram: Diagram, out_stem: str | None,
              fallback_stem: str, *, check: bool = True) -> int:
     """写盘 + minidom 自验 + drawio_check 版式体检; 返回 CLI 退出码。
 
-    版式体检（v7.9.0）: 同目录 drawio_check.py 可用时自动运行
+    版式体检（1.3.0）: 同目录 drawio_check.py 可用时自动运行
     （文字溢出/越界/重复 id/实心盒重叠/连线穿盒/位图内嵌为 FAIL,
     端点压边/疑似空盒/字号档数超标为 WARN）。FAIL 即返回 1。
     环境变量: MATHMODEL_DRAWIO_CHECK=0 关闭体检; MATHMODEL_DRAWIO_STRICT=1
@@ -937,7 +937,7 @@ if __name__ == "__main__":
     _d.title("title", "drawio_builder 自测", 0, 16, 560, 32)
     _d.card("node_a", "节点甲 & <测试>", 80, 120, 160, 60)
     _d.card("node_b", label_html(["节点乙", "第二行"]), 320, 120, 160, 60)
-    # v7.8.0 族化冒烟: 族色卡 + 族化徽章/标题条 + 虚线容器 + 点线分带
+    # 1.2.0 族化冒烟: 族色卡 + 族化徽章/标题条 + 虚线容器 + 点线分带
     _d.card("node_fam", "族色卡", 80, 220, 160, 50, family="blue")
     _d.badge("badge_fam", "①", 260, 220, 40, 50, family="blue")
     _d.header_bar("header_fam", "标题条", 320, 220, 160, 50, family="blue")
@@ -945,7 +945,7 @@ if __name__ == "__main__":
     _d.band_sep("band_fam", 70, 296, 420, 40)
     _d.edge("node_a", "node_b", label="流转",
             exit_dir="right", entry_dir="left")
-    # v7.9.0 冒烟: focal 焦点卡 + 分数锚点扇出 + mono 标签 + snap4 网格
+    # 1.3.0 冒烟: focal 焦点卡 + 分数锚点扇出 + mono 标签 + snap4 网格
     assert snap4(13) == 4 * round(13 / 4)
     _d.card("node_focal", "焦点卡", 80, 40, 160, 50, family="orange", focal=True)
     _d.text("mono_note", "RMSE=2.31", 320, 40, 120, 24, mono=True)
@@ -955,7 +955,7 @@ if __name__ == "__main__":
     assert "exitX=0.67" in _edge.style or "exitX=0.7" in _edge.style, _edge.style
     _mono_node = next(n for n in _d.nodes if n.id == "mono_note")
     assert f"fontFamily={FONT_MONO}" in _mono_node.style
-    # v7.9.1 冒烟: 两段式富文本卡 + 竖排标签; 族化卡默认常规字重
+    # 1.3.1 冒烟: 两段式富文本卡 + 竖排标签; 族化卡默认常规字重
     _d.rich_card("node_rich", "灵敏度分析", "Sobol 全局灵敏度", 320, 300, 200, 56,
                  family="teal")
     _rich = next(n for n in _d.nodes if n.id == "node_rich")
@@ -965,5 +965,5 @@ if __name__ == "__main__":
     _vl = next(n for n in _d.nodes if n.id == "vlab")
     assert _vl.label == "阶<br>段<br>目<br>标"
     _fam_card = next(n for n in _d.nodes if n.id == "node_fam")
-    assert "fontStyle=1" not in _fam_card.style      # v7.9.1 族化卡默认常规字重
+    assert "fontStyle=1" not in _fam_card.style      # 1.3.1 族化卡默认常规字重
     sys.exit(finalize(_d, None, "drawio_builder_selftest"))

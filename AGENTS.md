@@ -2,7 +2,7 @@
 
 > 本文件是 **Codex** (以及任何遵循 `AGENTS.md` 约定的 agentic CLI) 的项目级入口。
 > 真正的工作流定义在 `SKILL.md`，请把它当作主指令读取。本文件只解释 **harness 差异**。
-> V6 起, 推荐把本仓库作为 Codex skill 安装到 `$HOME/.agents/skills/mathmodel-studio/` 或项目 `.agents/skills/mathmodel-studio/`; 本文件用于 repo/workspace 级补充说明。
+> 0.6.0 起, 推荐把本仓库作为 Codex skill 安装到 `$HOME/.agents/skills/mathmodel-studio/` 或项目 `.agents/skills/mathmodel-studio/`; 本文件用于 repo/workspace 级补充说明。
 
 ---
 
@@ -131,7 +131,7 @@ Q5 题目 PDF 路径: 回复路径或"未公布"。
 5. 加载 `competitions/<comp>/winning_patterns.md` 一次, 后续不再重复读
 6. 进入 Stage 0 (`references/stage_00_kickoff.md`)
 
-> Codex V6 安装建议: 作为 skill 使用时, 目录应位于 `$HOME/.agents/skills/mathmodel-studio/` 或 `<repo>/.agents/skills/mathmodel-studio/`; 作为 plugin 分发时, `.codex-plugin/plugin.json` 会声明该目录包含 skill。
+> Codex 安装建议 (0.6.0 起): 作为 skill 使用时, 目录应位于 `$HOME/.agents/skills/mathmodel-studio/` 或 `<repo>/.agents/skills/mathmodel-studio/`; 作为 plugin 分发时, `.codex-plugin/plugin.json` 会声明该目录包含 skill。
 
 ---
 
@@ -157,7 +157,7 @@ Q5 题目 PDF 路径: 回复路径或"未公布"。
 - `competitions/<comp>/README.md` — 各竞赛差异点
 - `competitions/{cumcm,huaweibei,huashubei}/case_retrieval.md` — 三赛相似题、子问检索和迁移边界
 - `references/cross_competition_distillation.md` — 研究生赛、华数杯、国赛的共用层与隔离边界
-- `references/knowledge_workflow_v73.md` — 联合检索、Stage 知识包、动态骨架、证据追踪和增量更新
+- `references/knowledge_workflow.md` — 联合检索、Stage 知识包、动态骨架、证据追踪和增量更新
 - `config/rating_contract.json` — 所有竞赛共享的评分与证据契约
 - `scripts/score_artifact.py` — L1 评分 + verdict 计算 (Codex shell 直接调用)
 

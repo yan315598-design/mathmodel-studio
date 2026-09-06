@@ -24,6 +24,26 @@
 
 正文历史条目保留旧编号原文，按上表对照阅读。
 
+## [2.3.0] — 2026-09-06（2025 华为杯 F 题实测修复：必停点 + 程序门禁）
+
+实测背景：2025 华为杯 F 题全流程跑完后发现 agent 全程自写自走——设计的必停点全部未问、L1 评分一次没落盘、图表无确认就出图、stage 状态与实际脱节。本版把"约定"升级为"登记 + 程序门禁"。
+
+### 新增
+
+- **五必停点协议（SKILL.md 新节）**: 启动 5 问（`kickoff_5q`）/ Stage 2 审题呈现确认（`analysis_confirm`）/ Stage 3 选择卡拍板（`card_decision`）/ Stage 5 每问图表菜单（`figure_menu["Q<i>"]`）/ Stage 5 每问 verdict（`qi_verdict["Q<i>"]`）。任何模式下都必须真问用户，唯一登记路径是 `decision_log.checkpoints`；五个键名在 SKILL.md / check_gate.py / stage_00/02/03/05 / decision_log 模板中逐字一致
+- **`scripts/check_gate.py` 程序门禁**: `--gate N`（0-8）校验必停点登记 + `scores` 里 stage N 非空评分记录（E 合并，L1 评分未落盘即拦截并提示先跑 score_artifact.py），exit 1 拦截并输出缺失项中文清单，`--json` 机器可读；旧 schema 3.0 state 无 checkpoints 字段按 unanswered 处理不 crash；只读、无跳过开关；scripts/README.md 补索引行
+- **默认细问模式 `interaction` 字段**: decision_log 新增 `interaction`（detailed 默认 | auto），auto 仅当用户明确说"自动模式/少问点/你自己定"时开启，只减少必停点之外的细节提问密度，五个必停点永远要问；与 mode（token 档位）正交，文档写清两者区别
+- **Stage 5 每问图表菜单（stage_05 新增 D.1 步）**: 每个 Qi 验证通过后必须呈现图表数量（0/1/2/3+）+ 样式风格（自写 17 件数据图 / icarus 多面板主图 / 物理场·网络流图 / drawio 示意图 / TikZ 框架图 + "让我决定"）菜单，用户选定后出图并登记 figure_menu；qi_verdict 同步登记；与 Stage 2 图表规格冻结（规格框架）衔接不冲突
+- **skill_issues 台账正式化（workspace_protocol §11）**: `cwd/state/skill_issues.md`，stage 0 随骨架创建（骨架清单 + stage_00 初始化命令同步）；自我纠错追加 `- S-NN | 日期 | 现象 | 根因 | 临时处理 | 是否建议入版`；stage 9 终审读台账，有"建议入版"项提示用户沉淀
+- **icarus-figures vendor 收编（MIT）**: `templates/figures/vendor/icarus-figures/` 全仓库原样内嵌（paperfig 48 函数 + 5 个可编译 TikZ 范例），补齐复杂多面板主图、物理场/动力学图、网络流图与 TikZ 框架图；`references/figure_skill_bridge.md` 总路由表加 3 行路由；`templates/figures/vendor/VENDOR.md` 第 6 条登记出处与使用约束；SKILL.md 图表条目同步
+
+### 变更
+
+- `templates/shared/decision_log.json`: schema 3.0 → 3.1——新增顶层 `checkpoints`（默认 `{}`，含 `_checkpoints_doc`）与 `interaction`（默认 detailed，含 `_interaction_doc`）
+- **全库活文档旧版本号统一**: 活文档（SKILL.md / references / templates / competitions / docs / runtime / AGENTS.md 等 60+ 文件）中 v7.x 旧线编号按 CHANGELOG 映射表统一转新编号线（v7.10.0→1.4.0、v7.9.x→1.3.x、v7.8.0→1.2.0、v7.7.x→1.1.0、v7.0-7.5→0.7.0-0.7.5、V6→0.6.0），共 285+ 处；`references/knowledge_workflow_v73.md` 更名 `knowledge_workflow.md`（4 处引用同步）；CHANGELOG 历史条目与映射表按"原文照抄"政策保留旧编号；`dist/` 发布快照冻结不动
+- SKILL.md: 版本头 v2.3.0；收敛准则 / 状态持久化两节加 check_gate 门禁引用；反例黑名单新增"必停点自问自答/跳过不登记（2025F 实测病根）"一行；加载协议加 v2.3.0 按需加载条目（skill_issues + check_gate）
+- stage_00（启动 5 问 + 目录初始化）、stage_02（审题呈现确认）、stage_03（选择卡拍板）各补必停点登记话术与 check_gate 放行引用，不重写既有流程
+
 ## [2.2.0] — 2026-09-05（2025 届 21 篇深读入库 + 评测装置修复 + 2026 赛制核验）
 
 - **新增（华为杯深读层）**: 2025 届 6 题 21 篇优秀论文全量逐篇深读（章节逻辑/逐问建模链/图表角色实判/可复用-不照搬/页码证据），并入 star_papers_deep.md 与 manual_paper_reviews.json（award=excellent_paper_selection, 不推测等级; figure role 逐图实判; 模板字段 null 或具体观察, 无模板填充）; 深读层现覆盖 2021 提名 12 篇 + 2025 优秀 21 篇

@@ -11,7 +11,7 @@ cool_nature 冷色期刊风; 训练/预测分界画竖虚线并浅色衬底区�
     2. 复制到项目后改 DEMO_* 与 plot_prediction() 入参。
 
 约定:
-    - v7.7.0: 迁移 figkit + 三格式导出 + 中性色令牌。
+    - 1.1.0: 迁移 figkit + 三格式导出 + 中性色令牌。
     - 样式与色板统一经 scripts/figkit.py 加载（mathmodel.mplstyle + palettes.py,
       两者缺失时 figkit 内置等价内联回退）; 网格改 figkit.ygrid() 仅 y 向。
       (a)(b) 子图编号沿用轴内标题版式（改 panel_label 会动布局, 保守不迁移）。
@@ -44,7 +44,7 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 
-# ---- v7.7.0: 头部统一走共享库 figkit（样式/色板/导出/网格/中性色）----
+# ---- 1.1.0: 头部统一走共享库 figkit（样式/色板/导出/网格/中性色）----
 # figkit.py 位于本脚本上二级 scripts/ 目录; 色板回退已内置于 figkit, 不再保留本文件副本
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -194,7 +194,7 @@ def plot_prediction(
     ax_top.set_ylabel(quantity)
     ax_top.legend(loc="upper left", bbox_to_anchor=(1.005, 0.985),
                   frameon=True, fontsize=9)
-    ygrid(ax_top)  # v7.7.0: 时间序列只留极淡 y 向网格
+    ygrid(ax_top)  # 1.1.0: 时间序列只留极淡 y 向网格
 
     # ---- 下子图: 残差散点（仅对预测非空段） ----
     res = act[pred_mask] - pred_raw[pred_mask]
@@ -220,7 +220,7 @@ def plot_prediction(
 
 
 def _save(fig, out_stem: str | None, default_name: str) -> tuple[Path, Path]:
-    """v7.7.0 经 figkit.save_fig 一次导出 PNG+SVG+PDF 三格式; 返回前两个路径。"""
+    """1.1.0 经 figkit.save_fig 一次导出 PNG+SVG+PDF 三格式; 返回前两个路径。"""
     if out_stem is None:
         out_stem = str(Path(tempfile.gettempdir()) / default_name)
     written = save_fig(fig, out_stem)
