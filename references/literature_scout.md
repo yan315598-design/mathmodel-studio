@@ -31,15 +31,17 @@ python scripts/literature_scout.py "..." --n 5 --api-key <KEY> --min-tier Q2 --c
   （`fallback_used: true`）；`cache_hit` 为是否命中缓存（缓存命中时降级事实与
   命中总量从缓存条目回填，不遮蔽）。
 
-## 挂点协议（三个，都不是必停点）
+## 挂点协议（三个，都不是必停点；stage 3 为选型期默认触发）
 
 | 挂点 | 触发条件 | 动作 |
 |---|---|---|
-| Stage 1 选题避坑 | 用户在 2-3 个候选题间摇摆，需要判断"这道题的方法域是否有人做过/是否过热" | 每个候选题 1 次检索（`--n 5`），只看命中量级（payload 的 `total_results`）与近三年密度，不精读；每次检索登记 `decision_log.stages.1.literature_searches` |
-| Stage 3 选型补充 | **playbook / 本地案例库未命中当前题域**（检索得分普遍低、无同构案例）时触发；命中时不触发，不重复检索 | 1-2 次检索，方法卡进入选择卡的候选档案作佐证；每次检索登记 `decision_log.stages.3.literature_searches` |
+| Stage 1 选题避坑 | 用户在 2-3 个候选题间比较时**默认**对每个候选题各 1 次检索（`--n 5`） | 只看命中量级（payload 的 `total_results`）与近三年密度，不精读；每次检索登记 `decision_log.stages.1.literature_searches` |
+| Stage 3 选型补充 | **选型期默认触发**：对每个进入短名单的主模型与 baseline 各做 1 次检索（方法名 + 问题域）；仅当该候选的机制条目已是 `source_checked` 且能指向本地案例库的明确 evidence ID 时，可跳过并记录跳过理由 | 1-2 次检索，方法卡进入选择卡的"依据与文献"列作佐证；登记 `decision_log.stages.3.literature_searches` |
 | Stage 5 翻车点验证 | 某子问验证翻车（L1 verdict=refine 且 iter=2 仍无改善），怀疑方法本身不适用 | 1 次定向检索（方法名 + 失效场景），只找失效证据与替代路线；每次检索登记 `decision_log.stages.5.literature_searches` |
 
 其他阶段不触发本层。每次挂点先查缓存；检索词从题面/模型名派生，不凭空造词。
+
+**预算护栏**: 单挂点 ≤2 次检索、单次 ≤5 篇；同 query 命中 24h 缓存不重复消耗配额。OpenAlex 匿名限流实测约 100 次/天/IP，注册 key（`--api-key`）可提额，因此不得在单阶段内反复检索。
 
 ## 方法卡 schema 与 mechanism_reviews 衔接
 

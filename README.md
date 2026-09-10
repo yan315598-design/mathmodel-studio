@@ -1,6 +1,6 @@
 # mathmodel-studio 数模工坊
 
-[![Version](https://img.shields.io/badge/version-v2.5.0-blueviolet)](#开发日志)
+[![Version](https://img.shields.io/badge/version-v2.6.0-blueviolet)](#开发日志)
 [![Competitions](https://img.shields.io/badge/competitions-6-orange)](#支持的竞赛)
 [![Python](https://img.shields.io/badge/python-3.9%2B-3776AB?logo=python&logoColor=white)](#安装)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)](#license)
@@ -14,6 +14,7 @@
 - **评委模拟终审**。提交前按评委视角模拟评审：资格硬规则任一不过即拦截，通过后按扣分清单逐项评分。
 - **数字可回溯**。结果数字与产出文件绑定，源文件修改后摘要数字自动标记失效。
 - **图表自动质检**。27 件自写模板统一配色，出图自动检查文字重叠、越界、图内标题。
+- **选型可拍板**。每一问给出候选模型与算法、推荐项及依据、文献来源与失效边界，由你拍板；写不出依据的候选会显式标注"仅机理推导"，不假装有依据。
 - **问答式交互**。关键决策给编号选项，不敲命令、不改配置文件，进度自动保存。
 
 ## 支持的竞赛
@@ -106,6 +107,7 @@ pip install -r ~/.agents/skills/mathmodel-studio/templates/shared/requirements.t
 ## 只用一部分也行
 
 - **"帮我比较 A/B/C 题"** —— 只做选题对比，出矩阵后自行决定
+- **"这题每一问该用什么模型"** —— 给候选、依据、文献来源与失效边界，由你拍板，并落成一份可随时翻看的《选型总表》
 - **"这道题和历年哪题最像"** —— 相似题检索，附当年的解法与翻车点
 - **"给第三问画一张灵敏度图"** —— 说清数据和要支撑的结论即可出图，自动过质检
 - **"写摘要"** —— 按对应竞赛获奖论文的摘要结构撰写，每个数字可追溯
@@ -126,6 +128,7 @@ pip install -r ~/.agents/skills/mathmodel-studio/templates/shared/requirements.t
 
 | 版本 | 里程碑 |
 |---|---|
+| 2.6.0 | 选型告知前移：每问候选模型可拍板，附依据与文献来源；外源文献检索改为选型期默认触发；新增第 6 个必停点与《选型总表》；提交打包加 gate 8 门禁预检 |
 | 2.5.0 | 华为杯 playbook 六域 + 国赛 playbook 五域 + 外源文献检索层（OpenAlex）+ 图表规范对齐正式论文 |
 | 2.4.0 | 建模证据协议、结论核验、义务台账；经华为杯 E 题五轮对照验证 |
 | 2.3.0 | 华为杯 F 题实测修复：必停点、程序门禁、问题台账 |

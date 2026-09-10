@@ -176,7 +176,8 @@ class StageDriver:
             return None, (f"checkpoint_request 含非法 key: {', '.join(sorted(set(invalid)))} "
                           f"(不属于 stage {stage} 的必停点 allowlist; 合法: "
                           f"stage 0→kickoff_5q; 2→analysis_confirm; 3→card_decision; "
-                          f"5→figure_menu.Q<n>/qi_verdict.Q<n>; 其余 stage 无必停点)"), None
+                          f"5→figure_menu.Q<n>/qi_verdict.Q<n>/per_qi_selection.Q<n>; "
+                          f"其余 stage 无必停点)"), None
         unique = sorted(set(keys))
         if len(unique) > 1:
             return None, (f"一次响应出现 {len(unique)} 个不同 key 的 checkpoint_request "

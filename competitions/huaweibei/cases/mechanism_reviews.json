@@ -15,7 +15,7 @@
         },
         {
           "kind": "local_pilot",
-          "location": "../../../../../../analysis/q1_pilot/pilot_report.md",
+          "location": "内部审计记录（分发版不含）：F 题绮园单园 Q1 试点报告",
           "scope": "绮园单园、情景端点、二维代理、共享81候选；非提示词因果实验"
         }
       ],
@@ -120,7 +120,7 @@
       "source_refs": [
         {
           "kind": "local_pilot",
-          "location": "analysis/e_ab_test/candidate_ws (results/q3_labels.json, q3_compare.json)",
+          "location": "内部审计记录（分发版不含）：E 题新旧对照候选工作区结果文件 (q3_labels.json, q3_compare.json)",
           "scope": "2025 E 题留出对照中实际运行；目标域无真值，标定绝对正确性未建立"
         }
       ],
@@ -155,7 +155,7 @@
       "source_refs": [
         {
           "kind": "local_pilot",
-          "location": "analysis/e_ab_test/baseline_ws (results/q3_metrics.json, q3_model.md)",
+          "location": "内部审计记录（分发版不含）：E 题新旧对照基线工作区结果文件 (q3_metrics.json, q3_model.md)",
           "scope": "2025 E 题留出对照中实际运行；R0/R1 消融对照量化净贡献"
         }
       ],

@@ -79,4 +79,4 @@
 1. papers[8]/papers[9]（2021_E UWB 定位）主轴是几何定位（最小二乘+残差修正），其中干扰识别子任务（残差特征分类分流）形态接近信号诊断；按主建模动作归空间几何，信号诊断工作可回查其 Q4/Q5。
 2. papers[6]/papers[7]（2021_D 药物）Q4 均为"代理模型 + 演化搜索描述符区间"，形态接近调度优化中的代理加速，但主轴是高维特征筛选与预测，归高维预测。
 3. papers[24]/papers[25]（2025_D）Q3 含 A*/蚁群航路规划（类调度动作），主轴是多源融合监测，归多源融合；调度域 playbook 不收这两篇。
-4. papers[10]–papers[15]（调度域 6 篇）的逐篇动作提取与跨篇观察见 `analysis/playbook_extract/scheduling_actions_raw.md`，消费入口为 `../playbooks/scheduling_optimization.md`。
+4. papers[10]–papers[15]（调度域 6 篇）的逐篇动作提取与跨篇观察为内部审计产物，分发版不含；消费入口为 `../playbooks/scheduling_optimization.md`。

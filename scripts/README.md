@@ -14,7 +14,7 @@
 | `generate_paper_plan.py` | 按子问依赖生成动态骨架、图表计划和证据账本 |
 | `trace_claims.py` | 审计问题到摘要主张的完整证据链 |
 | `update_knowledge.py` | 用文件哈希管理增量与知识版本 |
-| `build_huashubei_cases.py` | 重建华数杯 18 题证据分级案例索引 |
+| `build_huashubei_cases.py` | 重建华数杯 18 题证据分级案例索引（一次性烘焙脚本，见"已弃用审计脚本"节标注） |
 | `package_submission.py` | 提交打包：文件检查 + 页数/命名 + zip + 备份 + MD5 (0.7.4) |
 | `freeze_numbers.py` | 数字冻结：claim↔源文件 SHA-256 绑定与 stale 检测 (0.7.5) |
 | `run_manifest.py` | 运行清单：脚本/输入/输出哈希链记录与漂移核验 (0.7.5) |
@@ -79,6 +79,8 @@ pip install -r scripts/requirements-distill.txt
 ## 已弃用审计脚本
 
 `ingest_papers.py` 是旧 91 篇语料的历史烘焙器。该批资料混入 58 篇“华为杯”研究生论文，不得再用来生成 CUMCM 统计真值；仅保留用于复核旧产物。
+
+`build_huashubei_cases.py` 同口径：**一次性烘焙脚本**，用于把本地华数杯资料蒸馏进案例库（重建 18 题证据分级案例索引）。既无工作流挂点也无测试，不属于工作流调用链，仅在需要重建该索引时手动运行。
 
 ## 状态路径
 

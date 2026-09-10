@@ -62,6 +62,8 @@ DIM_WHITELIST = {
         "4_time_feasibility", "5_decision_record_quality"},
     2: {"1_subproblem_decomposition", "2_key_variables_count", "3_math_skeleton_present",
         "4_data_alignment", "5_subproblem_dependency_identified"},
+    # dim "5_literature_support" (文献支撑) 的评分口径见 references/rubrics.md Stage 3
+    # 与 references/feedback_layer1_critic.md: 本文件不重复口径正文, 避免多一个漂移面。
     3: {"1_candidate_diversity", "2_selection_rationale", "3_naming_variant",
         "4_solver_feasibility", "5_literature_support"},
     4: {"1_assumption_count", "2_assumption_support", "3_symbol_uniqueness",

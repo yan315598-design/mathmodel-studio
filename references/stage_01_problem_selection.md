@@ -156,6 +156,16 @@ next: stage_02_analysis
 
 **锁定承诺**: 24h 内不允许更改。如必须更改 (附件数据完全不可用等),需 L2 强触发 + 用户二次确认。
 
+### Step 4.5: 选题避坑检索 (stage 1 文献挂点, 非必停点)
+
+用户在 2-3 个候选题之间比较时（Step 2 矩阵出来后、Step 4 锁定前），**对每个候选题各做 1 次检索**:
+
+```bash
+python scripts/literature_scout.py "<english query>" --n 5
+```
+
+只看命中量级（payload 的 `total_results`）与近三年密度，不精读——判断"这道题的方法域是否有人做过/是否过热"，供 Step 4 锁定前参考。每次检索登记 `decision_log.stages.1.literature_searches`。协议全文见 `references/literature_scout.md`。
+
 ### Step 5: 移交 (5 min)
 
 输出给 stage 2 的"问题输入包":

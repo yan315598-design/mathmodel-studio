@@ -1,6 +1,6 @@
 # 调度优化域 Playbook
 
-证据锚点约定：**论文深读** = `papers/manual_paper_reviews.json` 33 篇深读记录中调度域 6 篇（`papers[10]`–`papers[15]`：2021_F 机组排班 2 篇 + 2025_A NPU 核内调度 4 篇），逐篇提取笔记 = `analysis/playbook_extract/scheduling_actions_raw.md`；**我方实验** = 无（本域未做本地试点，本文件不出现 locally_tested 条目）。全部条目为 source 层：深读记录复核过论文内容，我方未复算论文算法，不搬数值与原句。域级索引入口 = `papers/domain_index.md`（2021 届深读记录的 derivation_logic/solver_logic 等字段为写作模板，不作逐篇结论引用，警示见该文件顶部）。风险语言对齐 `../distilled_modeling.md` 八类之"调度优化"（依赖、容量、资格和时序共同限制）。
+证据锚点约定：**论文深读** = `papers/manual_paper_reviews.json` 33 篇深读记录中调度域 6 篇（`papers[10]`–`papers[15]`：2021_F 机组排班 2 篇 + 2025_A NPU 核内调度 4 篇），逐篇动作提取笔记为内部审计产物（分发版不含），证据以该深读记录 JSON 为准；**我方实验** = 无（本域未做本地试点，本文件不出现 locally_tested 条目）。全部条目为 source 层：深读记录复核过论文内容，我方未复算论文算法，不搬数值与原句。域级索引入口 = `papers/domain_index.md`（2021 届深读记录的 derivation_logic/solver_logic 等字段为写作模板，不作逐篇结论引用，警示见该文件顶部）。风险语言对齐 `../distilled_modeling.md` 八类之"调度优化"（依赖、容量、资格和时序共同限制）。
 
 ## 触发条件
 

@@ -18,8 +18,9 @@ from mathmodel_agent.llm import LLMResponse, TransientLLMError, _is_transient, c
 from mathmodel_agent.loop import StageDriver
 from mathmodel_agent.mockllm import MockLLM
 from mathmodel_agent.protocol import ArtifactPathError, parse_artifacts, write_artifact
+from mathmodel_agent.prompts import _answered_checkpoint_section
 from mathmodel_agent.sandbox import check_code, run_python
-from mathmodel_agent.state import CheckpointKeyError, DecisionLog, StateSaveError
+from mathmodel_agent.state import CheckpointKeyError, DecisionLog, StateSaveError, checkpoint_allowed
 
 SKILL_ROOT = Path(__file__).resolve().parents[2]
 
@@ -167,6 +168,26 @@ class CheckpointHilTest(unittest.TestCase):
                 state.record_checkpoint("figure_menu.Q2", "改主意", count=2)
             state.record_checkpoint("figure_menu.Q2", "改主意", force=True, count=2)
             self.assertEqual(menu["Q2"]["answer"], "改主意")
+
+    def test_per_qi_selection_allowed_at_stage5(self):
+        """第 6 个必停点: per_qi_selection.Q<n> 仅 stage 5 放行, 格式校验不放宽。"""
+        self.assertTrue(checkpoint_allowed(5, "per_qi_selection.Q1"))
+        self.assertFalse(checkpoint_allowed(4, "per_qi_selection.Q1"))  # 仅 stage 5
+        self.assertFalse(checkpoint_allowed(5, "per_qi_selection"))  # 裸组名不带 Qi 键
+        self.assertFalse(checkpoint_allowed(5, "per_qi_selection.Q01"))  # 前导零仍被拒
+
+    def test_per_qi_selection_recorded_and_answered(self):
+        """stage 5 可登记 per_qi_selection.Q1 且判已答, 应答注入 prompt 上下文。"""
+        with tempfile.TemporaryDirectory() as td:
+            ws, _, state = _init_ws(Path(td))
+            state.advance_stage(5)
+            state.record_checkpoint("per_qi_selection.Q1", "沿用 stage 3 拍板选型")
+            self.assertTrue(state.checkpoint_is_answered("per_qi_selection.Q1"))
+            entry = state.data["checkpoints"]["per_qi_selection"]["Q1"]
+            self.assertEqual(entry["status"], "answered")
+            self.assertEqual(entry["source"], "user_cli")
+            self.assertIn("[CP_ANSWERED per_qi_selection.Q1]",
+                          _answered_checkpoint_section(state))
 
     def test_empty_answer_rejected(self):
         with tempfile.TemporaryDirectory() as td:

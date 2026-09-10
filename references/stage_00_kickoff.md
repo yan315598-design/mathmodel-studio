@@ -48,7 +48,7 @@ next: stage_01_problem_selection
 4. **截止时间** — 自由文本 (ISO 字符串或 "距现在 X 小时")
 5. **题目 PDF 路径** — 自由文本 ("未公布"亦可)
 
-**禁止**让用户手动编辑 decision_log.json; 拿到答案后由 agent 自动写入。**必停点登记 (v2.3.0)**: 本 5 问是五个必停点之一, 用户作答后写入 `decision_log.checkpoints.kickoff_5q`（`{"status": "answered", "asked_at": "<ISO>", "answer": "<5 问答案摘要>", "source": "chat"}`；source 缺失或非 chat/user_cli 视为未答，check_gate 拦截）; 推进 stage 1 前必须 `python scripts/check_gate.py --gate 0` 放行（见 SKILL.md 必停点协议）。
+**禁止**让用户手动编辑 decision_log.json; 拿到答案后由 agent 自动写入。**必停点登记 (v2.3.0)**: 本 5 问是六个必停点之一, 用户作答后写入 `decision_log.checkpoints.kickoff_5q`（`{"status": "answered", "asked_at": "<ISO>", "answer": "<5 问答案摘要>", "source": "chat"}`；source 缺失或非 chat/user_cli 视为未答，check_gate 拦截）; 推进 stage 1 前必须 `python scripts/check_gate.py --gate 0` 放行（见 SKILL.md 必停点协议）。
 
 Codex 首屏固定模板:
 

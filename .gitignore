@@ -47,3 +47,6 @@ templates/figures/gallery/*.svg
 
 # mimosa 安全扫描工具的本地会话状态（可再生，不入库）
 .mimosa/
+
+# 出图/打包等运行产物（可再生，不入库）
+outputs/

@@ -15,7 +15,7 @@
 
 | 域 | 文件 | 锚定范式类 | 证据基础 |
 |---|---|---|---|
-| 优化决策 | `optimization_decision.md` | 优化与调度 | 2021-B/D、2022-E、2023-C、2024-B/C 获奖论文方法链提取（`analysis/lit_survey/cumcm_paper_methods.md`） |
+| 优化决策 | `optimization_decision.md` | 优化与调度 | 2021-B/D、2022-E、2023-C、2024-B/C 获奖论文方法链提取（提取过程记录为内部审计产物，分发版不含） |
 | 几何/物理建模 | `geometric_physical.md` | 物理机理；几何与运动学 | 2021-A、2022-A、2023-A、2024-A、2025-B 获奖论文方法链提取 |
 | 机器学习/数据分析 | `ml_data_analysis.md` | 统计预测；评价与排序；图像识别；信号处理 | 2021-E、2022-C、2025-C/E 获奖论文方法链提取 |
 | 仿真/路径规划 | `simulation_routing.md` | 仿真模拟；网络与路径 | 2022-D、2023-D、2025-A/D 获奖论文方法链提取 |

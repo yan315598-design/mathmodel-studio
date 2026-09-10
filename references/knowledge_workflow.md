@@ -98,7 +98,7 @@ python scripts/update_knowledge.py --source <资料目录> --apply
 
 ## 7. 外源文献检索层
 
-本地案例库与 playbook 未命中题域时的补充通道（协议全文见
+本地案例库与 playbook 之外的外源方法发现通道（协议全文见
 `references/literature_scout.md`），由 agent 运行：
 
 ```bash
@@ -107,8 +107,9 @@ python scripts/literature_scout.py "<english query>" --n 5 [--engine openalex|cr
 
 - 引擎路由：OpenAlex 主检索（免 key）；429/503 自动降级 Crossref（只取
   DOI/标题/期刊/年份）；arXiv 用于预印本补充。只接受英文 query。
-- 挂点仅三处：stage 1 选题避坑、stage 3 选型补充（playbook 未命中域时触发）、
+- 挂点仅三处：stage 1 选题避坑、stage 3 选型补充（**选型期默认触发**）、
   stage 5 翻车点验证；其余阶段不触发。
+- 预算：单挂点 ≤2 次检索、单次 ≤5 篇、24h 缓存。
 - 缓存与落盘：同 query 24h 内读 `state/literature_cache.json`；方法卡（13 字段
   固定 schema）落 `state/literature/<timestamp>.json`，单卡 ≤500 token。
 - 衔接机制侧录：外源方法卡先过四要素核验（题名/作者/期刊/年份）与撤稿检查，

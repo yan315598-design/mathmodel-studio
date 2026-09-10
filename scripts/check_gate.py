@@ -9,8 +9,11 @@ check_gate.py — 阶段推进门禁脚本 (v2.3.0)
      - gate 0 → checkpoints.kickoff_5q (启动 5 问)
      - gate 2 → checkpoints.analysis_confirm (Stage 2 审题呈现确认)
      - gate 3 → checkpoints.card_decision (Stage 3 选择卡拍板)
-     - gate 5 → checkpoints.figure_menu["Q<i>"] 与 checkpoints.qi_verdict["Q<i>"]
-       (qi_verdict 按问即问即登记: 每个 Qi 的 per-Qi L1 评分产出 verdict 时逐问
+     - gate 5 → checkpoints.figure_menu["Q<i>"] / checkpoints.qi_verdict["Q<i>"] /
+       checkpoints.per_qi_selection["Q<i>"]
+       (per_qi_selection 为第 6 个必停点: 每问 (Qi) 在求解前必须确认本问选型
+        (主模型 / baseline / 条件性备用), 用户拍板后才开解, schema 3.2 起登记;
+        qi_verdict 按问即问即登记: 每个 Qi 的 per-Qi L1 评分产出 verdict 时逐问
         向用户确认并登记; 聚合整体决策登记进 stages["5"], 不复制进 qi_verdict;
         figure_menu 条目另须 count (int 0-9), count≤1 时须 exception: true + 非空
         reason, 即 D.1 例外确认)
@@ -22,7 +25,8 @@ check_gate.py — 阶段推进门禁脚本 (v2.3.0)
      (unstarted 拦截; partial 提示披露义务; 缺失仅提示不拦截)
 2. --checkpoint <key>: 只查该必停点是否真 answered, 不查 scores
    (阶段中途人工停点用; 合法键: kickoff_5q / analysis_confirm / card_decision /
-    figure_menu.Q<n> / qi_verdict.Q<n>, 其余键业务 FAIL)
+    figure_menu.Q<n> / qi_verdict.Q<n> / per_qi_selection.Q<n>, 另接受裸组名
+    per_qi_selection (按整体校验: 三来源对齐后逐问覆盖), 其余键业务 FAIL)
 3. 只读脚本: 绝不写 decision_log; 不提供任何跳过/绕过开关
 
 退出码: 0 = 放行; 1 = 拦截 (缺失项以中文清单列出); 2 = argparse 标准 CLI
@@ -58,9 +62,11 @@ VALID_GATES = set(range(0, 9))
 # 合法子问键: Q 后跟不含前导零的正整数 (Q1, Q2, ...; Q0/Q01/Q999x 均不合规格)
 QI_KEY_RE = re.compile(r"^Q[1-9]\d*$")
 
-# --checkpoint 合法键: 三个单值必停点 + 两个点路径组 (组必须带 .Q<n>, 不接受裸组名)
+# --checkpoint 合法键: 三个单值必停点 + 三个点路径组 (figure_menu / qi_verdict
+# 必须带 .Q<n>, 不接受裸组名) + 裸组名 per_qi_selection (第 6 个必停点, 按整体校验)
 _CHECKPOINT_KEY_RE = re.compile(
-    r"^(kickoff_5q|analysis_confirm|card_decision|(figure_menu|qi_verdict)\.Q[1-9]\d*)$")
+    r"^(kickoff_5q|analysis_confirm|card_decision|per_qi_selection"
+    r"|(figure_menu|qi_verdict|per_qi_selection)\.Q[1-9]\d*)$")
 
 # 评分 verdict 合法集合 (与 scripts/score_artifact.py VALID_VERDICTS 保持一致;
 # 不直接 import, 保证本脚本在任意 cwd 独立可跑)
@@ -153,7 +159,7 @@ def shallow_schema_problems(log) -> list:
                     problems.append(f"decision_log.stages.5.{field} 格式错误 (应为 dict, 实际 {type(value).__name__}), 需修复 decision_log")
     checkpoints = log.get("checkpoints") if isinstance(log, dict) else None
     if isinstance(checkpoints, dict):
-        for field in ("figure_menu", "qi_verdict"):
+        for field in ("figure_menu", "qi_verdict", "per_qi_selection"):
             value = checkpoints.get(field)
             if value is not None and not isinstance(value, dict):
                 problems.append(f"decision_log.checkpoints.{field} 格式错误 (应为 dict, 实际 {type(value).__name__}), 需修复 decision_log")
@@ -300,9 +306,15 @@ def check_gate(log: dict, gate: int) -> dict:
         # 旧 schema (v3.0) 无 checkpoints 字段: 按 unanswered 处理, 不 crash
         notes.append("decision_log 无 checkpoints 字段 (旧 schema 3.0 state)。这是 v2.3.0 起门禁的预期拦截, 需重新走必停点问答并登记 checkpoints (详见 SKILL.md 必停点协议)。")
         if gate in SINGLE_GATE_CHECKPOINTS or gate == 5:
-            key_names = [SINGLE_GATE_CHECKPOINTS[gate]] if gate in SINGLE_GATE_CHECKPOINTS else ["figure_menu", "qi_verdict"]
+            key_names = ([SINGLE_GATE_CHECKPOINTS[gate]] if gate in SINGLE_GATE_CHECKPOINTS
+                         else ["figure_menu", "qi_verdict", "per_qi_selection"])
             for key in key_names:
-                missing.append(f"checkpoints.{key} 缺失 (旧 state): 必停点未登记, 需真问用户后登记")
+                if key == "per_qi_selection":
+                    missing.append("checkpoints.per_qi_selection 缺失 (旧 schema 3.0/3.1 state): "
+                                   "第 6 个必停点未登记, 补走 per-Qi 选型问答即可 "
+                                   "(每问求解前向用户确认本问选型并登记)")
+                else:
+                    missing.append(f"checkpoints.{key} 缺失 (旧 state): 必停点未登记, 需真问用户后登记")
         return {"pass": False, "missing": missing, "notes": notes}
 
     if gate in SINGLE_GATE_CHECKPOINTS:
@@ -319,6 +331,11 @@ def check_gate(log: dict, gate: int) -> dict:
         if expected is not None:
             figure_menu = checkpoints.get("figure_menu") or {}
             qi_verdict = checkpoints.get("qi_verdict") or {}
+            per_qi_selection = checkpoints.get("per_qi_selection") or {}
+            if "per_qi_selection" not in checkpoints:
+                notes.append("checkpoints 无 per_qi_selection 字段 (旧 schema 3.0/3.1 state)。"
+                             "这是 schema 3.2 起第 6 个必停点的预期拦截, "
+                             "补走 per-Qi 选型问答即可 (每问求解前向用户确认本问选型并登记)。")
             for qi in sorted(expected):
                 entry = figure_menu.get(qi)
                 if not is_answered(entry):
@@ -329,6 +346,10 @@ def check_gate(log: dict, gate: int) -> dict:
                 if not is_answered(qi_verdict.get(qi)):
                     missing.append(f"checkpoints.qi_verdict['{qi}'] 未 answered"
                                    f"{_unanswered_note(qi_verdict.get(qi))}: 该问 verdict 未经用户逐问确认")
+                if not is_answered(per_qi_selection.get(qi)):
+                    missing.append(f"checkpoints.per_qi_selection['{qi}'] 未 answered"
+                                   f"{_unanswered_note(per_qi_selection.get(qi))}: "
+                                   f"该问选型未经用户拍板 (主模型 / baseline / 条件性备用), 先问再登记")
 
     # 3. 答题义务台账镜像 (候选版; 仅 gate 5/8)
     if gate in (5, 8):
@@ -456,13 +477,15 @@ def check_checkpoint(log: dict, key: str) -> dict:
     """
     --checkpoint 模式: 只查指定必停点是否真 answered, 不查 scores。
     key 只接受: kickoff_5q / analysis_confirm / card_decision / figure_menu.Q<n> /
-    qi_verdict.Q<n> (n≥1); 其余键业务 FAIL 并列出合法格式。
+    qi_verdict.Q<n> / per_qi_selection.Q<n> (n≥1) 与裸组名 per_qi_selection
+    (按整体校验: 三来源对齐后逐问覆盖); 其余键业务 FAIL 并列出合法格式。
     """
     if not _CHECKPOINT_KEY_RE.match(key or ""):
         return {"pass": False,
                 "missing": [f"--checkpoint 键 {key!r} 不合法。合法格式: kickoff_5q / "
                             "analysis_confirm / card_decision / figure_menu.Q<n> / "
-                            "qi_verdict.Q<n> (n 为 ≥1 的整数, 不含前导零)"],
+                            "qi_verdict.Q<n> / per_qi_selection.Q<n> / per_qi_selection "
+                            "(n 为 ≥1 的整数, 不含前导零; 裸组名 per_qi_selection 按整体校验)"],
                 "notes": []}
     schema_problems = shallow_schema_problems(log)
     if schema_problems:
@@ -472,6 +495,24 @@ def check_checkpoint(log: dict, key: str) -> dict:
         return {"pass": False,
                 "missing": [f"checkpoints.{key} 缺失 (旧 schema 3.0 state 或未登记): 必停点未真问用户, 先问再登记"],
                 "notes": ["decision_log 无 checkpoints 字段 (旧 schema 3.0 state)。这是 v2.3.0 起门禁的预期拦截, 需补走必停点问答并登记 checkpoints (详见 SKILL.md 必停点协议)。"]}
+    if key == "per_qi_selection":
+        # 裸组名: 按整体校验 (三来源对齐后逐问覆盖, 与 gate 5 同口径), 不走单条目遍历
+        enum_notes = []
+        expected, enum_problems = expected_qis(log, enum_notes)
+        if enum_problems:
+            return {"pass": False, "missing": enum_problems, "notes": enum_notes}
+        group = value.get("per_qi_selection")
+        if group is None:
+            return {"pass": False,
+                    "missing": ["checkpoints.per_qi_selection 缺失 (旧 schema 3.0/3.1 state 或未登记): "
+                                "第 6 个必停点未登记, 补走 per-Qi 选型问答即可 "
+                                "(每问求解前向用户确认本问选型并登记)"],
+                    "notes": []}
+        missing = [f"checkpoints.per_qi_selection['{qi}'] 未 answered"
+                   f"{_unanswered_note(group.get(qi))}: "
+                   "该问选型未经用户拍板 (主模型 / baseline / 条件性备用), 先问再登记"
+                   for qi in sorted(expected) if not is_answered(group.get(qi))]
+        return {"pass": not missing, "missing": missing, "notes": enum_notes}
     node = value
     traversed = []
     for part in key.split("."):

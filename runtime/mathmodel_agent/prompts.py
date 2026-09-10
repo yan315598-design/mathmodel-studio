@@ -28,10 +28,11 @@ PROTOCOL_DOC = ("输出协议: 结论写正文; 需要落盘的文件用围栏�
 # checkpoint 只能由"人"写: LLM 只能发 checkpoint_request 指令申请, 绝不可自写登记。
 CHECKPOINT_DOC = (
     "## 必停点协议 (v2.3.0, HIL-lite, 全文见 SKILL.md)\n"
-    "五个必停点必须真实问过用户并由人工登记; LLM 只能**申请**, 不能**登记**:\n"
+    "六个必停点必须真实问过用户并由人工登记; LLM 只能**申请**, 不能**登记**:\n"
     "1. 到达必停点时, 在正文单独一行输出指令 `checkpoint_request: <key>` (取值: "
     "stage 0→kickoff_5q; 2→analysis_confirm; 3→card_decision; "
-    "5→figure_menu.Q<n> 或 qi_verdict.Q<n>; 其余 stage 无必停点, 不得出现该指令)。\n"
+    "5→figure_menu.Q<n> / qi_verdict.Q<n> / per_qi_selection.Q<n>; "
+    "其余 stage 无必停点, 不得出现该指令)。\n"
     "2. runtime 会暂停 (paused) 并等待用户经 CLI answer 命令作答; "
     "恢复后用户答案会以「必停点用户应答」小节注入对话, 基于它继续本 stage。\n"
     "3. 绝不生成 state/checkpoints_patch.json 工件或任何 checkpoint 文件/条目内容——"
@@ -76,7 +77,7 @@ def _answered_checkpoint_section(state: DecisionLog) -> str:
                 entry = checkpoints[top]
                 lines.append(f"[CP_ANSWERED {top}] answer: {entry.get('answer')}")
                 found = True
-        for group in ("figure_menu", "qi_verdict"):
+        for group in ("figure_menu", "qi_verdict", "per_qi_selection"):
             node = checkpoints.get(group)
             if isinstance(node, dict):
                 for qi in sorted(node):

@@ -5,6 +5,16 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)。
 
 
+## [2.6.0] 选型告知前移 + 文献检索默认触发 + 加载引用修通 (2026-09-11)
+
+- 选型告知前移到用户可见：路由表新增模型选型入口（"这道题用什么模型"直进 Stage 3 选择卡，不进入求解）与"帮我求解"入口（无 stage 3 选型记录必须先补走选择卡，不得直接求解）；选择卡加"依据与文献"列；新增《选型总表》`cwd/selection_sheet.md`（人读产物，stage 3 生成初版、stage 5 每问 `A0` 确认后更新对应行；机器真源仍是 `decision_log.stages.3.selected_per_subproblem`）。
+- 外源文献检索由"未命中才触发"改为选型期默认触发：stage 1/3/5 三挂点、stage 3 选型期默认触发（不再以 playbook 未命中域为前提），单挂点预算 ≤2 次检索、单次 ≤5 篇，命中 24h 缓存不重复消耗配额；按 stage 加载表与"与外部资源的关系"两处口径统一。
+- 必停点 5→6：新增第 6 必停点"每问选型确认"（Stage 5 每个 Qi 求解前 `A0` 步，登记键 `checkpoints.per_qi_selection["Q<i>"]`）；与 stage 3 已拍板方案一致时轻量确认（一行摘要 + 编号菜单），不一致或本问无 stage 3 记录时出完整选择卡；与 `card_decision` 各自独立登记，不得互相顶替。
+- 加载不到的文件引用修通 11 处：反馈层通配 `feedback_layer*.md` 展开为 L1-L4 四个显式路径（流程总览、用户指令快捷同步补 L2/L4 文件名）；按 stage 加载表补 stage 4/6/7 三行（`stage_04_foundation` / `stage_06_robustness` / `stage_07_evaluation`）；竞赛经验笔记 `competitions/<comp>/empirical_notes.md` 入数据来源声明；三处裸 `case_retrieval.md`、`source_manifest.json`、收敛准则 `feedback_layer1_critic.md` 改显式路径；vendor scibox-* 两处加"本分发版不含、自动降级"括注；`runtime/`（薄执行器，必停点代码强制）与 `evals/`（留出题评测 + 反例回归）补可达入口；局部写作入口加"求解或选型必须先过 stage 3 选择卡"护栏。
+- 工具挂点补齐：三赛联合工具补 `scripts/retrieve_cumcm_cases.py` 向后兼容入口（检索 `competitions/cumcm/cases/index.json`）；stage 9 补 `scripts/score_artifact.py --mode judge` 可执行入口。
+- 版本元数据统一 v2.6.0：SKILL.md 标题与版本段、`.claude-plugin/plugin.json`（原漂移为 2.2.0）、`.codex-plugin/plugin.json` 统一 2.6.0。
+- 提交打包补 gate 8 门禁预检：`scripts/package_submission.py` 在打包前直接 import `check_gate.py` 校验 gate 8（不起子进程），未过则拒绝打包且 dry-run 同样预检并明示"正式打包会被拒绝"；decision_log 缺失或无法解析时仅 ⚠️ 提示不拦截（保持 `--competition` 覆盖、无 state 预览的既有行为）；新增 `--allow-gate-fail` 显式逃生门（降级放行并打印中文警告）。文档同步 submission_checklists / SKILL.md stage 9 行，tests 新增 `test_package_submission_gate8.py`（6 用例）。
+
 ## [2.5.0] 领域 playbook 层 + 图表图题纪律 + 结构整理 (2026-09-10, 已转正安装)
 
 > 依据 analysis/playbook_plan.md（六层蒸馏资产盘点：写作/案例层达标不重蒸，建模层缺域级深度动作）。bug-reviewer 两轮审查闭环（P0 调度 playbook 证据降级规则入文件）。

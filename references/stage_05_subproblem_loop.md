@@ -60,6 +60,7 @@ next: stage_06_robustness
 
 ```
 for Qi in [Q1, Q2, ..., Qn]:
+    A0. 本问选型确认 (必停点, v2.6.0)
     A. 模型完整化 (45 min)
     B. 求解实现 (2-4h)
     C. 结果验证 (30 min)
@@ -91,6 +92,16 @@ for Qi in [Q1, Q2, ..., Qn]:
 ---
 
 ## 单 Qi 操作流程详解
+
+### A0. 本问选型确认 (必停点, v2.6.0)
+
+进入求解前（A 之前）亮出本问选型——主模型 + baseline + 条件性备用及触发条件 + 依据与文献来源 + 失效边界（与 stage 3 选择卡"档案五列"同口径）, 用户拍板后才进 A/B:
+
+- 本问选型与 stage 3 已拍板方案（`decision_log.stages.3.selected_per_subproblem["Q<i>"]`）**一致**时, 只做轻量确认: 一行摘要 + 编号菜单 `1 继续 2 换模型 3 看完整候选档案`。
+- **不一致或本问无 stage 3 记录**时, 必须出完整选择卡（按 `stage_03_model_selection.md` 选择卡规格, 档案五列含"依据与文献"）。
+- 登记必停点 `decision_log.checkpoints.per_qi_selection["Q<i>"]`, 条目形如 `{"status": "answered", "asked_at": "<ISO>", "answer": "<用户选择摘要>", "source": "chat"}`（runtime 侧经 CLI answer 登记的条目 source 为 user_cli, 同形）; source 缺失或非 chat/user_cli 视为未答, check_gate 拦截（见 SKILL.md 必停点协议）。
+- 确认后更新《选型总表》`cwd/selection_sheet.md` 对应行（stage 3 生成初版, 本步更新该问行）。
+- `check_gate.py --gate 5` 与 `--checkpoint per_qi_selection.Q<n>` 逐问校验。
 
 ### A. 模型完整化 (45 min)
 
@@ -240,7 +251,7 @@ pd.DataFrame({"delta": deltas, "profit": profits}).to_csv(
 
 **0/1 张的披露登记**: 图表数量不设评分下限（见 rubric 表维度 4 与 `config/rating_contract.json` 重释），但用户选 0/1 张属于低频决策，agent 必须先说明该问的证据呈现方式（表格/文字替代）；`figure_menu["Q<i>"]` 条目须追加 `"count": <0|1>, "exception": true` 与理由（条目形如 `{"status": "answered", "asked_at": "<ISO>", "answer": "1 张", "source": "chat", "count": 1, "exception": true, "reason": "<用户理由>"}`），并在 `真源.md` 图表登记表同步标注——登记用途是决策追溯，不是扣分豁免。
 
-用户选择写入 `decision_log.checkpoints.figure_menu["Q<i>"]`，条目形如 `{"status": "answered", "asked_at": "<ISO>", "answer": "2 张, icarus 多面板主图", "source": "chat", "count": 2}`（count 为该问图表数量，int 0-9 必填；source 缺失或非 chat/user_cli 视为未答，check_gate 拦截——runtime 侧经 CLI answer 登记的条目 source 为 user_cli，同形）。**不问不出图**——这是五个必停点之一，`check_gate.py --gate 5` 与 `--checkpoint figure_menu.Q<n>` 会逐问校验。
+用户选择写入 `decision_log.checkpoints.figure_menu["Q<i>"]`，条目形如 `{"status": "answered", "asked_at": "<ISO>", "answer": "2 张, icarus 多面板主图", "source": "chat", "count": 2}`（count 为该问图表数量，int 0-9 必填；source 缺失或非 chat/user_cli 视为未答，check_gate 拦截——runtime 侧经 CLI answer 登记的条目 source 为 user_cli，同形）。**不问不出图**——这是六个必停点之一，`check_gate.py --gate 5` 与 `--checkpoint figure_menu.Q<n>` 会逐问校验。
 
 **与 Stage 2 图表规格冻结的衔接**: stage 2 冻结的是规格框架（真源.md 图表登记表：每图回答什么问题 / 数据源 / 色板 / 类型）；本节菜单是逐问落实（数量 + 样式路由的最终确认）。两者不冲突——菜单结果若与登记表规格冲突，以菜单为准并回写登记表修订记录。
 
@@ -287,6 +298,7 @@ CUMCM 或研究生赛命中案例存在 `figure_story` 时，优先将图表组�
 - 输出 5 维 JSON 评分
 - 若任一维 <7 → diff-only 精修, iter+=1, 上限 3
 - 全维 ≥9 → 早退
+- 某子问 verdict=refine 且 iter=2 仍无改善、且怀疑方法本身不适用时, 触发 stage 5 文献挂点（1 次定向检索: 方法名 + 失效场景, 只找失效证据与替代路线）, 登记 `decision_log.stages.5.literature_searches`（协议见 `references/literature_scout.md`）
 
 ### G. 输出移交
 

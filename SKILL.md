@@ -3,11 +3,11 @@ name: mathmodel-studio
 description: 数学建模竞赛全流程助手。从选题、审题、建模、求解、验算，到写论文、画图、模拟评审、打包提交，按阶段带你走完一篇可提交的竞赛论文。支持华为杯研究生赛、CUMCM 国赛、华数杯、MCM/ICM 美赛、电工杯、APMCM 亚太杯。内置从历年优秀论文提炼的建模经验库和分题型写作范式；图表统一配色、出图自动质检；论文里每个数字都可回溯；提交前有评委模拟终审。全程问答式，用户只需选编号。Use when the user says 建模、数模、开始建模、数学建模、华为杯、研究生赛、研究生数学建模竞赛、华数杯、CUMCM、国赛、MCM、ICM、美赛、电工杯、APMCM、亚太杯、选题、相似题、模型选择、灵敏度分析、稳健性检验、摘要写作、图表规划、图表配色、论文润色、论文审阅、终审、评委模拟、提交打包.
 ---
 
-# mathmodel-studio — 数学建模 多竞赛通用 Skill (v2.5.0, 数模工坊 MathModel Studio)
+# mathmodel-studio — 数学建模 多竞赛通用 Skill (v2.6.0, 数模工坊 MathModel Studio)
 
 ## 版本与总述
 
-**当前版本 v2.5.0**（2026-09-10）。本版做了三件事：① 给华为杯三个常考领域（信号诊断、空间几何、调度优化）各写了一份"高手动作手册"——写清普通做法在哪失效、优秀论文补了什么机制、什么情况下不适用，每条都标证据来源；② 33 篇深读论文支持按领域快速检索；③ 图表规范对齐正式论文：图名和结论写在图注里，不烧进图片本身，并有自动检查把关。上一版 v2.4.0（2026-09-09）主打建模证据纪律与必停点门禁。完整历史见 `CHANGELOG.md`。
+**当前版本 v2.6.0**（2026-09-11）。本版做了三件事：① 选型告知前移到用户可见——新增模型选型入口、选择卡加“依据与文献”列、新增《选型总表》；② 外源文献检索由“未命中才触发”改为选型期默认触发；③ 修通 11 处加载不到的文件引用（含 L2/L4 反馈层、stage 4/6/7 加载表、竞赛经验笔记）。上一版 v2.5.0（2026-09-10）主打领域 playbook 与图表图题纪律。完整历史见 `CHANGELOG.md`。
 
 建模证据纪律（现行规则）：进入 Stage 2/3/5/8 时按需读取 `references/modeling_evidence_protocol.md`，机制案例另读 `references/mechanism_distillation.md`。历史范例中的固定变量数、强制凑三族、修饰词命名和默认复用，不再作为质量要求；题面给定输入优先于跨问复用。
 
@@ -54,8 +54,11 @@ Codex 菜单格式:
 | "华为杯" / "研究生赛" / "研赛" | **研究生赛专项** | competition=`huaweibei`; 加载跨赛共用层与 `competitions/huaweibei/` 独立分支 + `references/huaweibei_battle_plan_72h.md` 作战表 |
 | "华数杯" / "我要打华数杯" / "华数杯国一" | **华数杯专项** | 加载 `references/huashubei_battle_plan_72h.md`, competition=huashubei, 国一标准 |
 | "比较 A/B/C 题" / "帮我选题" / "华数杯选哪题" | Stage 1 | 加载 `topic_specs.json`; **huashubei 额外加载 `references/huashubei_topic_decision.md`** |
+| "这道题用什么模型" / "帮我选模型" / "给选型建议" | Stage 3 选型（选择卡） | 加载 `references/stage_03_model_selection.md`，按题目域先查 playbook/案例库，再出每问候选短名单与《选型总表》，**不进入求解** |
+| "帮我求解" / "直接解这道题" | 检查 state 后进 Stage 5 | 先读 `cwd/state/decision_log.json`；若无 stage 3 选型记录，**必须先补走 stage 3 选择卡**，不得直接求解 |
+| "帮我查文献" / "有文献支持吗" / "这个方法有人做过吗" | 文献检索（stage 1/3/5 挂点） | 加载 `references/literature_scout.md`，跑 `scripts/literature_scout.py`，方法卡转写机制条目并标 review_status |
 | "写摘要" / "写华数杯摘要" / "写亚太杯摘要" | Stage 8 局部写作 | 加载对应竞赛 `abstract_template.md` + `phrase_bank.md` |
-| "写问题分析/模型段/结果解释/图表说明" | Stage 8 局部写作 | 只生成对应章节, 不改 state, 除非用户要求进入完整流程 |
+| "写问题分析/模型段/结果解释/图表说明" | Stage 8 局部写作 | 只生成对应章节, 不改 state, 除非用户要求进入完整流程；若用户要的是**求解或选型**，不得走本入口，必须先过 stage 3 选择卡（局部入口绕开 state 等于绕开全部必停点登记） |
 | "画图/生成图/美化图/规划图表/终审图表" | 图表桥接 | 加载 `references/figure_skill_bridge.md`（配色规范：`references/color_typology.md` + 设计令牌宪法 `references/design_tokens.md`; 1.4.0 起总路由表在桥接文件顶部）; 论文示意图高密度交付默认走 `templates/figures/vendor/scibox-diagram/`（开源分发版无 scibox-*, 自动降级为自写 drawio/matplotlib 模板, 见桥接文件"开源分发版注意"）, 轻量快速路径用自写 drawio 模板 `render_drawio_pack.py --list`, 示意图配色默认走 `DIAGRAM_FAMILIES` 色族（与数据图表色板分离, 见 `color_typology.md` §2.4）; 复杂多面板主图/物理场图/网络流图/TikZ 框架图走 `vendor/icarus-figures/`（v2.3.0, 约束见 VENDOR.md 第 6 条）; **huashubei 额外加载 `references/huashubei_figure_pack.md`** |
 | "终审论文" / "最后 6 小时检查" | Stage 9 | 进入极速终审路径, 优先查摘要定量结果、图表解释、符号一致、结论对应题问 |
 | "继续 stage N" / "看进度" | 恢复 state | 读 `cwd/state/decision_log.json`, 加载对应 stage |
@@ -91,6 +94,10 @@ Codex 菜单格式:
 
 当 skill 已安装后, 用户可直接说"开始建模"或显式说"使用 `$mathmodel-studio` 开始建模"。
 
+可选自带执行器（非默认流程）: `runtime/mathmodel_agent/` 是薄 agent runtime 原型, 用 `python -m mathmodel_agent run --workspace <dir> --mock` 可离线试跑; 必停点由代码强制——LLM 只能以正文 `checkpoint_request:` 行申请、人工经 CLI `answer` 子命令登记（`source=user_cli`）, 无法自写 checkpoints。需要 skill 身份下的物理拦截时, 路径是插件身份注册 `PreToolUse` hook 接入 check_gate, 或提交阶段用 `package_submission` 校验（见"必停点协议"）。详见 `runtime/README.md`。
+
+开发者自检入口: 留出题评测协议 `evals/holdout_protocol.md` + `evals/run_eval.py`; 反例回归 `evals/rubric_regression/run_rubric_regression.py`。
+
 ---
 
 ## Harness 兼容 (Claude Code / Codex)
@@ -117,7 +124,7 @@ Codex 菜单格式:
 
 Claude Code: 用 `AskUserQuestion` 工具; Codex: 用 markdown 编号列表 (最多 1-5, 含兜底)。两者语义等价, 见 `references/harness_compat.md` §1。
 
-**交互密度 `interaction` (v2.3.0)**: decision_log 新增正交字段 `interaction`，取值 `"detailed"`（默认）| `"auto"`。detailed 下必停点之外的**关键自由参数**（假设取舍、图表风格细节、章节侧重）也要问；auto 仅当用户明确说"自动模式 / 少问点 / 你自己定"时开启（写入 `decision_log.interaction`），且只减少必停点之外的细节提问密度——**五个必停点永远要问**。注意与 `mode`（fast / standard / championship）的区分：`mode` 管 token 档位与反馈深度，`interaction` 管提问密度，两者正交、不得混用、不得互相覆盖。
+**交互密度 `interaction` (v2.3.0)**: decision_log 新增正交字段 `interaction`，取值 `"detailed"`（默认）| `"auto"`。detailed 下必停点之外的**关键自由参数**（假设取舍、图表风格细节、章节侧重）也要问；auto 仅当用户明确说"自动模式 / 少问点 / 你自己定"时开启（写入 `decision_log.interaction`），且只减少必停点之外的细节提问密度——**六个必停点永远要问**。注意与 `mode`（fast / standard / championship）的区分：`mode` 管 token 档位与反馈深度，`interaction` 管提问密度，两者正交、不得混用、不得互相覆盖。
 
 ---
 
@@ -125,7 +132,7 @@ Claude Code: 用 `AskUserQuestion` 工具; Codex: 用 markdown 编号列表 (最
 
 2025 华为杯 F 题实测病根：agent 全程自写自走，设计的必停点全部未问。本节把必停点从"约定"升级为"登记 + 程序门禁"。
 
-**五个必停点**——任何模式下都必须**真问用户**（Claude Code 用 `AskUserQuestion`；Codex 用编号菜单），**唯一登记路径是 `decision_log.checkpoints`**，登记条目形如 `{"status": "answered", "asked_at": "<ISO>", "answer": "<用户选择摘要>", "source": "chat"}`（主 agent 流程经用户问答后由 agent 写入，`source` 固定为 `"chat"`；runtime 薄执行器的 trusted 写入是 CLI `answer` 命令，`source` 为 `"user_cli"`）。**`source` 缺失或非 `chat`/`user_cli` 的值（model/llm/agent/auto 等）一律视为未答，`check_gate.py` 拦截**：
+**六个必停点**——任何模式下都必须**真问用户**（Claude Code 用 `AskUserQuestion`；Codex 用编号菜单），**唯一登记路径是 `decision_log.checkpoints`**，登记条目形如 `{"status": "answered", "asked_at": "<ISO>", "answer": "<用户选择摘要>", "source": "chat"}`（主 agent 流程经用户问答后由 agent 写入，`source` 固定为 `"chat"`；runtime 薄执行器的 trusted 写入是 CLI `answer` 命令，`source` 为 `"user_cli"`）。**`source` 缺失或非 `chat`/`user_cli` 的值（model/llm/agent/auto 等）一律视为未答，`check_gate.py` 拦截**：
 
 | 必停点 | 触发时机 | 登记键 | 呈现方式 |
 |---|---|---|---|
@@ -134,8 +141,13 @@ Claude Code: 用 `AskUserQuestion` 工具; Codex: 用 markdown 编号列表 (最
 | 选择卡拍板 | Stage 3 选择卡人类拍板门（先亮短名单+候选档案，用户拍板） | `checkpoints.card_decision` | 同上 |
 | 每问图表菜单 | Stage 5 每个 Qi 验证通过后、生成图表前（见 `references/stage_05_subproblem_loop.md`） | `checkpoints.figure_menu["Q<i>"]` | 同上 |
 | 每问 verdict | Stage 5 每个 Qi 的 per-Qi L1 评分产出 verdict 时**即问即登记**该问条目（refine_partial 时明确问修哪问）；聚合整体决策登记进 `stages["5"]` 既有字段，不复制进 qi_verdict | `checkpoints.qi_verdict["Q<i>"]` | 同上 |
+| 每问选型确认 | Stage 5 每个 Qi 求解前（`A0` 步） | `checkpoints.per_qi_selection["Q<i>"]` | 同上 |
+
+每问选型确认的口径：本问选型与 stage 3 已拍板方案一致时只做轻量确认（一行摘要 + 编号菜单），不一致或本问无 stage 3 记录时必须出完整选择卡；该键与 `card_decision` 各自独立登记，不得互相顶替。
 
 **程序门禁**: stage 推进前必须跑 `python scripts/check_gate.py --gate <N>`（N 为当前 stage，0-8；`--gate N` 只在阶段末尾退出条件处跑，阶段中途的人工停点用 `--checkpoint <key>` 只查该必停点登记、不查 scores）。exit 0 放行；exit 1 拦截并输出缺失项中文清单——与 verdict=block 同级处理：**暂停 + 编号菜单**，缺必停点就补问，缺评分落盘就先跑 rubric L1 自评 + `score_artifact.py`。门禁同时强制 `scores` 里存在 stage N 的合法评分记录（E 合并；stage 5 双路径：`scores["5"]` stage-level 或 `scores["5_per_qi"]` 覆盖全部 Qi，满足其一即可），L1 评分一次没落盘即拦截。**没有跳过/绕过开关**；旧 state 无 `checkpoints` 字段（schema 3.0）时判 FAIL 属预期行为，补走必停点问答即可。CLI 参数语法错误为 argparse 标准 exit 2，业务放行/拦截一律只返回 0/1。
+
+**宿主强制未启用时的口径**: 本 skill 当前以 skill 身份安装，未注册插件 hook，程序门禁由 agent 在阶段末尾主动运行 `check_gate.py` 完成——属协议要求而非物理拦截。若需要物理拦截，路径是在插件身份下注册 `PreToolUse` hook（见“多 Runtime 入口”），或在提交阶段用 `package_submission` 校验。
 
 
 ---
@@ -162,8 +174,8 @@ Claude Code: 用 `AskUserQuestion` 工具; Codex: 用 markdown 编号列表 (最
 Codex 首屏优先加载 `references/codex_practical_menu.md` 的"比赛工作台菜单"。用户回复:
 - `1` → 完整 5 幕 10 步流程, 继续问竞赛/题号/队员/截止/PDF。
 - `2` → 只做 A/B/C 题比较, 进入 Stage 1。
-- `3` → 局部写作, 进入 Stage 8 写作菜单。
-- `4` → 终审论文, 进入 Stage 9。
+- `3` → 局部任务工作台 (写作/摘要/图表/终审), 按任务进 Stage 8 或 Stage 9。
+- `4` → 模型选型建议, 进入 Stage 3 选择卡, 出每问候选短名单与《选型总表》, **不进入求解**。
 - `5` → 读取已有 state, 恢复当前阶段。
 
 ```
@@ -251,7 +263,7 @@ Codex 首屏优先加载 `references/codex_practical_menu.md` 的"比赛工作�
 | 四、论文成稿 | 模型评价 (7) → 写作组装 (8) | 优缺点与推广；草稿卡组装成正文 + 摘要三遍制 | 1-2h + 12-30h |
 | 五、终审提交 | 终审 (9) | 评委模拟器 panel：资格门 + 扣分制 + 校准锚；一致性审计与打包 | 2-6h |
 
-**质量门 1**（每步结束，原 L1）：rubric 自评 + verdict 判定，不过不推进。**质量门 2**（第五幕，原 L3+L4）：评委模拟器多席位 panel + 校准。**跨幕回检**（原 L2）内嵌在第三、四幕末尾，定向回滚不重做整幕。
+**质量门 1**（每步结束，原 L1）：rubric 自评 + verdict 判定，不过不推进。**质量门 2**（第五幕，原 L3+L4）：评委模拟器多席位 panel + 校准（L4 `references/feedback_layer4_calibration.md`）。**跨幕回检**（原 L2，`references/feedback_layer2_backtrack.md`）内嵌在第三、四幕末尾，定向回滚不重做整幕。
 
 各阶段细节（reference / 反馈 / 竞赛差异点）见对应 `references/stage_NN_*.md`；差异速查：题号体系（huaweibei A-F 不映射题型 / huashubei A-C / cumcm A-E / mcm A-F / diangong A-B / apmcm A-C）、时长语言编译器由竞赛决定、stage 5 子问数与 per-Qi 加权聚合、stage 8 摘要类型（五段 / 1-page+Letter / 四段）。
 
@@ -268,16 +280,16 @@ Codex 首屏优先加载 `references/codex_practical_menu.md` 的"比赛工作�
 
 ### 通用与跨阶段加载
 
-- 触发反馈时: 对应 `references/feedback_layer*.md`; harness 适配差异 (Codex 用户必读): `references/harness_compat.md`
+- 触发反馈时: L1 `references/feedback_layer1_critic.md` / L2 `references/feedback_layer2_backtrack.md` / L3 `references/feedback_layer3_panel.md` / L4 `references/feedback_layer4_calibration.md`; harness 适配差异 (Codex 用户必读): `references/harness_compat.md`
 - 任何并行派发前: `references/parallel_dispatch.md`; 迭代预算耗尽输出 `decision_memo`
 - 外部数据需求 (任何阶段): `references/data_acquisition.md` (数据源优先级/数据集登记 SSOT/网络安全约束/论文数据声明)
 - stage 2/8 文献需求: `references/reference_skill_bridge.md` (检索硬上限 ≤5 次/阶段, T1→T3 路由, 四要素核验, 期刊分级与参数溯源)
-- 图表任务: `references/figure_skill_bridge.md` (路由总表见其顶部); 规划用 `figure-table-planner`, 生成用 `math-figure-generator`, 终审质检用 `nature-figure` 的 QA 规则; 数据图 17 件 `templates/figures/scripts/render_modeling_pack.py --list`; 示意图 4 件 `templates/figures/scripts/render_diagram_pack.py --list`; drawio 可编辑模板 6 件 `templates/figures/scripts/render_drawio_pack.py --list`（落盘自动过 `drawio_check.py` 版式门禁, FAIL 即退出码 1）; vendor 路由: 高密度论文示意图走 `templates/figures/vendor/scibox-diagram/`（4 模板, content JSON 驱动）, 差异数据图型走 `vendor/scibox-figure/`, 答辩/展示级 HTML 走 `vendor/diagram-design/`, 复杂多面板主图（hero panel）、物理场/动力学/网络流图、TikZ 框架图走 `vendor/icarus-figures/`（paperfig 48 函数 + 5 个可编译 TikZ 范例; 不启用 journal 列宽, 产物落 cwd, critique.py 与 figqa/figure_lint 双门都过; 路由细则见 `figure_skill_bridge.md`）
+- 图表任务: `references/figure_skill_bridge.md` (路由总表见其顶部); 规划用 `figure-table-planner`, 生成用 `math-figure-generator`, 终审质检用 `nature-figure` 的 QA 规则; 数据图 17 件 `templates/figures/scripts/render_modeling_pack.py --list`; 示意图 4 件 `templates/figures/scripts/render_diagram_pack.py --list`; drawio 可编辑模板 6 件 `templates/figures/scripts/render_drawio_pack.py --list`（落盘自动过 `drawio_check.py` 版式门禁, FAIL 即退出码 1）; vendor 路由: 高密度论文示意图走 `templates/figures/vendor/scibox-diagram/`（4 模板, content JSON 驱动; 本分发版不含, 自动降级为自写 drawio/matplotlib 模板与 `vendor/icarus-figures/`, 见 `references/figure_skill_bridge.md`）, 差异数据图型走 `vendor/scibox-figure/`（本分发版不含, 自动降级为自写 drawio/matplotlib 模板与 `vendor/icarus-figures/`, 见 `references/figure_skill_bridge.md`）, 答辩/展示级 HTML 走 `vendor/diagram-design/`, 复杂多面板主图（hero panel）、物理场/动力学/网络流图、TikZ 框架图走 `vendor/icarus-figures/`（paperfig 48 函数 + 5 个可编译 TikZ 范例; 不启用 journal 列宽, 产物落 cwd, critique.py 与 figqa/figure_lint 双门都过; 路由细则见 `figure_skill_bridge.md`）
 - 图表硬门: 出图后跑 `scripts/figqa.py --strict` (六类碰撞) + `scripts/figure_lint.py` (设计规则); 新图模板 `templates/figures/scripts/` (tornado/优化分配/多场景/技术路线图, dispatcher `render_modeling_pack.py`)
 - 图表配色: `references/color_typology.md` + 设计令牌宪法 `references/design_tokens.md` + `templates/figures/style/{palettes.py, mathmodel.mplstyle}`; 模板脚本公共底座 `templates/figures/scripts/figkit.py`; 图表计划记录 `palette` 字段
 - 任何 stage 推进前: `scripts/check_gate.py --gate <N>` 门禁 (必停点 + 评分落盘, 见”必停点协议 (v2.3.0)”)
 - 数字冻结: `scripts/freeze_numbers.py` (freeze/check/unfreeze/list, workspace_protocol §9); 运行清单: `scripts/run_manifest.py` (record/verify, §10 级联失效)
-- 三赛联合工具: 题目/子问检索 `scripts/retrieve_cases.py --competition all --level both`; Stage 知识包 `scripts/build_stage_pack.py --stage 1|3|5|8|9`; 动态骨架与图表计划 `scripts/generate_paper_plan.py`; 结果证据追踪 `scripts/trace_claims.py`; 增量更新与版本 `scripts/update_knowledge.py`（默认预览, 明确更新时才用 `--apply`）
+- 三赛联合工具: 题目/子问检索 `scripts/retrieve_cases.py --competition all --level both`; Stage 知识包 `scripts/build_stage_pack.py --stage 1|3|5|8|9`; 动态骨架与图表计划 `scripts/generate_paper_plan.py`; 结果证据追踪 `scripts/trace_claims.py`; 增量更新与版本 `scripts/update_knowledge.py`（默认预览, 明确更新时才用 `--apply`）; cumcm 向后兼容入口 `scripts/retrieve_cumcm_cases.py`（检索 `competitions/cumcm/cases/index.json`）
 - 决策弹窗: 所有选项卡以 `references/decision_ui_map.md` 为唯一登记处
 - 评分重释: `config/rating_contract.json` dimension_interpretations 16 键, 配额不作评分依据; L1 分数落盘带 `self_assessed: true`
 
@@ -287,12 +299,15 @@ Codex 首屏优先加载 `references/codex_practical_menu.md` 的"比赛工作�
 |-------|----------|
 | -1 赛前 (T-7~T-1) | `references/stage_preseason.md` 跑一次兵检, 输出 `state/preseason_report.json` |
 | 0 | `references/workspace_protocol.md` (唯一工作区/真源 SSOT/会话恢复四步; 检测同竞赛旧工作区必须先编号菜单确认归档); 真源 md 的公式/符号/题注/编号格式规范 `references/md_authoring_spec.md` (PDF/docx 双链实测口径); `state/skill_issues.md` 台账随工作区骨架创建, 自我纠错时追加 (协议见 `references/workspace_protocol.md` §11); 华数杯/研究生赛各自 `battle_plan_72h` 作战表 (见竞赛专项加载) |
-| 1 | `competitions/<comp>/topic_specs.json`; 国赛、研究生赛和华数杯加载各自 `case_retrieval.md`，由 agent 运行 `scripts/build_stage_pack.py --stage 1`；需要跨赛结构参考时使用 `--competition all`; 华数杯另加 `references/huashubei_topic_decision.md` 选题决策矩阵 (见竞赛专项加载) |
+| 1 | `competitions/<comp>/topic_specs.json`; 国赛、研究生赛和华数杯加载各自 `competitions/<comp>/case_retrieval.md`，由 agent 运行 `scripts/build_stage_pack.py --stage 1`；需要跨赛结构参考时使用 `--competition all`; 华数杯另加 `references/huashubei_topic_decision.md` 选题决策矩阵 (见竞赛专项加载) |
 | 2 | 审题门: 边界/权利/目标/假设四查 + 审题质询员红队 (stage_02 内嵌); 建模防错查 `references/modeling_norms.md` 对应题型节; 义务台账 `decision_log.stages.2.obligations` 镜像, gate 5/8 校验 unstarted 拦截; 末尾图表规格冻结 (stage_02 内嵌小节), 登记进真源.md 图表登记表 |
-| 3 | stage 3/5 建模通用: `references/model_catalog.md` (含 §12 失效边界) + `references/knowledge_workflow.md`，运行 Stage 知识包与子问级检索，使用路线比较、假设风险和必做验证，禁止迁移历史数值; “选择卡”人类拍板门 (stage_03 内嵌); 外源文献检索（`scripts/literature_scout.py` + `references/literature_scout.md`，playbook 未命中域时触发，方法卡需过四要素核验）; 研究生赛另加 `competitions/huaweibei/playbooks/` 与 `competitions/huaweibei/papers/domain_index.md` (见竞赛专项加载); 国赛另加 `competitions/cumcm/playbooks/` 五域手册 (见竞赛专项加载) |
-| 5 | per-Qi 评分跑完后调 `scripts/score_artifact.py --mode aggregate_qi` 聚合; 每问验证后写章节草稿卡 `paper_workspace/sections/q{i}_draft.md` (write-as-you-solve, 见 stage_05 E2 节); stage 8 组装时优先复用草稿卡; 图表 (stage 5/8): CUMCM/研究生赛加载各自 `distilled_figures.md`, 从命中案例的 `figure_story` 组织“结构—机制—中间状态—结果—可信边界”，基础 `figure_plan` 只作兜底 |
+| 3 | stage 3/5 建模通用: `references/model_catalog.md` (含 §12 失效边界) + `references/knowledge_workflow.md`，运行 Stage 知识包与子问级检索，使用路线比较、假设风险和必做验证，禁止迁移历史数值; “选择卡”人类拍板门 (stage_03 内嵌); 外源文献检索（`scripts/literature_scout.py` + `references/literature_scout.md`，stage 1/3/5 挂点、stage 3 选型期默认触发，不再以 playbook 未命中域为前提；单挂点预算 ≤2 次检索、单次 ≤5 篇，命中 24h 缓存不重复消耗配额，方法卡需过四要素核验）; 研究生赛另加 `competitions/huaweibei/playbooks/` 与 `competitions/huaweibei/papers/domain_index.md` (见竞赛专项加载); 国赛另加 `competitions/cumcm/playbooks/` 五域手册 (见竞赛专项加载); 《选型总表》`cwd/selection_sheet.md`（人读产物，stage 3 生成初版、stage 5 每问 `A0` 确认后更新对应行；机器真源仍是 `decision_log.stages.3.selected_per_subproblem`，总表是它的渲染） |
+| 4 | `references/stage_04_foundation.md`（假设/符号/术语冻结）+ `templates/shared/notation_table.md` |
+| 5 | 每问求解前先过 `A0` 本问选型确认（必停点，见必停点协议）; per-Qi 评分跑完后调 `scripts/score_artifact.py --mode aggregate_qi` 聚合; 每问验证后写章节草稿卡 `paper_workspace/sections/q{i}_draft.md` (write-as-you-solve, 见 stage_05 E2 节); stage 8 组装时优先复用草稿卡; 图表 (stage 5/8): CUMCM/研究生赛加载各自 `distilled_figures.md`, 从命中案例的 `figure_story` 组织“结构—机制—中间状态—结果—可信边界”，基础 `figure_plan` 只作兜底 |
+| 6 | `references/stage_06_robustness.md`（全局灵敏度/稳健性）+ `templates/shared/sensitivity_table.md` |
+| 7 | `references/stage_07_evaluation.md`（模型优缺点与推广） |
 | 8 | `competitions/<comp>/{winning_patterns, phrase_bank, abstract_template, paper_skeleton}.md` (各赛加件见竞赛专项加载)；运行 `generate_paper_plan.py` 生成动态章节、图表计划和 evidence ledger; 经验校准: 先加载 `config/rating_contract.json`，再与 `competitions/<comp>/empirical.json.scoring_policy` 取交集，国赛、研究生赛、华数杯只允许可靠的摘要长度和页数校准，图表数/章节数/正文字数/词频均不得作硬阈值; CUMCM/研究生赛写作: 从命中案例读取 `writing_blueprint`，按“为什么—模型—中间状态—结果—验证—回答”写每问，研究生赛另按需读取 `papers/manual_paper_reviews.json` 的章节逻辑，只迁移结构，不复制原句; 每节成稿: `references/ai_flavor_removal.md` 十类自查; 重述/附录用 `templates/shared/{restatement_card.md, appendix_checklist.md}`; 结论核验 (stage 5/8): `scripts/claim_consistency_check.py --draft <正文> --results results/ [--strict]` (收敛/最优/提升 vs 结果文件状态); mcm 写作: `competitions/mcm/memo_letter_guide.md` (Memo/Letter 框架) |
-| 9 | `competitions/<comp>/anti_patterns.md` + `rubric_overlay.json` 的 panel personas；运行 `trace_claims.py --strict`，摘要证据链未通过则阻断终稿; 一致性 (stage 8/9): `scripts/consistency_audit.py` (未冻结数字/摘要结论打架/图表断链/符号脱节/版本错乱); 评委模拟器（stage_09 内嵌：资格门 → 冻结原子扣分清单 → 扣分制 + 格式乘数）, panel 隔离规则见 `references/feedback_layer3_panel.md`; huaweibei 先核对 `competitions/huaweibei/current_rules.md` 日期戳; 提交终检 `scripts/pdf_qa.py` (页数/重复图题/匿名扫描/空白页) 并入 package_submission 流程; 提交: `references/submission_checklists.md` + `scripts/package_submission.py` (默认 dry-run); docx 审阅件导出 `scripts/export_docx.py` (md 真源 → submission/ 时间戳 docx); 终审核对 `state/skill_issues.md` 台账 |
+| 9 | `competitions/<comp>/anti_patterns.md` + `rubric_overlay.json` 的 panel personas；运行 `trace_claims.py --strict`，摘要证据链未通过则阻断终稿; 一致性 (stage 8/9): `scripts/consistency_audit.py` (未冻结数字/摘要结论打架/图表断链/符号脱节/版本错乱); 评委模拟器（stage_09 内嵌：资格门 → 冻结原子扣分清单 → 扣分制 + 格式乘数）, 可执行入口 `scripts/score_artifact.py --mode judge`, panel 隔离规则见 `references/feedback_layer3_panel.md`; huaweibei 先核对 `competitions/huaweibei/current_rules.md` 日期戳; 提交终检 `scripts/pdf_qa.py` (页数/重复图题/匿名扫描/空白页) 并入 package_submission 流程; 提交: `references/submission_checklists.md` + `scripts/package_submission.py` (默认 dry-run, 含 gate 8 预检, 未过拒绝打包); docx 审阅件导出 `scripts/export_docx.py` (md 真源 → submission/ 时间戳 docx); 终审核对 `state/skill_issues.md` 台账 |
 
 ### 竞赛专项加载 (competition=X 时)
 
@@ -308,7 +323,7 @@ Codex 首屏优先加载 `references/codex_practical_menu.md` 的"比赛工作�
 **huaweibei (研究生赛)**:
 - 通用入口: `references/cross_competition_distillation.md`，只共享结构与方法接口
 - stage 0: `references/huaweibei_battle_plan_72h.md` (逐小时作战表 + h48 硬冻结[72h 基线时点, 2026 100h 赛制按表头映射转换] + 独立验收三选二), 与 huashubei 作战表同级
-- stage 1/3/5: `competitions/huaweibei/topic_specs.json` + `case_retrieval.md` + `distilled_modeling.md` + `scripts/retrieve_cases.py --competition huaweibei`
+- stage 1/3/5: `competitions/huaweibei/topic_specs.json` + `competitions/huaweibei/case_retrieval.md` + `distilled_modeling.md` + `scripts/retrieve_cases.py --competition huaweibei`
 - stage 1/3: `competitions/huaweibei/playbooks/`（按题目域命中 README 索引后读对应域文件; playbook 动作清单是 stage 3 候选生成输入之一, 不替代缺口驱动选型）
 - stage 3: `competitions/huaweibei/papers/domain_index.md`（33 篇深读域级索引, 命中后按 paper_id 定向读 `papers/manual_paper_reviews.json`）
 - stage 5/8 图表: `competitions/huaweibei/distilled_figures.md` + 命中案例 `figure_story`
@@ -317,7 +332,7 @@ Codex 首屏优先加载 `references/codex_practical_menu.md` 的"比赛工作�
 - stage 9 终审: `anti_patterns.md` + `rubric_overlay.json` 的五角色 panel，强制检查竞赛键、奖项身份和来源边界
 
 **cumcm (国赛)**:
-- stage 1/3/5: `competitions/cumcm/topic_specs.json` + `case_retrieval.md` + `distilled_modeling.md`（九类内容范式）+ `scripts/build_stage_pack.py --competition cumcm`
+- stage 1/3/5: `competitions/cumcm/topic_specs.json` + `competitions/cumcm/case_retrieval.md` + `distilled_modeling.md`（九类内容范式）+ `scripts/build_stage_pack.py --competition cumcm`
 - stage 1/3: `competitions/cumcm/playbooks/`（五域：优化决策/几何物理/机器学习数据分析/仿真路径/概率统计；先读 README 域→文件映射再加载域文件; 动作清单是 stage 3 候选生成输入之一, 不替代缺口驱动选型; 证据基础 25 篇获奖论文方法链, 全部 source_checked）
 - stage 5/8 图表: `competitions/cumcm/distilled_figures.md` + 命中案例图表叙事
 - stage 8 写作: `competitions/cumcm/{winning_patterns, abstract_template, phrase_bank, paper_skeleton, distilled_structures, distilled_formats}.md`
@@ -345,7 +360,7 @@ Codex 首屏优先加载 `references/codex_practical_menu.md` 的"比赛工作�
 
 **迭代预算 (0.7.4)**: 每阶段 refine ≤3 轮 (上表); 全程跨阶段返工与并行任务重派设总预算, 耗尽后不许静默继续——必须输出结构化 `decision_memo` (blocked_item / tried / best_so_far / options / recommendation) 交用户编号决策, 模板见 `references/parallel_dispatch.md`。验收结论三选二独立来源规则见 `references/workspace_protocol.md` §7 (产出方自评一律视为待验证)。
 
-此定义在 `feedback_layer1_critic.md` / `rubrics.md` / `scripts/score_artifact.py` 三处必须**完全一致**。
+此定义在 `references/feedback_layer1_critic.md` / `rubrics.md` / `scripts/score_artifact.py` 三处必须**完全一致**。
 
 ---
 
@@ -370,7 +385,7 @@ L2 跨阶段回检 (stage 5/6/8 末尾) 读这个文件主动找冲突, 触发**
 
 - L1 Critic 强制 JSON 输出, ~500 token/次
 - 精修策略: section-level patch (`scripts/extract_diff.py`), 不重传完整 artifact (省 ~60% token)
-- references/ 与 competitions/ 文件**懒加载**, 本 SKILL.md 主体 ≤ 6k tokens
+- references/ 与 competitions/ 文件**懒加载**, 本 SKILL.md 主体保持精简 (细则不进主体)
 - 阶段完成后, artifact 摘要 + 关键数据 + 路径写入 decision_log, 不在上下文保留全文
 - 超预算 30% → 自动降级 (championship → standard, standard → fast)
 
@@ -380,10 +395,10 @@ L2 跨阶段回检 (stage 5/6/8 末尾) 读这个文件主动找冲突, 触发**
 
 - "进入 stage N" / "重做 stage N" → 跳转
 - "切到研究生赛/华为杯" → `huaweibei`；"切到华数杯" → `huashubei`；其他竞赛按标准 key 修改 `decision_log.competition`（注意已有 state 兼容性）
-- "升级到 championship" → 启用 L3 + L4 + red-team
+- "升级到 championship" → 启用 L3 + L4 + red-team（L4 `references/feedback_layer4_calibration.md`）
 - "切到 fast" → 关闭迭代
 - "回退到 stage M" → 读 decision_log, 回退 current_stage 并清理 ≥M 节点
-- "做 L2 回检" → 立即触发 cross-stage backtrack
+- "做 L2 回检" → 立即触发 cross-stage backtrack（`references/feedback_layer2_backtrack.md`）
 - "看进度" → 输出 decision_log 摘要 + 当前评分
 
 ---
@@ -410,11 +425,12 @@ L2 跨阶段回检 (stage 5/6/8 末尾) 读这个文件主动找冲突, 触发**
 
 - **`competitions/huashubei/`**: 用户本地 2020—2025 共 18 题；2023—2025 优秀论文 18 篇。18 题已进入案例索引，2020—2022 明确为 `problem_summary_only`，2023—2025 为 `paper_pattern`；S1-S4 是蒸馏任务链而非原题逐问。图表数量只作样本观察，不是官方门槛
 - **`competitions/huaweibei/`** (0.7.2): 用户本地 2021—2025 共 30 题、190 篇优秀论文，30 题全量人工复核；12 篇 2021 数模之星提名论文完成摘要、背景、问题分析、假设、逐问正文、结尾和图表逻辑深读；2025 届 21 篇优秀论文全量深读（v2.2.0，award=excellent_paper_selection 不推测等级，2022—2024 仍无深读层）。2022—2025 无本地提名身份依据，不推测；A-F 不固定映射题型
-- `competitions/cumcm/`: 32 篇官方展廊论文 + 1 篇可核验国二论文 + 25 个历年题面案例；58 篇旧误标研究生论文已隔离，来源见 `source_manifest.json`
+- `competitions/cumcm/`: 32 篇官方展廊论文 + 1 篇可核验国二论文 + 25 个历年题面案例；58 篇旧误标研究生论文已隔离，来源见 `competitions/cumcm/source_manifest.json` 与 `competitions/huaweibei/source_manifest.json`
 - `competitions/mcm/`: SEED v0.1, 基于 COMAP 公开 scoring rubric + Outstanding Winner 公开模式手写; empirical 占位
 - `competitions/diangong/`: SEED v0.1, 基于历年题量 + 公开评审标准估算; empirical 占位
 - `competitions/apmcm/`: 本地 2024/2025 APMCM 中文赛赛题 6 份 + 优秀论文 12 篇蒸馏, 不含联网资料
 - 通用模型清单 `references/model_catalog.md` 跨竞赛复用
+- 各竞赛经验统计与可靠度标注: `competitions/<comp>/empirical_notes.md`, seed 来源必须按此降确定性——对应反例黑名单"不要把 seed v0.1 当稳定经验"一条
 - **模板与脚本资产 (0.7.5 起)**: `templates/latex/` 6 套竞赛模板、`templates/figures/` 自写色板/样式/图模板与脚本、`scripts/` 全部脚本、`references/` 全部规范文档均为本 skill 自写资产，按 LICENSE (MIT) 分发。历史版本曾吸收第三方资产，0.7.5 已全部移除并干净室重写，详见 CHANGELOG.md。**例外（1.4.0）**: `templates/figures/vendor/` 为三个上游开源 skill 的原样收编副本（scibox-diagram / scibox-figure / diagram-design），其版权与许可证归上游所有，出处与限制见 `vendor/VENDOR.md`；sci-box 上游未附正式 LICENSE，再分发前须按 VENDOR.md §5 处理。
 
 后续如有 30+ MCM Outstanding 或电工杯一等奖 PDF, 可用 `scripts/ingest_papers.py --competition <comp>` 重新烘焙覆盖 seed。
@@ -423,7 +439,7 @@ L2 跨阶段回检 (stage 5/6/8 末尾) 读这个文件主动找冲突, 触发**
 
 ## 与外部资源的关系
 
-skill 自包含, 运行时不联网。外源文献检索层（literature_scout）为例外, 仅在 stage 1/3/5 挂点触发时联网, 其余资产保持自包含。下列离线资源可作人工补充:
+skill 自包含, 运行时不联网。外源文献检索层（literature_scout）为例外, 仅在 stage 1/3/5 挂点触发时联网（stage 3 选型期默认触发, 不以 playbook 未命中域为前提）, 单挂点预算 ≤2 次检索、单次 ≤5 篇, 命中 24h 缓存不重复消耗配额, 其余资产保持自包含。下列离线资源可作人工补充:
 - 国赛: `personqianduixue/Math_Model`, `datawhalechina/intro-mathmodel`, `dxs.moe.gov.cn` 优秀论文展廊
 - 美赛: COMAP 官网 `comap.com`, `MCM Tutorial` (Frank Giordano)
 - 电工杯: 中国电机工程学会论文集

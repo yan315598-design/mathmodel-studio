@@ -13,12 +13,12 @@
 
 | 域 | 文件 | 证据基础 |
 |---|---|---|
-| 信号诊断 | `signal_diagnosis.md` | E 题五轮 A/B（analysis/e_ab_test）+ 优秀论文深读（analysis/e_papers）+ mechanism_reviews E×3 |
-| 空间几何 | `spatial_geometry.md` | F 题诊断（modeling_gap_review）+ Q1 试点（q1_pilot）+ mechanism_reviews F×2 |
+| 信号诊断 | `signal_diagnosis.md` | E 题五轮 A/B（内部审计产物，分发版不含）+ 优秀论文深读（papers/manual_paper_reviews.json 信号诊断 3 篇）+ mechanism_reviews E×3 |
+| 空间几何 | `spatial_geometry.md` | F 题诊断 + Q1 试点（两者为内部审计产物，分发版不含）+ mechanism_reviews F×2 |
 | 调度优化 | `scheduling_optimization.md` | 33 篇深读（papers/manual_paper_reviews.json）中调度类论文提取 |
-| 时空预测 | `spatiotemporal_forecasting.md` | 2023D/2023F/2024D 优秀论文方法链提取（analysis/lit_survey） |
-| 物理机理+数据驱动混合 | `physics_data_hybrid.md` | 2024A/2024C/2024F 优秀论文方法链提取（analysis/lit_survey） |
-| 高维预测 | `high_dimensional_prediction.md` | 2023E/2024B 优秀论文方法链提取（analysis/lit_survey） |
+| 时空预测 | `spatiotemporal_forecasting.md` | 2023D/2023F/2024D 优秀论文方法链提取（提取过程记录为内部审计产物，分发版不含） |
+| 物理机理+数据驱动混合 | `physics_data_hybrid.md` | 2024A/2024C/2024F 优秀论文方法链提取（提取过程记录为内部审计产物，分发版不含） |
+| 高维预测 | `high_dimensional_prediction.md` | 2023E/2024B 优秀论文方法链提取（提取过程记录为内部审计产物，分发版不含） |
 
 ## 六节格式契约（每份 playbook 必须齐）
 

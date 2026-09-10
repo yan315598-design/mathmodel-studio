@@ -21,6 +21,7 @@
   paper_workspace/     # 论文工程（main.tex 或 main.md + sections/）
   _archive/            # 归档区，只进不出
   真源.md              # SSOT：口径/符号/假设/结果/图表/修订记录
+  selection_sheet.md   # 选型总表：人读产物，渲染自 decision_log.stages.3.selected_per_subproblem 与 checkpoints.per_qi_selection；阶段产物不得与真源冲突，冲突时以 decision_log.json 为准
 ```
 
 规则：

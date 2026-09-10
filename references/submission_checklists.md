@@ -2,7 +2,7 @@
 
 > 0.7.4 新增：Stage 9 打包提交用的逐竞赛检查清单。标注 [确定] 的条目源自长期稳定的官方规则或模板; 标注 [以当年通知为准] 的条目每年可能变化, 提交前必须核对当年官方通知。宁可标注不确定, 不编造规则。
 
-**挂接**: Stage 9"最后 6 小时"路径（`references/stage_09_review.md`）的"提交前最后动作"逐项对照本文; 自动化检查跑 `scripts/package_submission.py`（文件存在性/页数/文件名/打包, 默认 dry-run）。
+**挂接**: Stage 9"最后 6 小时"路径（`references/stage_09_review.md`）的"提交前最后动作"逐项对照本文; 自动化检查跑 `scripts/package_submission.py`（文件存在性/页数/文件名/打包, 默认 dry-run）; 内置提交前 gate 8 门禁预检——打包前自动跑 `check_gate.py --gate 8` 同口径校验, 未过则拒绝打包（dry-run 也会预检并明示"正式打包会被拒绝"）, `--allow-gate-fail` 是显式逃生门（降级放行并打警告）。
 
 ---
 
@@ -115,10 +115,12 @@
 ## 与脚本的配合
 
 ```bash
-# 预览检查（dry-run, 不打包）
+# 预览检查（dry-run, 不打包; 含 gate 8 门禁预检, 未过会明示"正式打包会被拒绝"）
 python <skill>/scripts/package_submission.py
 # 实际打包: zip 到 cwd/submission/<comp>_<timestamp>.zip 并备份
 python <skill>/scripts/package_submission.py --apply
+# gate 8 未过仍执意打包时的显式逃生门（降级放行并打印警告; 正常流程勿用）
+python <skill>/scripts/package_submission.py --apply --allow-gate-fail
 ```
 
 脚本覆盖通用项 1/2/3/8 的可自动化部分与打包备份; 承诺书/匿名性/摘要独立成页等语义项由 agent 按本清单人工核对, 脚本只做存在性提示。

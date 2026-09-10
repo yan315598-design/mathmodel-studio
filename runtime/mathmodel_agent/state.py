@@ -24,7 +24,7 @@ CHECKPOINT_ALLOWLIST: dict[int, set[str] | None] = {
     0: {"kickoff_5q"},
     2: {"analysis_confirm"},
     3: {"card_decision"},
-    5: None,  # 动态: figure_menu.Q<n> / qi_verdict.Q<n>
+    5: None,  # 动态: figure_menu.Q<n> / qi_verdict.Q<n> / per_qi_selection.Q<n>
 }
 
 
@@ -41,9 +41,9 @@ def checkpoint_allowed(stage: int, key: str) -> bool:
         return False
     if allowed is not None:
         return key in allowed
-    # 动态 allowlist (stage 5): figure_menu.Q<n> / qi_verdict.Q<n>
+    # 动态 allowlist (stage 5): figure_menu.Q<n> / qi_verdict.Q<n> / per_qi_selection.Q<n>
     top, _, qi = key.partition(".")
-    return top in ("figure_menu", "qi_verdict") and bool(QI_KEY_RE.match(qi))
+    return top in ("figure_menu", "qi_verdict", "per_qi_selection") and bool(QI_KEY_RE.match(qi))
 _EVENT_CAP = 200  # events.log 上限, 超出截断旧事件
 _REPLACE_ATTEMPTS = 5  # Windows 下目标文件被占用时 os.replace 的重试次数
 _REPLACE_BASE_DELAY = 0.1
@@ -182,7 +182,7 @@ class DecisionLog:
         """trusted 写入: 登记"用户已作答"的必停点条目 (仅 CLI answer 调用, LLM 不可达)。
 
         - key 必须过当前 stage 的 allowlist (错 stage / 元键 / 格式错 → CheckpointKeyError)
-        - figure_menu / qi_verdict 按 Qi 键深合并 (连续登记 Q1/Q2/Q3 三键全保留)
+        - figure_menu / qi_verdict / per_qi_selection 按 Qi 键深合并 (连续登记 Q1/Q2/Q3 三键全保留)
         - 单值键或同一 Qi 已有 answered 值时需 force=True 才覆盖
         - answer 必须是非空字符串
         - 根级 checkpoints 损坏 (非 dict) → CheckpointKeyError, 不 traceback
@@ -194,7 +194,7 @@ class DecisionLog:
             raise CheckpointKeyError(
                 f"必停点 {key!r} 不属于 stage {stage} 的 allowlist "
                 f"(合法: stage 0→kickoff_5q; 2→analysis_confirm; 3→card_decision; "
-                f"5→figure_menu.Q<n>/qi_verdict.Q<n>; 其余 stage 无必停点)")
+                f"5→figure_menu.Q<n>/qi_verdict.Q<n>/per_qi_selection.Q<n>; 其余 stage 无必停点)")
         if not isinstance(answer, str) or not answer.strip():
             raise CheckpointKeyError("answer 必须是非空字符串")
         is_figure_menu = key.startswith("figure_menu.Q")

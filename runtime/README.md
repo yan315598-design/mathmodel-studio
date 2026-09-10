@@ -54,8 +54,8 @@ LLM 正文发 `checkpoint_request: <key>` (唯一合法申请方式)
      key, 空 key/尾随多余 token 均算畸形) → protocol_error, blocked, 不写工件
   → 用户执行: python -m mathmodel_agent answer --workspace <dir> --key <key> --answer "<回答>"
     [--count N] [--exception] [--reason "..."]
-    (record_checkpoint trusted 路径: 校验 allowlist、figure_menu/qi_verdict 按 Qi 深合并、
-     已 answered 覆盖需 --force、拒绝下划线元键; source=user_cli, runtime 判"已答"
+    (record_checkpoint trusted 路径: 校验 allowlist、figure_menu/qi_verdict/per_qi_selection
+     按 Qi 深合并、已 answered 覆盖需 --force、拒绝下划线元键; source=user_cli, runtime 判"已答"
      只认 source == "user_cli" 的条目)
   → 重跑 run: pending 已 answered 即清除并从 current_stage 继续,
     用户答案以「必停点用户应答」小节注入下一轮 prompt
@@ -105,6 +105,7 @@ prompt 摘要，不调 LLM）；`--mode fast|standard|championship`（token 预�
 
 ```bash
 python -m mathmodel_agent answer --workspace <dir> --key kickoff_5q --answer "<用户回答>" [--note ...] [--force]
+# stage 5 键 (按 Qi 逐问登记): figure_menu.Q<n> / qi_verdict.Q<n> / per_qi_selection.Q<n>
 # figure_menu.Q<n> 专用结构化参数: --count 2 (0-9 整数); count≤1 时另须 --exception --reason "<例外理由>"
 ```
 

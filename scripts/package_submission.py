@@ -10,10 +10,16 @@
      违例纳入 blocking_fail (--apply 拒打包 exit 1); pypdf 缺失时该步
      整体 ⚠️ 跳过, 不阻断
    - 文件名规范 (空格/队号提示, 按竞赛 hint)
-3. 默认 dry-run 只出中文检查报告; --apply 才执行:
+3. gate 8 门禁预检 (2.6.0 新增): import scripts/check_gate.py 直接调用
+   check_gate(log, 8), 提交打包这一不可逆动作过必停点门禁:
+   - 未过 → ❌ 阻塞, 拒绝打包 (dry-run 也会预检并明示"正式打包会被拒绝")
+   - --allow-gate-fail 显式跳过: 降级为 ⚠️ 并打印醒目警告
+   - 无可用 decision_log (缺失/无法解析) → ⚠️ 提示不拦截, 保持
+     --competition 覆盖、无 state 也能预览的既有行为
+4. 默认 dry-run 只出中文检查报告; --apply 才执行:
    - 打包 zip 到 <out>/<comp>_<timestamp>.zip (out 默认 cwd/submission)
    - 复制备份到 <out>/backup/, 打印 zip MD5
-4. 承诺书/摘要独立成页等语义项脚本不做判断, 报告尾部按
+5. 承诺书/摘要独立成页等语义项脚本不做判断, 报告尾部按
    references/submission_checklists.md 逐条提示人工核对 (匿名性已由
    pdf_qa 机器扫描兜底, 语义项仍建议人工复核)。
 
@@ -22,6 +28,7 @@
     python scripts/package_submission.py --apply                # 实际打包
     python scripts/package_submission.py --competition mcm --paper paper/mcm.pdf
     python scripts/package_submission.py --apply --out ./submission
+    python scripts/package_submission.py --apply --allow-gate-fail  # gate 8 未过仍打包
 
 退出码: dry-run 恒为 0 (预览不阻断); --apply 时任一 ❌ 拒绝打包并返回 1。
 """
@@ -94,6 +101,9 @@ COMPETITION_RULES = {
 
 ICONS = {"ok": "✅", "warn": "⚠️ ", "fail": "❌"}
 
+# gate 8 预检结果行的 label (main 据此无需感知 results 内部顺序)
+GATE8_LABEL = "gate 8 门禁预检"
+
 def load_competition(state_path: Path, override: str) -> str:
     """从 state/decision_log.json 读 competition; --competition 优先。读不到抛 SystemExit(中文提示)。"""
     if override:
@@ -157,6 +167,60 @@ def run_pdf_qa_checks(results, paper: Path, comp: str, page_limit) -> bool:
         if status == "fail":
             blocking = True
     return blocking
+
+
+def load_check_gate():
+    """import 同目录的 scripts/check_gate.py, 返回模块; 不可用返回 None。"""
+    gate_path = Path(__file__).resolve().parent / "check_gate.py"
+    if not gate_path.is_file():
+        return None
+    spec = importlib.util.spec_from_file_location("check_gate", gate_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def run_gate8_precheck(results, workspace: Path, allow_gate_fail: bool) -> str:
+    """gate 8 门禁预检: 提交打包前最后一道必停点把关。
+
+    import scripts/check_gate.py 直接调 check_gate(log, 8) (不起子进程)。
+    追加结果到 results, 返回状态字符串:
+    - "pass": 门禁已过 (追加 ok)
+    - "fail": 门禁未过且未显式跳过 (追加 ❌, 应置 blocking_fail 拒打包)
+    - "downgraded": 门禁未过但 --allow-gate-fail (追加 ⚠️ 降级放行)
+    - "skip": check_gate.py 不可用或 <workspace>/state/decision_log.json
+      缺失/无法解析 (追加 ⚠️ 不拦截, 保持 --competition 覆盖、无 state
+      也能预览的既有行为)
+    """
+    gate = load_check_gate()
+    state_path = workspace / "state" / "decision_log.json"
+    if gate is None:
+        results.append(("warn", GATE8_LABEL, "scripts/check_gate.py 不可用, gate 8 预检跳过"))
+        return "skip"
+    try:
+        log = json.loads(state_path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError, UnicodeDecodeError, OSError):
+        results.append(("warn", GATE8_LABEL,
+                        "gate 8 未校验 (无可用 decision_log: 缺失或无法解析, 仅提示不拦截)"))
+        return "skip"
+    outcome = gate.check_gate(log, 8)
+    if outcome["pass"]:
+        results.append(("ok", GATE8_LABEL, "gate 8 已过 (stage 8 → 9 放行条件满足)"))
+        return "pass"
+    # 缺失项摘要: 取前 3 条并整体截断, 保留中文缺失原因供用户直接对照
+    summary = "；".join(outcome["missing"][:3])
+    if len(outcome["missing"]) > 3:
+        summary += f" 等 {len(outcome['missing'])} 项"
+    if len(summary) > 240:
+        summary = summary[:240] + "…"
+    if allow_gate_fail:
+        results.append(("warn", GATE8_LABEL,
+                        f"gate 8 未过 (--allow-gate-fail 已降级放行): {summary}"))
+        return "downgraded"
+    results.append(("fail", GATE8_LABEL,
+                    f"gate 8 未过, 拒绝打包: {summary}。"
+                    "补齐必停点/评分登记后重跑; 确需跳过加 --allow-gate-fail"))
+    return "fail"
 
 
 def collect_code_files(workspace: Path):
@@ -257,15 +321,25 @@ def main(argv=None) -> int:
     parser.add_argument("--apply", action="store_true", help="实际打包 (默认 dry-run 预览)")
     parser.add_argument("--out", type=Path, default=None,
                         help="输出目录 (默认 cwd/submission)")
+    parser.add_argument("--allow-gate-fail", action="store_true",
+                        help="gate 8 门禁预检未过时仍继续打包 (显式逃生门, 默认拒绝)")
     args = parser.parse_args(argv)
 
     workspace = Path.cwd()
     comp = load_competition(workspace / "state" / "decision_log.json", args.competition)
     results, paper, blocking_fail = run_checks(workspace, comp, args.paper)
+    gate8 = run_gate8_precheck(results, workspace, args.allow_gate_fail)
+    if gate8 == "fail":
+        blocking_fail = True
     print_report(comp, results, args.apply)
+    if gate8 == "downgraded":
+        print("⚠️ 警告: 已在 gate 8 门禁未通过的情况下继续打包 (--allow-gate-fail); "
+              "提交物可能缺少必停点登记。")
 
     if not args.apply:
         print("dry-run 预览结束; 确认无误后加 --apply 打包。语义项 (承诺书/匿名性/摘要成页) 请按报告提示人工核对。")
+        if blocking_fail:
+            print("存在 ❌ 阻塞项, 正式打包 (--apply) 会被拒绝; 修复后重试。")
         return 0
     if blocking_fail:
         print("存在 ❌ 阻塞项, 拒绝打包; 修复后重试。")

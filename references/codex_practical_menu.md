@@ -15,8 +15,8 @@
 
   1) 完整建模流程 — 从 Stage 0 开始, 适合刚开赛或题目刚公布
   2) 比较 A/B/C 题 — 进入选题矩阵, 快速决定做哪题
-  3) 写作/图表工作台 — 摘要、模型段、结果解释、图表规划与生成
-  4) 终审论文 — 查摘要、图表、符号、结论和提交风险
+  3) 局部任务工作台 — 写作、摘要、图表规划与生成、终审检查
+  4) 模型选型建议 — 每一问给候选模型与算法、依据、文献来源和失效边界, 由你拍板
   5) 继续已有进度 — 读取 state/decision_log.json 恢复 stage
 
 回复数字 (1-5)。如果你已经有题目 PDF, 可以顺手把路径发给我。
@@ -32,10 +32,11 @@
 | 华为杯 / 研究生赛 / 研赛 | `1 完整建模流程` | competition=`huaweibei`；加载跨赛共用层与研究生赛独立知识分支 |
 | 华数杯 | `1 完整建模流程` | competition=`huashubei`；不得与 `huaweibei` 混用 |
 | 比较 A/B/C 题 / 选题 / 哪题更适合我们 | `2 比较题目` | `stage_01_problem_selection.md` + `competitions/<comp>/topic_specs.json` |
-| 写摘要 / 写亚太杯摘要 / 摘要润色 | `3 写作工作台` | `stage_08_writing.md` + `<comp>/abstract_template.md` + `<comp>/phrase_bank.md` |
-| 写问题分析 / 写模型建立 / 写结果解释 | `3 写作工作台` | `stage_08_writing.md` + 对应 stage 产出 |
-| 规划图表 / 生成图 / 美化图 / 终审图表 | `3 写作/图表工作台` | `figure_skill_bridge.md` + `figure-table-planner` / `math-figure-generator` / `nature-figure` |
-| 终审 / 最后检查 / 还有 6 小时提交 | `4 终审论文` | `stage_09_review.md` + `<comp>/anti_patterns.md` |
+| 模型选型建议 / 这道题用什么模型 / 帮我选模型 | `4 模型选型建议` | `references/stage_03_model_selection.md` + `references/model_catalog.md`；输出每问候选短名单与《选型总表》, 不进入求解 |
+| 写摘要 / 写亚太杯摘要 / 摘要润色 | `3 局部任务工作台` | `stage_08_writing.md` + `<comp>/abstract_template.md` + `<comp>/phrase_bank.md` |
+| 写问题分析 / 写模型建立 / 写结果解释 | `3 局部任务工作台` | `stage_08_writing.md` + 对应 stage 产出 |
+| 规划图表 / 生成图 / 美化图 / 终审图表 | `3 局部任务工作台` | `figure_skill_bridge.md` + `figure-table-planner` / `math-figure-generator` / `nature-figure` |
+| 终审 / 最后检查 / 还有 6 小时提交 | `3 局部任务工作台` | `stage_09_review.md` + `<comp>/anti_patterns.md` |
 | 继续 stage 5 / 看进度 / 从上次继续 | `5 继续已有进度` | `cwd/state/decision_log.json` + 对应 stage 文件 |
 
 进入完整流程后的竞赛主菜单最多保留五项：
@@ -52,9 +53,9 @@
 
 ---
 
-## 写作/图表工作台子菜单
+## 局部任务工作台子菜单
 
-用户选择写作工作台后, 用下面菜单:
+用户选择局部任务工作台（写作/图表/终审任务）后, 用下面菜单:
 
 ```text
 【需要你选择: 写作任务】

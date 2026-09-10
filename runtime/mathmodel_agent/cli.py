@@ -49,7 +49,7 @@ def build_parser() -> argparse.ArgumentParser:
     answer.add_argument("--workspace", required=True, help="工作区目录 (一题一目录)")
     answer.add_argument("--key", required=True,
                         help="必停点键: kickoff_5q / analysis_confirm / card_decision / "
-                             "figure_menu.Q<n> / qi_verdict.Q<n>")
+                             "figure_menu.Q<n> / qi_verdict.Q<n> / per_qi_selection.Q<n>")
     answer.add_argument("--answer", required=True, help="用户对该必停点的回答")
     answer.add_argument("--note", default=None, help="可选备注, 随条目保存")
     answer.add_argument("--count", type=int, default=None,
