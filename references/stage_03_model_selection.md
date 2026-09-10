@@ -37,7 +37,7 @@ next: stage_04_foundation
 - 在 `rejection_log` 记录案例 ID、evidence ID、拒绝路线及原因。
 - 华数杯 `S1-S4` 是蒸馏任务链，不是原题逐问；2020—2022 的 `problem_summary_only` 只能启发路线，不能称为论文共识。
 
-华为杯赛题先按八类风险 + 信号诊断分类（`competitions/huaweibei/distilled_modeling.md`），命中后分两步定位 playbook：先读 `competitions/huaweibei/playbooks/README.md` 的域→文件映射表，再加载映射表中的英文文件名（signal_diagnosis.md / spatial_geometry.md / scheduling_optimization.md）：动作清单补充候选生成（不替代缺口驱动选型，不按条目数投票）；需要深读材料时经 `competitions/huaweibei/papers/domain_index.md` 命中 paper_id 后定向读 `manual_paper_reviews.json`，2021 届模板字段（derivation_logic/solver_logic 等）不作为逐篇结论引用。
+华为杯赛题先按八类风险 + 信号诊断分类（`competitions/huaweibei/distilled_modeling.md`），命中后分两步定位 playbook：先读 `competitions/huaweibei/playbooks/README.md` 的域→文件映射表，再加载映射表中的英文文件名（当前六域：signal_diagnosis / spatial_geometry / scheduling_optimization / spatiotemporal_forecasting / physics_data_hybrid / high_dimensional_prediction）：动作清单补充候选生成（不替代缺口驱动选型，不按条目数投票）；需要深读材料时经 `competitions/huaweibei/papers/domain_index.md` 命中 paper_id 后定向读 `manual_paper_reviews.json`，2021 届模板字段（derivation_logic/solver_logic 等）不作为逐篇结论引用。
 
 ## 产出
 

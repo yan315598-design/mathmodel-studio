@@ -19,7 +19,8 @@
   - 陈旧引用修复：SKILL.md 路由表 scibox-diagram 补"分发版自动降级"注记；references/papers/README.md 两处 winning_patterns 路径改指 competitions/<comp>/。
   - 删除运行残留：技能内 `.mimosa/`×2、`outputs/figures/_smoke_test.*`、`__pycache__`/`.pytest_cache`、Windows 保留名误建文件 NUL（内容经核对为 mechanism_reviews.json 子集，备份于 analysis/reorg_audit/salvage/）、`tests/test_prompts.json`（14 条行为提示词从未被任何测试加载，同目录备份）。
   - `package_dist.py` 排除规则补 `.mimosa/` 与 `outputs/`（可再生产物不进分发包），test_evals 同步断言。
-- 回归：pytest 185 passed + 4 subtests；rubric 回归 6/6；quota_gaming_wide_scan 扫描面 10→15 文件（纳入 playbook 层）零命中。
+- 外源文献检索层：`scripts/literature_scout.py` + 协议文档 `references/literature_scout.md` + 16 测试（OpenAlex 主检索 + Crossref 429/503 自动降级 + arXiv 预印本补充，stage 1/3/5 挂点，方法卡 literature-card-1.0）。审查后修复：journal 字段取期刊名（display_name）而非出版商、payload 增加 total_results 命中量级、SSRF 白名单、缓存降级回填、自包含声明加联网例外、限流口径更正为"匿名约 100 次/天"。
+- 回归：pytest 201 passed + 4 subtests（含 literature_scout 16 测试）；rubric 回归 6/6；quota_gaming_wide_scan 扫描面 10→15 文件（纳入 playbook 层）零命中。
 - 描述文案去 AI 味（转正后补）：SKILL.md frontmatter 触发描述、版本与总述、README 顶栏、plugin.json 三段描述改为直白表述——删去"赛前兵检/Stage 知识包/多 runtime 入口/AGENTS.md packaging/state 互通"等开发视角黑话与工具名堆砌；agent 加载协议内的文件路径为功能路径，不在清理范围。
 
 ## [2.4.0] 建模与证据强化 (2026-09-09, 经 E 题留出对照五轮验证 + 两轮独立审查后转正)

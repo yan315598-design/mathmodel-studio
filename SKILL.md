@@ -289,7 +289,7 @@ Codex 首屏优先加载 `references/codex_practical_menu.md` 的"比赛工作�
 | 0 | `references/workspace_protocol.md` (唯一工作区/真源 SSOT/会话恢复四步; 检测同竞赛旧工作区必须先编号菜单确认归档); 真源 md 的公式/符号/题注/编号格式规范 `references/md_authoring_spec.md` (PDF/docx 双链实测口径); `state/skill_issues.md` 台账随工作区骨架创建, 自我纠错时追加 (协议见 `references/workspace_protocol.md` §11); 华数杯/研究生赛各自 `battle_plan_72h` 作战表 (见竞赛专项加载) |
 | 1 | `competitions/<comp>/topic_specs.json`; 国赛、研究生赛和华数杯加载各自 `case_retrieval.md`，由 agent 运行 `scripts/build_stage_pack.py --stage 1`；需要跨赛结构参考时使用 `--competition all`; 华数杯另加 `references/huashubei_topic_decision.md` 选题决策矩阵 (见竞赛专项加载) |
 | 2 | 审题门: 边界/权利/目标/假设四查 + 审题质询员红队 (stage_02 内嵌); 建模防错查 `references/modeling_norms.md` 对应题型节; 义务台账 `decision_log.stages.2.obligations` 镜像, gate 5/8 校验 unstarted 拦截; 末尾图表规格冻结 (stage_02 内嵌小节), 登记进真源.md 图表登记表 |
-| 3 | stage 3/5 建模通用: `references/model_catalog.md` (含 §12 失效边界) + `references/knowledge_workflow.md`，运行 Stage 知识包与子问级检索，使用路线比较、假设风险和必做验证，禁止迁移历史数值; “选择卡”人类拍板门 (stage_03 内嵌); 研究生赛另加 `competitions/huaweibei/playbooks/` 与 `competitions/huaweibei/papers/domain_index.md` (见竞赛专项加载) |
+| 3 | stage 3/5 建模通用: `references/model_catalog.md` (含 §12 失效边界) + `references/knowledge_workflow.md`，运行 Stage 知识包与子问级检索，使用路线比较、假设风险和必做验证，禁止迁移历史数值; “选择卡”人类拍板门 (stage_03 内嵌); 外源文献检索（`scripts/literature_scout.py` + `references/literature_scout.md`，playbook 未命中域时触发，方法卡需过四要素核验）; 研究生赛另加 `competitions/huaweibei/playbooks/` 与 `competitions/huaweibei/papers/domain_index.md` (见竞赛专项加载) |
 | 5 | per-Qi 评分跑完后调 `scripts/score_artifact.py --mode aggregate_qi` 聚合; 每问验证后写章节草稿卡 `paper_workspace/sections/q{i}_draft.md` (write-as-you-solve, 见 stage_05 E2 节); stage 8 组装时优先复用草稿卡; 图表 (stage 5/8): CUMCM/研究生赛加载各自 `distilled_figures.md`, 从命中案例的 `figure_story` 组织“结构—机制—中间状态—结果—可信边界”，基础 `figure_plan` 只作兜底 |
 | 8 | `competitions/<comp>/{winning_patterns, phrase_bank, abstract_template, paper_skeleton}.md` (各赛加件见竞赛专项加载)；运行 `generate_paper_plan.py` 生成动态章节、图表计划和 evidence ledger; 经验校准: 先加载 `config/rating_contract.json`，再与 `competitions/<comp>/empirical.json.scoring_policy` 取交集，国赛、研究生赛、华数杯只允许可靠的摘要长度和页数校准，图表数/章节数/正文字数/词频均不得作硬阈值; CUMCM/研究生赛写作: 从命中案例读取 `writing_blueprint`，按“为什么—模型—中间状态—结果—验证—回答”写每问，研究生赛另按需读取 `papers/manual_paper_reviews.json` 的章节逻辑，只迁移结构，不复制原句; 每节成稿: `references/ai_flavor_removal.md` 十类自查; 重述/附录用 `templates/shared/{restatement_card.md, appendix_checklist.md}`; 结论核验 (stage 5/8): `scripts/claim_consistency_check.py --draft <正文> --results results/ [--strict]` (收敛/最优/提升 vs 结果文件状态); mcm 写作: `competitions/mcm/memo_letter_guide.md` (Memo/Letter 框架) |
 | 9 | `competitions/<comp>/anti_patterns.md` + `rubric_overlay.json` 的 panel personas；运行 `trace_claims.py --strict`，摘要证据链未通过则阻断终稿; 一致性 (stage 8/9): `scripts/consistency_audit.py` (未冻结数字/摘要结论打架/图表断链/符号脱节/版本错乱); 评委模拟器（stage_09 内嵌：资格门 → 冻结原子扣分清单 → 扣分制 + 格式乘数）, panel 隔离规则见 `references/feedback_layer3_panel.md`; huaweibei 先核对 `competitions/huaweibei/current_rules.md` 日期戳; 提交终检 `scripts/pdf_qa.py` (页数/重复图题/匿名扫描/空白页) 并入 package_submission 流程; 提交: `references/submission_checklists.md` + `scripts/package_submission.py` (默认 dry-run); docx 审阅件导出 `scripts/export_docx.py` (md 真源 → submission/ 时间戳 docx); 终审核对 `state/skill_issues.md` 台账 |
@@ -416,7 +416,7 @@ L2 跨阶段回检 (stage 5/6/8 末尾) 读这个文件主动找冲突, 触发**
 
 ## 与外部资源的关系
 
-skill 自包含, 运行时不联网。下列离线资源可作人工补充:
+skill 自包含, 运行时不联网。外源文献检索层（literature_scout）为例外, 仅在 stage 1/3/5 挂点触发时联网, 其余资产保持自包含。下列离线资源可作人工补充:
 - 国赛: `personqianduixue/Math_Model`, `datawhalechina/intro-mathmodel`, `dxs.moe.gov.cn` 优秀论文展廊
 - 美赛: COMAP 官网 `comap.com`, `MCM Tutorial` (Frank Giordano)
 - 电工杯: 中国电机工程学会论文集
