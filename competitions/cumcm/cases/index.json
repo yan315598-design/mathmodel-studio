@@ -47,7 +47,9 @@
         "位移热图",
         "优化前后效率对比"
       ],
-      "transfer_boundary": "适合曲面拟合和阵面控制；若结构弹性不可忽略，需加入有限元或刚度约束。"
+      "transfer_boundary": "适合曲面拟合和阵面控制；若结构弹性不可忽略，需加入有限元或刚度约束。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "problem_inferred"
     },
     {
       "id": "cumcm_2021_B",
@@ -85,7 +87,9 @@
         "响应曲面",
         "Pareto 前沿"
       ],
-      "transfer_boundary": "适合实验设计数据；样本稀少时不要直接使用高容量黑箱模型。"
+      "transfer_boundary": "适合实验设计数据；样本稀少时不要直接使用高容量黑箱模型。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "problem_inferred"
     },
     {
       "id": "cumcm_2021_C",
@@ -126,7 +130,9 @@
         "订购时序图",
         "运输分配桑基图"
       ],
-      "transfer_boundary": "适合多期供应链；若交付时序和库存强耦合，应显式建立滚动库存状态。"
+      "transfer_boundary": "适合多期供应链；若交付时序和库存强耦合，应显式建立滚动库存状态。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "problem_inferred"
     },
     {
       "id": "cumcm_2021_D",
@@ -165,7 +171,9 @@
         "滚动调度甘特图",
         "利用率对比"
       ],
-      "transfer_boundary": "适合在线下料；大规模组合爆炸时需列生成或启发式搜索。"
+      "transfer_boundary": "适合在线下料；大规模组合爆炸时需列生成或启发式搜索。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "problem_inferred"
     },
     {
       "id": "cumcm_2021_E",
@@ -200,7 +208,9 @@
         "降维散点图",
         "混淆矩阵"
       ],
-      "transfer_boundary": "适合有标签识别；采集设备或批次变化时必须做域偏移检查。"
+      "transfer_boundary": "适合有标签识别；采集设备或批次变化时必须做域偏移检查。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "problem_inferred"
     },
     {
       "id": "cumcm_2022_A",
@@ -242,7 +252,9 @@
         "功率曲面",
         "参数敏感性图"
       ],
-      "transfer_boundary": "适合周期动力系统；强随机海况需要随机过程或谱分析扩展。"
+      "transfer_boundary": "适合周期动力系统；强随机海况需要随机过程或谱分析扩展。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "problem_inferred"
     },
     {
       "id": "cumcm_2022_B",
@@ -282,7 +294,9 @@
         "误差椭圆",
         "校正轨迹"
       ],
-      "transfer_boundary": "适合纯方位定位；存在系统偏差或目标运动时需扩展状态估计模型。"
+      "transfer_boundary": "适合纯方位定位；存在系统偏差或目标运动时需扩展状态估计模型。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "problem_inferred"
     },
     {
       "id": "cumcm_2022_C",
@@ -328,7 +342,9 @@
         "PCA 双标图",
         "分类混淆矩阵"
       ],
-      "transfer_boundary": "百分比成分属于组成数据，直接欧氏分析可能失真，必要时采用对数比变换。"
+      "transfer_boundary": "百分比成分属于组成数据，直接欧氏分析可能失真，必要时采用对数比变换。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "problem_inferred"
     },
     {
       "id": "cumcm_2022_D",
@@ -370,7 +386,9 @@
         "压缩率分布",
         "误码率性能曲线"
       ],
-      "transfer_boundary": "适合结构化短报文；实际协议还需遵循帧格式与硬件复杂度约束。"
+      "transfer_boundary": "适合结构化短报文；实际协议还需遵循帧格式与硬件复杂度约束。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "problem_inferred"
     },
     {
       "id": "cumcm_2022_E",
@@ -412,7 +430,9 @@
         "甘特图",
         "算法收敛曲线"
       ],
-      "transfer_boundary": "适合柔性作业车间；设备故障和动态插单明显时需在线重调度。"
+      "transfer_boundary": "适合柔性作业车间；设备故障和动态插单明显时需在线重调度。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "problem_inferred"
     },
     {
       "id": "cumcm_2023_A",
@@ -460,7 +480,9 @@
         "效率分解",
         "月度能量曲线"
       ],
-      "transfer_boundary": "适合几何光学近似；高精度工程设计需校准大气衰减和设备误差。"
+      "transfer_boundary": "适合几何光学近似；高精度工程设计需校准大气衰减和设备误差。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "problem_inferred"
     },
     {
       "id": "cumcm_2023_B",
@@ -469,20 +491,9 @@
       "title": "多波束测线问题",
       "task_tags": [
         "优化决策",
-        "网络与路径",
-        "评价排序",
-        "分类识别",
-        "仿真模拟",
-        "数据清洗",
-        "预测",
-        "统计推断"
+        "网络与路径"
       ],
-      "domain_tags": [
-        "通信网络",
-        "交通物流",
-        "材料工程",
-        "体育运动"
-      ],
+      "domain_tags": [],
       "model_families": [
         {
           "name": "插值与拟合",
@@ -573,7 +584,9 @@
         "地形等高线与测线",
         "重叠率热图"
       ],
-      "transfer_boundary": "适合连续地形覆盖；存在禁航区或复杂转弯代价时需加入路径可行性约束。"
+      "transfer_boundary": "适合连续地形覆盖；存在禁航区或复杂转弯代价时需加入路径可行性约束。",
+      "tag_provenance": "manual_review",
+      "chain_confidence": "paper_derived"
     },
     {
       "id": "cumcm_2023_C",
@@ -721,7 +734,9 @@
         "价格销量曲线",
         "策略收益对比"
       ],
-      "transfer_boundary": "适合零售历史数据；价格与销量存在内生性时，相关关系不能直接解释为因果。"
+      "transfer_boundary": "适合零售历史数据；价格与销量存在内生性时，相关关系不能直接解释为因果。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "paper_derived"
     },
     {
       "id": "cumcm_2023_D",
@@ -779,7 +794,9 @@
         "数量时序图",
         "容量利用率图"
       ],
-      "transfer_boundary": "适合确定性圈舍配置；疾病传播和个体差异显著时需加入随机个体仿真。"
+      "transfer_boundary": "适合确定性圈舍配置；疾病传播和个体差异显著时需加入随机个体仿真。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "paper_derived"
     },
     {
       "id": "cumcm_2023_E",
@@ -874,7 +891,9 @@
         "预测区间",
         "情景对比"
       ],
-      "transfer_boundary": "适合水文时序；结构突变和极端洪水不能只靠常态历史拟合外推。"
+      "transfer_boundary": "适合水文时序；结构突变和极端洪水不能只靠常态历史拟合外推。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "paper_derived"
     },
     {
       "id": "cumcm_2024_A",
@@ -962,7 +981,9 @@
         "速度时空图",
         "碰撞临界构型"
       ],
-      "transfer_boundary": "适合串联刚体沿已知平面曲线运动；柔性变形和三维效应需另建动力学模型。"
+      "transfer_boundary": "适合串联刚体沿已知平面曲线运动；柔性变形和三维效应需另建动力学模型。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "paper_derived"
     },
     {
       "id": "cumcm_2024_B",
@@ -1063,7 +1084,9 @@
         "策略区域图",
         "期望成本对比"
       ],
-      "transfer_boundary": "适合可量化检测与返工流程；质量状态相关或批次漂移时不能假设独立同分布。"
+      "transfer_boundary": "适合可量化检测与返工流程；质量状态相关或批次漂移时不能假设独立同分布。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "paper_derived"
     },
     {
       "id": "cumcm_2024_C",
@@ -1171,7 +1194,9 @@
         "作物结构堆叠图",
         "收益风险前沿"
       ],
-      "transfer_boundary": "适合中期农业计划；价格受本方案供给反向影响时需增加市场均衡或弹性模型。"
+      "transfer_boundary": "适合中期农业计划；价格受本方案供给反向影响时需增加市场均衡或弹性模型。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "paper_derived"
     },
     {
       "id": "cumcm_2024_D",
@@ -1211,7 +1236,9 @@
         "落点云图",
         "命中概率曲面"
       ],
-      "transfer_boundary": "适合误差分布可估计的命中问题；尾部相关和非平稳误差需单独校准。"
+      "transfer_boundary": "适合误差分布可估计的命中问题；尾部相关和非平稳误差需单独校准。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "paper_derived"
     },
     {
       "id": "cumcm_2024_E",
@@ -1334,7 +1361,9 @@
         "拥堵传播时空图",
         "管控效果图"
       ],
-      "transfer_boundary": "适合有连续监测的路网；策略会改变驾驶行为时应使用闭环仿真而非静态外推。"
+      "transfer_boundary": "适合有连续监测的路网；策略会改变驾驶行为时应使用闭环仿真而非静态外推。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "paper_derived"
     },
     {
       "id": "cumcm_2025_A",
@@ -1404,7 +1433,9 @@
         "事件时间轴",
         "有效遮蔽甘特图"
       ],
-      "transfer_boundary": "适合规则运动和给定扩散规律；复杂气象条件下需替换烟幕动力学子模型。"
+      "transfer_boundary": "适合规则运动和给定扩散规律；复杂气象条件下需替换烟幕动力学子模型。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "paper_derived"
     },
     {
       "id": "cumcm_2025_B",
@@ -1491,7 +1522,9 @@
         "峰谷标注",
         "厚度拟合与残差"
       ],
-      "transfer_boundary": "适合膜层近似均匀且折射率可知；色散、粗糙度或多层结构明显时需扩展光学模型。"
+      "transfer_boundary": "适合膜层近似均匀且折射率可知；色散、粗糙度或多层结构明显时需扩展光学模型。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "paper_derived"
     },
     {
       "id": "cumcm_2025_C",
@@ -1646,7 +1679,9 @@
         "ROC与校准图",
         "时点收益图"
       ],
-      "transfer_boundary": "同一孕妇多次检测不能随机拆分到训练与测试集；模型只用于竞赛分析，不能替代临床诊断。"
+      "transfer_boundary": "同一孕妇多次检测不能随机拆分到训练与测试集；模型只用于竞赛分析，不能替代临床诊断。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "paper_derived"
     },
     {
       "id": "cumcm_2025_D",
@@ -1716,7 +1751,9 @@
         "水位传播时空图",
         "逃生路径对比"
       ],
-      "transfer_boundary": "适合一维巷道网络近似；局部三维淹没和人员拥堵明显时需水动力与人群模型联动。"
+      "transfer_boundary": "适合一维巷道网络近似；局部三维淹没和人员拥堵明显时需水动力与人群模型联动。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "paper_derived"
     },
     {
       "id": "cumcm_2025_E",
@@ -1799,7 +1836,9 @@
         "评分散点与残差",
         "动作阶段雷达图"
       ],
-      "transfer_boundary": "适合机位和动作标准较稳定的视频；跨设备、跨人群应用前必须重新标定。"
+      "transfer_boundary": "适合机位和动作标准较稳定的视频；跨设备、跨人群应用前必须重新标定。",
+      "tag_provenance": "auto_keyword_unverified",
+      "chain_confidence": "paper_derived"
     }
   ]
 }

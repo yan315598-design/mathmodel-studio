@@ -1,4 +1,4 @@
-# 0.7.3 三赛知识工作流
+# 三赛知识工作流（cumcm / huaweibei / huashubei）
 
 ## 核心原则
 
@@ -30,6 +30,12 @@ python scripts/build_stage_pack.py --competition <comp|all> --stage <1|3|5|8|9> 
 ```
 
 知识包只保留当前阶段需要的命中案例、子问接口、路线、假设风险、必要验证、图表叙事、写作骨架和 evidence ID，避免把全文证据包装入上下文。
+
+### 域级 playbook 层（研究生赛）
+
+- 定位：`competitions/huaweibei/distilled_modeling.md` 定风险路线，`competitions/huaweibei/playbooks/` 给域内具体动作——先按八类风险 + 信号诊断分类命中，再读对应域文件，不覆盖任何既有蒸馏文件。
+- 加载时机：stage 1 作为题目域命中提示；stage 3 动作清单作为候选生成输入之一（不替代缺口驱动选型），并可经 `competitions/huaweibei/papers/domain_index.md` 按 paper_id 检索深读材料。
+- 证据纪律：动作条目五要素（基线失效/机制/前提接口/反例/迁移边界）齐全并逐条标 review_status，条目数按证据定，无配额语言。
 
 ## 3. 动态论文骨架与图表计划
 

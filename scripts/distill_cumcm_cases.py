@@ -328,6 +328,10 @@ def build_cases(records: list[dict], annotations: dict[str, dict] | None = None)
             "model_chains": model_chains[:8], "paper_count": len(papers), "evidence_level": evidence_level,
             "evidence_ids": [record["evidence_id"] for record in papers],
             "problem_evidence_id": statement["evidence_id"] if statement else None,
+            # 标签为关键词自动抽取, 可能含噪声; annotations 可提供人工覆盖
+            "tag_provenance": "auto_keyword_unverified",
+            # 无论文证据时 recommended_chain 为题面推断, 不能与论文证据链等价使用
+            "chain_confidence": "paper_derived" if papers else "problem_inferred",
         }
         case.update(annotations.get(case["id"], {}))
         cases.append(case)

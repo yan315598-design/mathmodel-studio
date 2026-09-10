@@ -3,8 +3,8 @@
 
 色块按行归一化值(召回率)映射 get_cmap("confusion_matrix")(Blues),
 格内双行显示"计数 / (行百分比)", 文字黑白按背景亮度自适应
-(W3C 相对亮度 0.299R+0.587G+0.114B 阈值 0.55); 主标题下附总体
-准确率副标题, 右侧 colorbar 标"召回率"。
+(W3C 相对亮度 0.299R+0.587G+0.114B 阈值 0.55); 右侧 colorbar 标"召回率"。
+图名与总体准确率等结论按 1.4.1 图题纪律写进论文 caption, 不入图内。
 
 用法（二选一）:
     1. 独立运行:
@@ -96,7 +96,8 @@ def plot_confusion_matrix(
     Args:
         matrix: N×N 非负整数计数矩阵(行=真实, 列=预测)。
         class_names: N 个类别名(轴刻度)。
-        title: 主标题; None 用默认, 副标题固定为总体准确率。
+        title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
+            保留参数仅为兼容旧调用, 不再渲染; 总体准确率等结论也一并移出图内。
         out_prefix: 输出前缀(不带扩展名); None 时写系统临时目录。
 
     Raises:
@@ -142,10 +143,7 @@ def plot_confusion_matrix(
         spine.set_visible(False)
     ax.tick_params(length=0)
 
-    # 主标题 + 总体准确率副标题(副标题在 axes title 位置, 与 suptitle 分层)
-    fig.suptitle(title or "混淆矩阵", fontsize=11, fontweight="bold", y=0.97)
-    ax.set_title(f"总体准确率 {accuracy:.1%}（n = {int(matrix.sum())}）",
-                 fontsize=10, color=load_neutral("secondary"))
+    # 1.4.1 图题纪律: 图名与"总体准确率"等结论写进论文 caption, 不入图内
 
     cbar = fig.colorbar(im, ax=ax, shrink=0.82, pad=0.03)
     cbar.set_label("召回率（行归一化）", fontsize=9)

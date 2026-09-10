@@ -13,7 +13,7 @@
       "_note": "美赛 stage 8: 1-page summary + 8 章节 + (D/E/F 强制 Letter) + 全英文",
       "dims": {
         "1_one_page_summary": {
-          "describe": "1-page Summary (250-350 words), 含 problem context / approach / key results / strengths-limitations。不要求 5 anchor 但需含 ≥3 quantitative results",
+          "describe": "1-page Summary (250-350 words), 含 problem context / approach / key results / strengths-limitations。不要求 5 anchor，须含可核验的定量结果（不设条数下限）",
           "hard_threshold": {"summary_words": {"min": 200, "max": 400}},
           "_seed_basis": "COMAP rubric: 'Concise summary that captures problem, approach, results'"
         },

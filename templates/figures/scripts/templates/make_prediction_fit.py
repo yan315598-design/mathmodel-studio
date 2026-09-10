@@ -14,7 +14,7 @@ cool_nature 冷色期刊风; 训练/预测分界画竖虚线并浅色衬底区�
     - 1.1.0: 迁移 figkit + 三格式导出 + 中性色令牌。
     - 样式与色板统一经 scripts/figkit.py 加载（mathmodel.mplstyle + palettes.py,
       两者缺失时 figkit 内置等价内联回退）; 网格改 figkit.ygrid() 仅 y 向。
-      (a)(b) 子图编号沿用轴内标题版式（改 panel_label 会动布局, 保守不迁移）。
+      (a)(b) 子图编号沿用轴内短标签版式（≤6 中文字符当量, 改 panel_label 会动布局, 保守不迁移）。
 
 输入说明:
     actual/prediction/ci_lo/ci_hi/t 须等长; ci_lo/ci_hi 可为 None（不画置信带）,
@@ -190,7 +190,7 @@ def plot_prediction(
     if split is not None:
         ax_top.axvline(x[split], color=split_line, linestyle=":", linewidth=1.1,
                        zorder=3)
-    ax_top.set_title("(a) 真实值 vs 预测值")
+    ax_top.set_title("(a) 拟合")  # 多面板短标签 ≤6 中文字符当量, 图名进 caption
     ax_top.set_ylabel(quantity)
     ax_top.legend(loc="upper left", bbox_to_anchor=(1.005, 0.985),
                   frameon=True, fontsize=9)
@@ -205,7 +205,7 @@ def plot_prediction(
         ax_bot.axvline(x[split], color=split_line, linestyle=":", linewidth=1.1,
                        zorder=1)
     ax_bot.scatter(x[pred_mask], res, s=17, color=blue, alpha=0.85, zorder=3)
-    ax_bot.set_title("(b) 预测残差")
+    ax_bot.set_title("(b) 残差")
     base = quantity.split("（")[0].strip() or quantity
     ax_bot.set_ylabel(f"残差（{base}）" if "（" in quantity else f"残差 / {quantity}")
     # 残差全 0(完美预测)时保底 ±1e-6, 避免 set_ylim(0,0) 退化图退化

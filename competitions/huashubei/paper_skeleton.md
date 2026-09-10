@@ -7,7 +7,7 @@
 ## A 题骨架（物理工程机理建模）
 
 ```
-摘要（1 页，5 段式，见 abstract_template.md）
+摘要（1 页，功能五项覆盖，见 abstract_template.md）
 
 1 问题重述
   1.1 问题背景

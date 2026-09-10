@@ -104,11 +104,11 @@ Score 5 dimensions (1-10) and report up to 3 must_fix issues:
 ### Panelist 2: 模型创新视角
 
 **关注**:
-- 模型是 named variant 还是 vanilla textbook (winning_patterns §4)?
+- 模型是否有真实的机制差异（状态/损失/约束/算法/验证方式的实质改变），还是教科书直用?
+- 名称与实际实现是否一致（无"改进/混合"类名不副实修饰）?
 - 跨学科融合 (e.g., 优化 + ML, 仿真 + 统计)?
 - 真正创新还是组合换皮?
 - 文献新颖度 (近 3 年引用占比)?
-- "改进" 是否有实质内容, 还是仅起名?
 
 **最容易抓的问题**: textbook 模型直接用、命名空泛、文献过老
 
@@ -118,10 +118,11 @@ You are a senior modeling researcher (e.g., 国赛评委长期参与者).
 Your job: assess MODELING NOVELTY ONLY.
 Ignore math errors, ignore writing.
 
-Read the paper (especially §3 模型选型部分 + §5 各模型族变体名):
+Read the paper (especially §3 模型选型部分 + §5 各模型建立节):
 {paper_relevant}
 
-Are these models 'named variants' (e.g., 改进 BP-LSTM 混合) or vanilla textbook (e.g., just BP)?
+模型是否只有教科书名字，还是有真实的机制差异（状态/损失/约束/算法/验证方式的实质改变）？
+名称与实际实现是否一致（无"改进/混合"类名不副实的修饰）？
 Is there genuine cross-disciplinary fusion?
 Are the cited references from past 3 years?
 
@@ -129,7 +130,7 @@ Output:
 {
   "panelist": "modeling_innovation",
   "scores": {
-    "1_named_variant_quality": {...},
+    "1_mechanism_difference_quality": {...},
     "2_cross_disciplinary_fusion": {...},
     "3_substantive_innovation": {...},
     "4_literature_freshness": {...},
@@ -177,7 +178,7 @@ Output:
 ### Panelist 4: 写作呈现视角
 
 **关注**:
-- 摘要 5 段式是否完整
+- 摘要结构是否完整覆盖题问 (段数按竞赛模板，不强制固定段数)
 - 章节完整、层级清晰
 - 公式编号、图表编号正确
 - 引用格式 GB/T 7714

@@ -1,9 +1,29 @@
 {
  "schema_version": "rating-contract-1.0",
+ "dimension_interpretations": {
+  "2_key_variables_count": "必要量、类型与单位完整，不设变量数量下限",
+  "1_candidate_diversity": "认真比较可行替代及失效条件，不强制三个候选或不同族",
+  "3_naming_variant": "名称对应实际公式、模块与实现，不要求改进或修饰词",
+  "2_cross_reference_chain": "题面要求的依赖正确，固定输入不被替换，接口单位与时段一致",
+  "1_assumption_count": "关键假设无遗漏且每条被某个结论需要，不设数量区间",
+  "1_multivariate_perturbation": "扰动围绕结论风险选择参数与方法，不强制联合扰动或特定采样法",
+  "2_perturbation_realism": "扰动幅度对应实际不确定性来源并写明依据，不设固定档位",
+  "5_failure_warning": "如实报告已观察的失效条件或测试范围，不编造临界参数",
+  "1_strengths_specific": "每条优点配可核验证据，不设条数下限",
+  "2_weaknesses_real": "缺点来自实际观察的缺口并说明影响方向，不凑条数、不编造改进幅度",
+  "3_improvements_actionable": "改进说明资源需求与预期改变的证据，不设条数下限",
+  "4_generalization_concrete": "推广说明适配条件与需改假设，无合理推广不硬写",
+  "1_abstract_5_paragraph": "摘要按题问覆盖模型、结果、验证与边界，不强制固定段数",
+  "4_language_quality": "语言准确自然；phrase_bank 命中率不作评分依据",
+  "4_visualization": "图表支撑主张并绑定上游数据，不设每问数量下限",
+  "4_visual_density": "图表数量由论证需要决定，密度不设下限"
+ },
  "score_scale": {
   "min": 1,
   "max": 10,
-  "required_evidence": true
+  "required_evidence": true,
+  "self_assessed_provisional": true,
+  "evidence_must_locate": "evidence 须定位到具体产物（文件/表/行/题面位置），不接受纯描述性评价"
  },
  "base_dimensions": {
   "0": [
@@ -145,7 +165,10 @@
   "摘要主张没有可追踪结果与验证",
   "关键约束不可行或量纲、口径冲突",
   "历史参数、结果或论文原句被直接迁移",
-  "存在 high-severity issue 却继续进入下一阶段"
+  "存在 high-severity issue 却继续进入下一阶段",
+  "正文或摘要结论与结果文件状态冲突（如 converged=false 却写已收敛、无界/证书却写全局最优）",
+  "L1 自评分数被引用为质量证据",
+  "数量配额（变量数、候选数、图数、假设数、优缺点条数、词库命中率）被当作质量达成"
  ],
  "panel_personas": [
   {

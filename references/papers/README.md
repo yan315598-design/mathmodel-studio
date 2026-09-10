@@ -1,6 +1,6 @@
 # 论文资料库 (papers)
 
-> 本目录是**辅助参考资料**, skill 主体不依赖这里的内容运行。`references/winning_patterns.md` 已经从公开渠道一次性提炼了一等奖共性, 写入静态知识。
+> 本目录是**辅助参考资料**, skill 主体不依赖这里的内容运行。获奖论文共性已按竞赛分别蒸馏进 `competitions/<comp>/winning_patterns.md` 静态知识。
 
 ## 当前内容
 
@@ -40,8 +40,8 @@ CSDN 会要求注册或下载券, 注意辨别真伪。
 1. 投放到本目录 (任意子目录)
 2. 跑 `python scripts/ingest_papers.py --papers-dir references/papers/`
 3. 脚本会输出: 字数 / 章节数 / 图表 / 公式 / 摘要含定量结果比例 等统计
-4. 把统计结果与 `references/winning_patterns.md` 中的预设阈值对照
-5. 若实测显著不同, 手动更新 `winning_patterns.md`
+4. 把统计结果与 `competitions/<comp>/winning_patterns.md` 中的预设阈值对照
+5. 若实测显著不同, 手动更新对应竞赛的 `winning_patterns.md`
 
 ## 重要提示
 

@@ -131,7 +131,7 @@ Output:
 **触发条件**: `mode == "championship" and stage_id in {3, 5, 6, 8, 9}` (championship 模式 + 重要阶段, 5 次覆盖 5 个 dim)
 
 ```
-stage 3 calibration: dim 3 (naming_variant) — 检测命名变体是否被 game 成空名
+stage 3 calibration: dim 3 (naming_variant) — 检测名称与实际机制是否脱节（"改进/混合"名无对应实现）
 stage 5 calibration: dim 4 (visualization)  — 检测视觉化是否被 game 成低质图
 stage 6 calibration: dim 1 (multivariate_perturbation) — 检测多变量扰动是否真做
 stage 8 calibration: dim 4 (language_quality) — 检测语言质量是否被 phrase 关键词 game

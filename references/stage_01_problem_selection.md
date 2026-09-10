@@ -21,6 +21,8 @@ next: stage_02_analysis
 
 **第一步必做**: 加载 `competitions/<competition>/topic_specs.json` 获取题号清单。若 `fixed_letter_to_type=false`，先按题面内容动态分类，再写 `decision_log.task_type`；禁止从题号字母推断题型。
 
+华为杯赛题动态分类后进一步对齐 `competitions/huaweibei/distilled_modeling.md` 八类风险 + 信号诊断（playbooks 层域命名），命中后分两步定位 playbook：先读 `competitions/huaweibei/playbooks/README.md` 的域→文件映射表，再加载映射表中的英文文件名（signal_diagnosis.md / spatial_geometry.md / scheduling_optimization.md）：其"常见翻车点"供 Step 3 风险识别参考，动作清单不在选题阶段展开。
+
 ---
 
 ## 输入

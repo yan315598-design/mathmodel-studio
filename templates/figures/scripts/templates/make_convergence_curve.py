@@ -114,7 +114,8 @@ def plot_convergence(
         best_value: 全局最优参考值, 画水平虚线。
         converged: 可选, 算法名 → 收敛代次（1 基, 须 <= 该算法长度）。
         ylog: True 时 y 轴取对数刻度（要求全部值为正）。
-        title: 图标题; None 用默认标题。
+        title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
+            保留参数仅为兼容旧调用, 不再渲染。
         out_stem: 输出文件前缀; None 时写系统临时目录。
 
     Raises:
@@ -167,7 +168,7 @@ def plot_convergence(
     hi = hi_all
 
     fig, ax = plt.subplots(figsize=(9.4, 5.4))
-    # 右侧 24% 白边放图例; 顶部留标题, 代次文字用 axes 分数坐标压在轴内顶部
+    # 右侧 24% 白边放图例; 图名按 1.4.1 图题纪律放论文 caption, 代次文字用 axes 分数坐标压在轴内顶部
     fig.subplots_adjust(left=0.115, right=0.755, top=0.93, bottom=0.115)
 
     max_len = max(len(v) for v in histories.values())
@@ -232,7 +233,7 @@ def plot_convergence(
         ax.set_yscale("log")
     ax.set_xlabel("迭代次数")
     ax.set_ylabel("目标函数值")
-    ax.set_title(title or "算法收敛曲线对比")
+    # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
     ax.legend(loc="upper left", bbox_to_anchor=(1.01, 0.99), frameon=True,
               fontsize=9)
     return _save(fig, out_stem, "make_convergence_curve")

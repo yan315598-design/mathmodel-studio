@@ -2,7 +2,7 @@
 评价类 code starter — 对应论文 §5.x 综合评价
 适用: AHP / 熵权法 / TOPSIS / 模糊综合评价
 
-国赛黄金组合: AHP-熵权-TOPSIS (winning_patterns §4 命名变体: "AHP-熵权-TOPSIS 综合评价")
+国赛黄金组合: AHP-熵权-TOPSIS（名称如实反映实际组合）
 """
 
 import numpy as np
@@ -114,7 +114,7 @@ def topsis(X, weights, indicator_types=None):
 
 
 # ============================================================
-# 4. AHP-熵权-TOPSIS 黄金组合 (winning_patterns §4 命名变体)
+# 4. AHP-熵权-TOPSIS 黄金组合
 # ============================================================
 def ahp_entropy_topsis(X, judgment_matrix, indicator_types=None, alpha=0.5):
     """

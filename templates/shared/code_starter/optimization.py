@@ -102,7 +102,7 @@ def solve_multiobjective_weighted(objs, constraints, weights):
 def genetic_algorithm(fitness, n_vars, bounds, n_pop=100, n_gen=200,
                       crossover_rate=0.8, mutation_rate=0.1):
     """
-    自适应交叉率 GA (winning_patterns §4 命名变体写法)
+    自适应交叉率 GA（仅在实现自适应交叉率时以此命名）
     """
     pop = np.random.uniform(bounds[0], bounds[1], (n_pop, n_vars))
     best_history = []

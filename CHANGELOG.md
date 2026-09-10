@@ -4,6 +4,37 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)。
 
+
+## [2.5.0] 领域 playbook 层 + 图表图题纪律 + 结构整理 (2026-09-10, 已转正安装)
+
+> 依据 analysis/playbook_plan.md（六层蒸馏资产盘点：写作/案例层达标不重蒸，建模层缺域级深度动作）。bug-reviewer 两轮审查闭环（P0 调度 playbook 证据降级规则入文件）。
+
+- 新增域级 playbook 层 `competitions/huaweibei/playbooks/`（README 契约 + 三域：信号诊断 8 动作 / 空间几何 6 动作 / 调度优化 9 动作）：每条动作五要素（基线失效→机制→前提/接口→反例→迁移边界）+ 证据来源（论文深读/我方实验/双向）+ review_status 三态；失效面无论文实证锚点的条目降级 proposed（文件内含降级规则声明）。接线 stage 1（域命中提示）/ stage 3（候选生成输入之一，不替代缺口驱动选型）。
+- 深读层域级消费入口 `competitions/huaweibei/papers/domain_index.md`：33 篇逐篇 paper_id→域→核心动作→JSON 锚点，stage 3 按域命中后定向读取。
+- 机制库 +1 条 `huaweibei_2021_F_optimality_anchoring`（最优性锚定，现 6 条）。
+- 图表"图题进 caption"纪律（对齐优秀论文惯例）：15 个数据图模板删除图内标题（suptitle/单面板 set_title，多面板保留 ≤6 中文字符当量短标签）；`figure_lint.py` 新增 R8 硬门（三位置标题收集 + colorbar/twinx 逻辑面板判定含旧版 mpl `<colorbar>` label 回退 + `--allow-infigure-title` 逃生门），R5 同步修三位置漏检；文档同步 figure_skill_bridge 3.6 节 / stage_08 / distilled_figures / playbooks README。tests +13（test_figure_lint_r8）。
+- 结构整理（依据 analysis/reorg_audit/ 双路审计：引用矩阵 + 官方加载集）：
+  - SKILL.md 加载协议由 8 个版本历史块重组为"通用与跨阶段 / 按 stage 加载表 / 竞赛专项"三段式（76→61 行，加载指令路径 token 差集为空；删除的仅为版本叙事与过期的"候选版新增 (未安装)"标签，其内容已随 2.4.0 转正）。
+  - 元数据统一 v2.5.0：SKILL.md 标题（原漂移为 v2.3.0）、README badge（原 v2.2.0）与开发日志表补 2.3.0-2.5.0 三行、knowledge_workflow.md H1 去 0.7.3 前缀。
+  - 陈旧引用修复：SKILL.md 路由表 scibox-diagram 补"分发版自动降级"注记；references/papers/README.md 两处 winning_patterns 路径改指 competitions/<comp>/。
+  - 删除运行残留：技能内 `.mimosa/`×2、`outputs/figures/_smoke_test.*`、`__pycache__`/`.pytest_cache`、Windows 保留名误建文件 NUL（内容经核对为 mechanism_reviews.json 子集，备份于 analysis/reorg_audit/salvage/）、`tests/test_prompts.json`（14 条行为提示词从未被任何测试加载，同目录备份）。
+  - `package_dist.py` 排除规则补 `.mimosa/` 与 `outputs/`（可再生产物不进分发包），test_evals 同步断言。
+- 回归：pytest 185 passed + 4 subtests；rubric 回归 6/6；quota_gaming_wide_scan 扫描面 10→15 文件（纳入 playbook 层）零命中。
+- 描述文案去 AI 味（转正后补）：SKILL.md frontmatter 触发描述、版本与总述、README 顶栏、plugin.json 三段描述改为直白表述——删去"赛前兵检/Stage 知识包/多 runtime 入口/AGENTS.md packaging/state 互通"等开发视角黑话与工具名堆砌；agent 加载协议内的文件路径为功能路径，不在清理范围。
+
+## [2.4.0] 建模与证据强化 (2026-09-09, 经 E 题留出对照五轮验证 + 两轮独立审查后转正)
+
+> 依据 analysis/modeling_gap_review_2026-09-07.md 诊断与 revision_plan.md。E 题留出对照（stage 0-3/4-5Q1Q2/Q3/stage8/N 类修复）+ 一致性审查与 GPT 审查全部通过后安装。
+
+- 新增 `references/modeling_evidence_protocol.md`（答题义务/概念操作化/缺口驱动组合/正式实现反例/证据约束写作）与 `references/mechanism_distillation.md` + `competitions/huaweibei/cases/mechanism_reviews.json` 机制侧录，`build_stage_pack.py` 自动附带。
+- 评分层对齐：`rating_contract.json` dimension_interpretations 16 键重释旧配额键；hard_fail_rules +3（结论与结果状态冲突/自评分数当证据/数量配额当质量）；rubrics.md 与 stage 02/04/05/06/07/08/09 去除变量数、候选族数、修饰词命名、假设条数、图数、优缺点条数、扰动方法与档位硬编码、phrase_bank 命中计分。
+- `score_artifact.py` 落盘条目标记 `self_assessed: true`；L1 分数降级为流程信号。
+- 答题义务台账：`decision_log.stages.2.obligations` 镜像（模板已带），`check_gate.py --gate 5/8` 校验 unstarted 拦截 / partial 提示披露。
+- 新增 `scripts/claim_consistency_check.py`：正文强结论（收敛/最优/提升/区间口径）与结果文件状态核验，fail/warn/info 三级。
+- 案例层：cumcm 2023_B 标签人工修正；distill 生成器新增 tag_provenance 与 chain_confidence 字段。
+- 回归：`evals/rubric_regression/`（6 例已知坏产物）；tests 新增 17 条。
+- 复审轮补充（2026-09-09）：审题门三查→四查（新增权利查，红队职责加权利遗漏）；选择卡改候选档案制（SKILL.md/decision_ui_map/stage_03 三处同步）；templates/shared 假设与符号模板去数量区间；winning_patterns 全部引用改按节名；claim_consistency_check 加规则 5（数字可追溯）与规则 6（同对象两数值矛盾）；stage_08 退出加证据账本完整与真源对账；diangong/huashubei/mcm 知识层配额清剿；regression 扫描面扩至模板与竞赛层（quota_gaming_wide_scan）。
+
 ## 版本号映射表（v2.0.0 统一版本线）
 
 历史曾存在三条编号线（V1—V7.5、V1.0.0 重置、v7.7—v7.10 回摆）。自 2.0.0 起统一为一条单调语义化线，映射如下：

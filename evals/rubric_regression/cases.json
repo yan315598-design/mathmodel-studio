@@ -1,0 +1,78 @@
+{
+  "schema_version": "rubric-regression-1.0",
+  "note": "已知坏产物的回归集。用途: 防止评分/核验规则退化后这些产物重新通过。scriptable 用例由 run_rubric_regression.py 实际执行; static_rule 用例核验规则文本仍然存在; manual 用例只登记, 行为验证依赖留出题新旧对照 (evals/holdout_protocol.md), 不在本脚本宣称。",
+  "cases": [
+    {
+      "id": "huashubei_convergence_overclaim",
+      "source": "华数杯提交稿 CCM2605797 p18-19 + results/q4_twolevel_results.json (converged=false)",
+      "type": "scriptable",
+      "draft_text": "两层协调算法收敛性通过保留历史最优解和变化率阈值双重保证，五轮内逼近最优。",
+      "results_json": {"scenarios": [{"name": "renew60", "converged": false, "costs": [-6660.25, -6671.55, -6667.61]}]},
+      "expect": {"level": "fail", "rule": "convergence_contradiction"}
+    },
+    {
+      "id": "huashubei_interval_mismatch",
+      "source": "华数杯提交稿 p7-8: 正文写 90% 区间, 代码为 10%/90% 分位 (80%)",
+      "type": "scriptable",
+      "draft_text": "给出到达量的 90% 预测区间，区间覆盖率良好。",
+      "results_json": {"quantiles": [0.1, 0.9]},
+      "expect": {"level": "info", "rule": "interval_inventory"}
+    },
+    {
+      "id": "huashubei_shadow_price_interface",
+      "source": "q2_epsilon_pareto.py:81 / q4_twolevel.py:118: 影子价格乘了错误的负荷增量",
+      "type": "static_rule",
+      "rule_text_must_contain": ["接口", "增量"],
+      "rule_file": "references/modeling_evidence_protocol.md",
+      "expect_critic_issue": "模块接口错接: 价格乘数与实际负荷增量不对应"
+    },
+    {
+      "id": "f_problem_proxy_metric",
+      "source": "F 题实测: 1/(1+d/5000) 距离收益对'换景'不敏感 (换类别同距离同分)",
+      "type": "static_rule",
+      "rule_text_must_contain": ["代理", "反例"],
+      "rule_file": "references/modeling_evidence_protocol.md",
+      "expect_critic_issue": "代理指标不能区分真实概念; 需构造刷分反例"
+    },
+    {
+      "id": "f2_selfcontradicting_abstract",
+      "source": "F 题-2 优秀论文副本前两页: 留园幻境感 174.1 vs 95.1 两口径并存",
+      "type": "manual",
+      "expect": "stage 9 consistency_audit + 数字冻结发现同对象两值; 摘要 evidence trace 不通过"
+    },
+    {
+      "id": "quota_gaming_regression",
+      "source": "配额刷分: 凑 10 个变量/3 个候选/修饰词命名 而无实质内容",
+      "type": "static_rule_absent",
+      "rule_file": "references/rubrics.md",
+      "rule_text_must_not_contain": ["≥10 个变量", "≥3 个候选", "≥1 修饰词"]
+    },
+    {
+      "id": "quota_gaming_wide_scan",
+      "source": "复审 P2-21: 配额回潮到模板层/竞赛层时自动拦截",
+      "type": "static_rule_absent_multi",
+      "rule_files": [
+        "references/rubrics.md",
+        "templates/shared/assumption_table.md",
+        "templates/shared/notation_table.md",
+        "competitions/cumcm/anti_patterns.md",
+        "competitions/cumcm/abstract_template.md",
+        "competitions/huaweibei/abstract_template.md",
+        "competitions/huaweibei/playbooks/README.md",
+        "competitions/huaweibei/playbooks/signal_diagnosis.md",
+        "competitions/huaweibei/playbooks/spatial_geometry.md",
+        "competitions/huaweibei/playbooks/scheduling_optimization.md",
+        "competitions/huaweibei/papers/domain_index.md",
+        "competitions/huashubei/abstract_template.md",
+        "competitions/diangong/phrase_bank.md",
+        "competitions/diangong/abstract_template.md",
+        "competitions/mcm/abstract_template.md"
+      ],
+      "rule_text_must_not_contain": [
+        "≥10 个变量", "≥3 个候选", "≥1 修饰词", "必须包含修饰词",
+        "最少 3 条", "最多 7 条", "≥10 行", "命中数 ≥", "≥ 4 才 pass",
+        "≥3 条具体", "≥3 条真实"
+      ]
+    }
+  ]
+}

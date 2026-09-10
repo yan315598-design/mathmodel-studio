@@ -103,7 +103,8 @@ def plot_heatmap(
         row_names/col_names: 行列指标名, 长度须分别等于矩阵行/列数。
         pvalues: 与 matrix 同形的显著性 p 值矩阵; None 时不标注星号。
         value_label: 色标轴名（相关矩阵建议 "相关系数"）。
-        title: 图标题; None 时用默认标题。
+        title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
+            保留参数仅为兼容旧调用, 不再渲染。
         annotate: 是否在格内标注数值。
         digits: 数值小数位。
         out_stem: 输出文件前缀; None 时写系统临时目录。
@@ -153,8 +154,10 @@ def plot_heatmap(
     fig_w = max(5.6, 1.9 + 0.72 * cols)
     fig_h = max(4.2, 1.6 + 0.56 * rows)
     fig, ax = plt.subplots(figsize=(fig_w, fig_h))
-    fig.subplots_adjust(left=0.14, right=0.80, top=0.92, bottom=0.13)
-    ax.set_position([0.13, 0.14, 0.66, 0.76])
+    # bottom=0.20: 同时给旋转列标签与左下角显著性脚注留位
+    # （旧值 0.13/0.14 时 y=0.025 的脚注会与旋转 x 轴标签重叠）
+    fig.subplots_adjust(left=0.14, right=0.80, top=0.92, bottom=0.20)
+    ax.set_position([0.13, 0.20, 0.66, 0.70])
 
     im = ax.imshow(
         arr,
@@ -196,7 +199,7 @@ def plot_heatmap(
     cbar = fig.colorbar(im, ax=ax, fraction=0.030, pad=0.035)
     cbar.set_label(value_label)
     cbar.ax.tick_params(labelsize=9)
-    ax.set_title(title or f"{value_label}热力图")
+    # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
 
     # 显著性脚注: 只在提供 pvalues 时出现; 放画布左下角避开轴区
     if pvalues is not None:

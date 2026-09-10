@@ -77,8 +77,8 @@ def plot_tornado(
 
     Args:
         params: (参数名, -δ 变化率, +δ 变化率) 列表, 变化率为输出相对变化。
-        metric: 被扰动的输出指标名（进轴标签/标题）。
-        delta: 扰动幅度（仅用于图例/标题文案）。
+        metric: 被扰动的输出指标名（进 x 轴标签）。
+        delta: 扰动幅度（进 x 轴标签文案）。
         out_stem: 输出文件前缀; None 时写系统临时目录。
 
     Raises:
@@ -133,7 +133,7 @@ def plot_tornado(
 
     ax.xaxis.set_major_formatter(PercentFormatter(xmax=1.0, decimals=0))
     ax.set_xlabel(f"参数 ±{delta:.0%} 扰动下{metric}的相对变化")
-    ax.set_title(f"参数灵敏度龙卷风图（{metric}, ±{delta:.0%} 扰动）")
+    # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
 
     # 语义图例: 颜色编码影响方向而非扰动方向
     from matplotlib.patches import Patch

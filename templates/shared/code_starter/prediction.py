@@ -80,7 +80,7 @@ def fit_arima(y, order=(1, 1, 1), forecast_steps=12):
 # ============================================================
 def gm11(y, predict_steps=5):
     """
-    残差修正 GM(1,1) (winning_patterns §4 命名变体)
+    残差修正 GM(1,1)（仅在实现残差修正结构时以此命名）
 
     Args:
         y: ndarray (n,) 原始时序

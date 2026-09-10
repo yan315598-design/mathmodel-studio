@@ -93,7 +93,8 @@ def plot_shap_summary(
         mode: "beeswarm"(蜂窝) 或 "bar"(重要性条形)。
         palette: 色板名, bar 模式条色取第 1 色; beeswarm 保留 SHAP 官方
             红蓝特征值色标(功能语义色, 不替换)。
-        title: 图标题; None 按模式取默认。
+        title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
+            保留参数仅为兼容旧调用, 不再渲染。
         out_prefix: 输出前缀(不带扩展名); None 时写系统临时目录。
 
     Raises:
@@ -118,8 +119,6 @@ def plot_shap_summary(
     if mode == "beeswarm":
         shap.summary_plot(shap_values, features=features, plot_type="dot", **common)
         fig = plt.gcf()
-        fig.suptitle(title or "SHAP 蜂窝图：特征贡献分布（色=特征值高低）",
-                     fontsize=11, fontweight="bold", y=0.995)
     else:
         primary = load_palette(palette)[0]
         try:
@@ -128,8 +127,7 @@ def plot_shap_summary(
         except TypeError:  # 旧版 shap 的 summary_plot 不收 color 关键字
             shap.summary_plot(shap_values, features=features, plot_type="bar", **common)
         fig = plt.gcf()
-        fig.suptitle(title or "SHAP 特征重要性（mean |SHAP|）",
-                     fontsize=11, fontweight="bold", y=0.995)
+    # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
     fig.text(0.01, 0.01, "SHAP > 0 表示推高预测", fontsize=8,
              color=load_neutral("faint"))
     if out_prefix is None:

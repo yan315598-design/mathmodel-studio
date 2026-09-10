@@ -85,7 +85,8 @@ def plot_ranking(
         scores: 方案名 → {指标名: 得分}; 各方案须覆盖与 weights 相同的指标集。
         weights: 指标名 → 权重, 顺序即堆叠段顺序（dict 保持插入序）。
         xlabel: x 轴名（默认 "综合得分"）。
-        title: 图标题; None 用默认标题。
+        title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
+            保留参数仅为兼容旧调用, 不再渲染。
         out_stem: 输出文件前缀; None 时写系统临时目录。
 
     Raises:
@@ -166,7 +167,7 @@ def plot_ranking(
     ax.set_ylim(-0.62, n_row - 0.38)
     ax.set_xlim(0.0, xmax * 1.22)
     ax.set_xlabel(xlabel)
-    ax.set_title(title or "方案综合评分排序（按指标贡献分解）")
+    # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
     # 横向条读数方向在 x（同甘特属读数导向图）: 保留 x 向网格, 关闭 y 向
     ax.xaxis.grid(True, color=load_neutral("grid"), alpha=0.45, linewidth=0.7)
     ax.yaxis.grid(False)

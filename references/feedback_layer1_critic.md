@@ -57,7 +57,7 @@ OUTPUT EXACTLY THIS JSON, NO OTHER TEXT:
   "variant": "stage_level" | "per_qi",   // stage 5 必填; 其他阶段可省, 默认 "stage_level"
   "qi_id": "Q1" | "Q2" | ... | null,      // 仅 variant="per_qi" 时必填
   "scores": {
-    "1_<dim_name>": {"score": <int 1-10>, "evidence": "<≤30字>"},
+    "1_<dim_name>": {"score": <int 1-10>, "evidence": "<产物定位(文件/表/行)+简评, ≤80字>"},
     "2_<dim_name>": {...},
     "3_<dim_name>": {...},
     "4_<dim_name>": {...},
@@ -86,6 +86,13 @@ OUTPUT EXACTLY THIS JSON, NO OTHER TEXT:
 ```
 
 **dim key 命名**: 形如 `1_role_clarity`、`2_tools_ready` ……, 数字前缀固定 1-5, 后接 §6 对应 stage 给的英文 snake_case 名。`scripts/score_artifact.py:DIM_WHITELIST` 严格按此校验, 写错即报 "dim key 不匹配"。
+
+候选版读取 `config/rating_contract.json` 的 `dimension_interpretations` 和 `references/modeling_evidence_protocol.md` 后评分：旧 count/variant 键仅为兼容，不奖励凑变量、三族或修饰词；跨问维度核对题面固定输入，不奖励无依据复用。缺陷要引用实际公式、代码、结果或正文，不能以产物文件存在代替验证。
+
+**证据定位与自评性质（候选版）**：
+- 每个维度的 `evidence` 必须定位到具体产物：文件路径 + 行/表/公式编号，或题面位置。纯描述性评价（"内容完整""逻辑清晰"）视为缺证据。
+- L1 分数是产出方自评的**待验证信号**（落盘条目带 `self_assessed: true`）：verdict 的实质约束力来自 high-severity issues 与 hard_fail_rules，分数阈值只驱动流程节奏。不得把 L1 分数引用为质量证据。
+- 评"收敛/最优/提升/稳健/泛化"相关内容前，先对照结果文件实际状态核对（见 `scripts/claim_consistency_check.py`）；文字越级即 high-severity issue。
 
 ### 3. Verdict 规则
 

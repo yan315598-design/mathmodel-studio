@@ -96,8 +96,8 @@ Team #{Control Number}
 ### 强制 anchor (5 个)
 1. ✅ 称呼 (Dear ...)
 2. ✅ Context 段
-3. ✅ ≥3 numbered recommendations with action verbs
+3. ✅ numbered recommendations with action verbs (每条可执行, 数量按内容需要)
 4. ✅ Caveat 段 (assumption + when to revisit)
 5. ✅ Closing (Sincerely + Team #)
 
-L1 critic 检查这 5 个 anchor 的命中数; ≥ 4 才 pass。
+5 个 anchor 逐项核对；某项对本 Letter 不适用须说明理由，不适用不计缺失。

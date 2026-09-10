@@ -58,7 +58,7 @@ page_width/page_height 写入 mxGraphModel, 布局留白 >= 40px。
     fit_text()    均衡换行 + 超高自动缩字号（下限 fs_min）, 溢出记 [警告]
     block_height() n 行文本的建议盒高
 
-自验: write() 落盘后 validate_drawio_file()（stdlib minidom）复查 XML
+自验: write() 落盘后 validate_drawio_file()（stdlib ElementTree）复查 XML
 合法性与节点/连线计数; finalize() 再跑 drawio_check.py 版式体检。
 
 用法:
@@ -855,25 +855,32 @@ class Diagram:
 # 自验与 CLI 公共件
 # ============================================================
 def validate_drawio_file(path) -> tuple[int, int]:
-    """用 stdlib minidom 解析 .drawio, 校验结构合法, 返回 (顶点数, 连线数)。
+    """用 stdlib ElementTree 解析 .drawio, 校验结构合法, 返回 (顶点数, 连线数)。
+
+    用 ElementTree 而非 minidom: stdlib 文档明确警告 minidom 存在外部实体
+    解析与实体膨胀风险, ElementTree 默认不解析外部实体, 对 XML 注入免疫。
 
     Raises:
         ValueError: 缺 mxfile/mxGraphModel/root 结构。
-        xml.dom.minidom 解析异常原样抛出（文件非法）。
+        ET.ParseError: 文件非法。
     """
-    from xml.dom import minidom
+    import xml.etree.ElementTree as ET
 
-    doc = minidom.parse(str(path))
-    try:
-        for tag in ("mxfile", "mxGraphModel", "root"):
-            if not doc.getElementsByTagName(tag):
-                raise ValueError(f"缺 <{tag}> 结构, 不是合法 .drawio 文件")
-        cells = doc.getElementsByTagName("mxCell")
-        vertices = sum(1 for c in cells if c.getAttribute("vertex") == "1")
-        edges = sum(1 for c in cells if c.getAttribute("edge") == "1")
-        return vertices, edges
-    finally:
-        doc.unlink()
+    root = ET.parse(str(path)).getroot()
+    if root.tag != "mxfile":
+        raise ValueError("缺 <mxfile> 结构, 不是合法 .drawio 文件")
+    graph = root.find(".//mxGraphModel")
+    if graph is None:
+        raise ValueError("缺 <mxGraphModel> 结构, 不是合法 .drawio 文件")
+    if graph.find("root") is None:
+        raise ValueError("缺 <root> 结构, 不是合法 .drawio 文件")
+    vertices = edges = 0
+    for cell in graph.iter("mxCell"):
+        if cell.get("vertex") == "1":
+            vertices += 1
+        elif cell.get("edge") == "1":
+            edges += 1
+    return vertices, edges
 
 
 def default_out_stem(stem_name: str) -> str:
@@ -894,7 +901,7 @@ def base_parser(description: str) -> argparse.ArgumentParser:
 
 def finalize(diagram: Diagram, out_stem: str | None,
              fallback_stem: str, *, check: bool = True) -> int:
-    """写盘 + minidom 自验 + drawio_check 版式体检; 返回 CLI 退出码。
+    """写盘 + XML 自验 + drawio_check 版式体检; 返回 CLI 退出码。
 
     版式体检（1.3.0）: 同目录 drawio_check.py 可用时自动运行
     （文字溢出/越界/重复 id/实心盒重叠/连线穿盒/位图内嵌为 FAIL,
@@ -910,7 +917,7 @@ def finalize(diagram: Diagram, out_stem: str | None,
         print(f"[错误] {exc}")
         return 2
     print(f"已输出: {path}")
-    print(f"自验通过: XML 合法, {vertices} 节点 / {edges} 连线 (minidom 解析)")
+    print(f"自验通过: XML 合法, {vertices} 节点 / {edges} 连线 (ElementTree 解析)")
     if check and os.environ.get("MATHMODEL_DRAWIO_CHECK", "1") != "0":
         try:
             import drawio_check

@@ -742,6 +742,9 @@ def update_decision_log(stage_id: int, critique: dict, decision_log_path: Path,
         "mean": critique["mean_score"],
         "verdict": critique["verdict"],
         "ts": datetime.now().isoformat(),
+        # L1 分数为产出方自评, 按 rating_contract.score_scale.self_assessed_provisional
+        # 与 workspace_protocol §7 一律视为待验证信号, 不得引用为质量证据
+        "self_assessed": True,
     }
     if variant == "per_qi":
         entry["qi_id"] = qi_id

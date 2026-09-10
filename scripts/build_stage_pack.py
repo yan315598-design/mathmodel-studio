@@ -7,6 +7,8 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+from mechanism_reviews import load_mechanism_reviews
+
 from retrieve_cumcm_cases import (
     JOINT_COMPETITION_KEY,
     SUPPORTED_COMPETITIONS,
@@ -143,6 +145,7 @@ def build_stage_pack(query: str, competition: str, stage: int, top_k: int = 3) -
         "writing_blueprint": writing if stage in (8, 9) else [],
         "evidence_ids": evidence_ids,
         "warnings": warnings,
+        "mechanism_reviews": load_mechanism_reviews(case_hits, stage),
     }
 
 
@@ -175,6 +178,11 @@ def render_markdown(pack: dict) -> str:
     for title, key in sections:
         if pack.get(key):
             lines.extend(["", f"## {title}", "", *[f"- {value}" for value in pack[key]]])
+    if pack.get("mechanism_reviews"):
+        lines.extend(["", "## 局部机制复核（不代表普适有效）", ""])
+        for review in pack["mechanism_reviews"]:
+            lines.extend([f"### {review['id']}", "", "```json",
+                          json.dumps(review, ensure_ascii=False, indent=2), "```", ""])
     return "\n".join(lines) + "\n"
 
 

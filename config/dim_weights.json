@@ -34,7 +34,7 @@
       "6": {"1_multivariate_perturbation": 1.3, "4_robust_interval_quantitative": 1.2}
     },
     "A_optimization": {
-      "_note": "A 优化题: 加权模型多样性 / 命名变体 / 灵敏度",
+      "_note": "A 优化题: 加权候选取舍证据 / 名称与机制一致 / 稳健性 (候选版重释, 不奖励族数或修饰词)",
       "3": {
         "1_candidate_diversity": 1.3,
         "3_naming_variant": 1.2,

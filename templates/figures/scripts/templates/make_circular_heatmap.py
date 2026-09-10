@@ -93,7 +93,8 @@ def plot_circular_heatmap(
         values: N×M 数值矩阵(行=样本, 列=指标), 列内 min-max 归一化后上色。
         sample_names: N 个样本名(外圈标签)。
         metric_names: M 个指标名(内→外环, 圆外右侧行标签)。
-        title: 图标题; None 用默认。
+        title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
+            保留参数仅为兼容旧调用, 不再渲染。
         out_prefix: 输出前缀(不带扩展名); None 时写系统临时目录。
 
     Raises:
@@ -155,8 +156,7 @@ def plot_circular_heatmap(
     cbar.ax.tick_params(labelsize=8)
     cbar.outline.set_edgecolor(load_neutral("edge"))
 
-    ax.set_title(title or f"环形热图：{n_samples} 样本 × {n_metrics} 指标综合画像",
-                 fontsize=11, fontweight="bold", pad=16)
+    # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
 
     # 指标名: 以"径向内→外"顺序一行文字放在图下方居中(axes 坐标文本,
     # 受 figqa 碰撞检测监督; 位于最下方样本标签与画布底边之间的空带)

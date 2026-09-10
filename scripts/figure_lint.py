@@ -9,9 +9,12 @@
   R5 标题显示宽度过长（> 28 个中文字符当量）警告 -> 缩短或换行
   R6 使用 jet / rainbow colormap 报错      -> 换 viridis/RdBu_r 等感知均匀色
   R7 未去顶右 spines 警告                  -> 用 templates/figures/style/mathmodel.mplstyle
+  R8 图内图题: 非空 suptitle 或单面板 set_title 报错, 多面板标题
+     > 6 中文字符当量警告                   -> 图名应放在论文 caption, 不在图内;
+                                              示意图等特殊版式用 --allow-infigure-title 跳过
 
 用法:
-    python scripts/figure_lint.py <figure.py 或目录> [--strict]
+    python scripts/figure_lint.py <figure.py 或目录> [--strict] [--allow-infigure-title]
     python scripts/figure_lint.py --self-test
 
 退出码:
@@ -37,6 +40,7 @@ LEGEND_WARN, LEGEND_ERROR = 5, 8
 MARKER_POINT_LIMIT = 25
 HEATMAP_MAX_CELLS = 16  # "小矩阵"判定: 标注单元数上限
 TITLE_CJK_LIMIT = 28.0  # 中文字符当量
+PANEL_TITLE_CJK_LIMIT = 6.0  # R8: 多面板 panel 标题中文字符当量上限
 BAD_CMAPS = {"jet", "rainbow"}
 
 
@@ -64,8 +68,79 @@ def _is_numeric_label(text: str) -> bool:
     return True
 
 
-def lint_figure(fig, name: str) -> list[Violation]:
-    """对单个 Figure 执行全部规则, 返回违例列表。"""
+def _axes_titles(ax) -> list[str]:
+    """收集 axes 全部非空标题: center/left/right 三个位置各查一次, 去重保序。
+
+    R5/R8 均不能只读居中标题——set_title(..., loc="left"/"right") 时
+    get_title()（居中位）返回空串, 只查居中会漏检。
+    """
+    titles: list[str] = []
+    for loc in ("center", "left", "right"):
+        try:
+            text = ax.get_title(loc=loc).strip()
+        except Exception:
+            text = ""
+        if text and text not in titles:
+            titles.append(text)
+    return titles
+
+
+def _is_colorbar_axes(ax) -> bool:
+    """判定 colorbar 附属轴。
+
+    fig.colorbar() 会向 fig.axes 追加一个附属轴; 若按 len(fig.axes) 数面板,
+    单热力图 + colorbar 会被误判成双面板, 绕过 R8 单面板标题检查。
+    判定信号按版本从新到旧回退（_colorbar 是私有属性, 不能只依赖它存在）:
+    1. ax._colorbar 指向 Colorbar 实例（新版 mpl 在 colorbar 轴上挂该引用）;
+    2. isinstance(ax, Colorbar)（部分版本 Colorbar 以 Axes 子类身份直接进 fig.axes）;
+    3. 默认 label 恰为 '<colorbar>'（make_axes 的历史稳定默认值, 旧版 mpl 回退信号）。
+    """
+    from matplotlib.colorbar import Colorbar
+
+    if isinstance(getattr(ax, "_colorbar", None), Colorbar):
+        return True
+    if isinstance(ax, Colorbar):
+        return True
+    try:
+        return ax.get_label() == "<colorbar>"
+    except Exception:
+        return False
+
+
+def _twinned_with(a, b) -> bool:
+    """a 与 b 是否为 twinx/twiny 双轴关系（共享同一绘图区）。"""
+    grouper = getattr(a, "_twinned_axes", None)
+    if grouper is None:
+        return False
+    try:
+        return b in grouper.get_siblings(a)
+    except Exception:
+        return False
+
+
+def _count_logical_panels(fig) -> int:
+    """统计逻辑面板数: 排除 colorbar 附属轴; twinx/twiny 双轴与其宿主算同一面板。
+
+    R8 的单面板/多面板分支据此判定, 不能直接用 len(fig.axes)。
+    """
+    panels: list[list] = []
+    for ax in fig.axes:
+        if _is_colorbar_axes(ax):
+            continue
+        for panel in panels:
+            if any(_twinned_with(member, ax) for member in panel):
+                panel.append(ax)
+                break
+        else:
+            panels.append([ax])
+    return len(panels)
+
+
+def lint_figure(fig, name: str, allow_infigure_title: bool = False) -> list[Violation]:
+    """对单个 Figure 执行全部规则, 返回违例列表。
+
+    allow_infigure_title: True 时跳过 R8 图内图题规则（示意图/特殊版式逃生门）。
+    """
     out: list[Violation] = []
 
     def add(rule: str, severity: str, detail: str) -> None:
@@ -148,8 +223,7 @@ def lint_figure(fig, name: str) -> list[Violation]:
     # R5 标题过宽
     titles = []
     for ax in fig.axes:
-        if ax.get_title().strip():
-            titles.append(ax.get_title())
+        titles.extend(_axes_titles(ax))  # center/left/right 三位置全查
     suptitle = getattr(fig, "_suptitle", None)
     if suptitle is not None and suptitle.get_text().strip():
         titles.append(suptitle.get_text())
@@ -162,6 +236,38 @@ def lint_figure(fig, name: str) -> list[Violation]:
                 f"标题显示宽度 {width:.1f} 当量字符 (> {TITLE_CJK_LIMIT:g}): “{title[:30]}…”; "
                 "建议缩短或拆两行",
             )
+
+    # R8 图内图题: 图名应放在论文 caption（"图 X …"题注）, 不在图内。
+    # 数据图纪律; 示意图/特殊版式可用 --allow-infigure-title 跳过本规则。
+    if not allow_infigure_title:
+        suptitle = getattr(fig, "_suptitle", None)
+        if suptitle is not None and suptitle.get_text().strip():
+            add(
+                "R8-图内图题",
+                "error",
+                f"图内出现 suptitle “{suptitle.get_text()[:30]}”: 图名应放在论文 caption, "
+                "不在图内; 示意图等特殊版式可用 --allow-infigure-title 跳过",
+            )
+        n_panels = _count_logical_panels(fig)
+        for ax in fig.axes:
+            for title in _axes_titles(ax):
+                if n_panels == 1:
+                    add(
+                        "R8-图内图题",
+                        "error",
+                        f"单面板图内出现标题 “{title[:30]}”: 图名应放在论文 caption, "
+                        "不在图内; 示意图等特殊版式可用 --allow-infigure-title 跳过",
+                    )
+                else:
+                    width = _cjk_width(title)
+                    if width > PANEL_TITLE_CJK_LIMIT:
+                        add(
+                            "R8-图内图题",
+                            "warn",
+                            f"多面板 panel 标题 “{title[:30]}” 宽 {width:.1f} 当量字符 "
+                            f"(> {PANEL_TITLE_CJK_LIMIT:g}), 只允许短轴含义标签（如 ROC/PR/残差）; "
+                            "图名放论文 caption",
+                        )
     return out
 
 
@@ -189,8 +295,11 @@ def print_report(script: Path, violations: list[Violation]) -> None:
         print(f"  {mark} {v.rule}({v.severity}): {v.detail}  [图: {v.figure}]")
 
 
-def check_path(target: Path, strict: bool) -> int:
-    """检测单个脚本或目录, 返回退出码。"""
+def check_path(target: Path, strict: bool, allow_infigure_title: bool = False) -> int:
+    """检测单个脚本或目录, 返回退出码。
+
+    allow_infigure_title: True 时跳过 R8 图内图题规则（示意图/特殊版式逃生门）。
+    """
     if target.is_dir():
         scripts = sorted(p for p in target.glob("*.py") if p.name != "__init__.py")
     else:
@@ -215,7 +324,9 @@ def check_path(target: Path, strict: bool) -> int:
             continue
         script_violations: list[Violation] = []
         for idx, fig in enumerate(figures):
-            script_violations.extend(lint_figure(fig, _figure_name(fig, idx, script)))
+            script_violations.extend(lint_figure(
+                fig, _figure_name(fig, idx, script),
+                allow_infigure_title=allow_infigure_title))
             plt.close(fig)
         print_report(script, script_violations)
         all_violations.extend(script_violations)
@@ -230,7 +341,7 @@ def check_path(target: Path, strict: bool) -> int:
 
 
 def _self_test() -> int:
-    """合成图验证 7 条规则均可触发、正确图零误报。"""
+    """合成图验证 8 条规则均可触发、正确图零误报。"""
     import matplotlib
 
     matplotlib.use("Agg")
@@ -240,7 +351,7 @@ def _self_test() -> int:
     _setup_chinese_font(plt)
     violations: dict[str, list[Violation]] = {}
 
-    # 触发 R1/R2/R3/R6/R7 的图
+    # 触发 R1/R2/R3/R6/R7/R8(suptitle) 的图
     fig, ax = plt.subplots(figsize=(6, 4))
     for i in range(9):
         ax.plot(np.linspace(0, 1, 40), label=f"序列{i}", marker="o")
@@ -249,6 +360,7 @@ def _self_test() -> int:
     im = ax.imshow(np.random.rand(2, 2), cmap="jet", extent=[0, 1, 0, 1], aspect="auto")
     fig.colorbar(im)
     ax.legend()
+    fig.suptitle("不该出现的图内总标题")  # R8: suptitle -> error
     violations["bad"] = lint_figure(fig, "规则触发图")
     plt.close(fig)
 
@@ -270,7 +382,7 @@ def _self_test() -> int:
     violations["title"] = lint_figure(fig, "长标题图")
     plt.close(fig)
 
-    # 正确图: 应零违例
+    # 正确图: 应零违例（单面板不放图内标题, 图名进 caption）
     fig, ax = plt.subplots()
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
@@ -278,13 +390,12 @@ def _self_test() -> int:
     ax.bar([0.2], [1])
     ax.set_ylim(0, None)
     ax.legend()
-    ax.set_title("合规图")
     violations["clean"] = lint_figure(fig, "干净图")
     plt.close(fig)
 
     ok = True
     rules_hit = {v.rule.split("-")[0] for v in violations["bad"] + violations["heatmap"] + violations["title"]}
-    for rule_id in ("R1", "R2", "R3", "R4", "R5", "R6", "R7"):
+    for rule_id in ("R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8"):
         if rule_id not in rules_hit:
             print(f"[自测] ❌ 规则 {rule_id} 未被触发")
             ok = False
@@ -303,10 +414,12 @@ def _self_test() -> int:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="图表设计规则 lint: 图例密度/marker/截零/colorbar 冗余/标题宽度/cmap/spines"
+        description="图表设计规则 lint: 图例密度/marker/截零/colorbar 冗余/标题宽度/cmap/spines/图内图题"
     )
     parser.add_argument("target", nargs="?", help="figure.py 脚本或其所在目录")
     parser.add_argument("--strict", action="store_true", help="警告也计入失败")
+    parser.add_argument("--allow-infigure-title", action="store_true",
+                        help="跳过 R8 图内图题规则（示意图/特殊版式逃生门）")
     parser.add_argument("--self-test", action="store_true", help="内置合成图自测")
     args = parser.parse_args(argv)
 
@@ -318,7 +431,8 @@ def main(argv: list[str] | None = None) -> int:
     if not target.exists():
         print(f"输入不存在: {target}")
         return 2
-    return check_path(target, args.strict)
+    return check_path(target, args.strict,
+                      allow_infigure_title=args.allow_infigure_title)
 
 
 if __name__ == "__main__":

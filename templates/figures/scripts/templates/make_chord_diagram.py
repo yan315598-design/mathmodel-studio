@@ -86,7 +86,8 @@ def plot_chord(
         matrix: N×N 非负流量矩阵(行=迁出, 列=迁入)。
         labels: N 个部门名(扇区标签, 与行列顺序一致)。
         palette: 色板名, 扇区/弦色按顺序循环取色。
-        title: 图标题; None 用默认。
+        title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
+            保留参数仅为兼容旧调用, 不再渲染。
         out_prefix: 输出前缀(不带扩展名); None 时写系统临时目录。
 
     Raises:
@@ -118,8 +119,7 @@ def plot_chord(
         circos = Circos.chord_diagram(data=matrix, labels=labels)
 
     fig = circos.plotfig(figsize=(7.2, 7.2))
-    fig.suptitle(title or "部门间人才迁移和弦图（弦宽 ∝ 迁移量）",
-                 fontsize=11, fontweight="bold", y=0.98)
+    # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
     if out_prefix is None:
         out_prefix = str(Path(tempfile.gettempdir()) / "mathmodel-figs"
                          / "make_chord_diagram")

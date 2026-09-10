@@ -1,0 +1,219 @@
+{
+  "schema_version": "mechanism-review-1.0",
+  "records": [
+    {
+      "id": "huaweibei_2025_F_visibility_sequence",
+      "case_id": "huaweibei_2025_F",
+      "competition": "huaweibei",
+      "question_id": "Q1",
+      "review_status": "locally_tested",
+      "source_refs": [
+        {
+          "kind": "paper_excerpt",
+          "location": "F题-1-江南古典园林的美学特征建模.pdf, PDF pp.13-19,25-27",
+          "scope": "据本地诊断重点阅读，未逐式完整审计，未核验奖项"
+        },
+        {
+          "kind": "local_pilot",
+          "location": "../../../../../../analysis/q1_pilot/pilot_report.md",
+          "scope": "绮园单园、情景端点、二维代理、共享81候选；非提示词因果实验"
+        }
+      ],
+      "trigger": "路线质量取决于沿途可见景观变化，数据提供几何边界",
+      "baseline_gap": "最近距离不能区分遮挡，也不能单独表达景观序列变化",
+      "representation": "几何 -> 可通行图 -> 朝向与遮挡下可见类别描述 -> 等弧长序列差异",
+      "module_reason": "可见性修复邻近不等于看到；序列差异修复单点丰富不等于沿途变化",
+      "assumptions": [
+        "二维遮挡与视距是情景假设",
+        "真实入口和完整道路覆盖尚未核验",
+        "类别描述不是审美概率"
+      ],
+      "interface": "米制路径与采样方向输入视景函数；描述向量输入变化度量；重复长度按米计罚",
+      "counterexample": "墙后很近的景物；原地掉头或重复路段刷高累计变化；同几何不同采样步长",
+      "validation": {
+        "level": "local_proxy_only",
+        "observation": "正式函数合成反例及保存结果一致性检查通过；共享候选中新旧目标均选28号，无额外路线收益；遮挡假设改变可影响选择",
+        "not_established": "真实道路/入口正确、主观趣味性提高、十园泛化、Skill效果"
+      },
+      "limitations": [
+        "采样与假山遮挡敏感",
+        "独立实景标签缺失",
+        "搜索非完备"
+      ],
+      "transfer_boundary": "只迁移概念分层、反例与公平对照行为；不将二维视域模型、权重或零收益结果普遍化"
+    },
+    {
+      "id": "huaweibei_2025_F_spatial_partition",
+      "case_id": "huaweibei_2025_F",
+      "competition": "huaweibei",
+      "question_id": "Q2",
+      "review_status": "source_checked",
+      "source_refs": [
+        {
+          "kind": "paper_excerpt",
+          "location": "F题-江南古典园林美学特征的量化建模与分析.pdf, PDF pp.31-40",
+          "scope": "本地诊断重点阅读；未重跑论文算法，未核验获奖身份"
+        }
+      ],
+      "trigger": "局部景观特征聚类需同时考虑空间邻接与阻隔",
+      "baseline_gap": "仅按特征相似聚类可能形成空间碎片，全园平均又丢失局部组织",
+      "representation": "局部单元特征 -> GMM软归属 -> 带邻接与阻隔的MRF分区",
+      "module_reason": "GMM表达特征相似，MRF表达邻接连续性；二者职责不同",
+      "assumptions": [
+        "邻接权重能表达空间关系",
+        "连续性不能强到抹掉真实小尺度变化"
+      ],
+      "interface": "单元特征/软归属与邻接图使用同一单元索引；MRF能量单位和权重含义需定义",
+      "counterexample": "隔墙两侧特征相似但不应连续；窄小真实区域被平滑消除",
+      "validation": {
+        "level": "source_review_only",
+        "observation": "来源提出局部特征加空间约束的组合，尚无本地消融",
+        "not_established": "分区质量提升和全局最优；ICM通常仅局部优化"
+      },
+      "limitations": [
+        "需独立分区依据及去MRF对照",
+        "源文ICM近似全局最小的表述过强"
+      ],
+      "transfer_boundary": "迁移相似性与空间组织分工及反例，不默认所有评价题使用GMM-MRF"
+    },
+    {
+      "id": "huaweibei_2025_E_two_stage_denoising",
+      "case_id": "huaweibei_2025_E",
+      "competition": "huaweibei",
+      "question_id": "Q1",
+      "review_status": "source_checked",
+      "source_refs": [
+        {
+          "kind": "paper_excerpt",
+          "location": "E题-无监督迁移学习下的轴承故障诊断建模与优化.pdf, PDF pp.11-18,44-69",
+          "scope": "深读提取文本全文 + 关键页渲染核对；附录代码与正文存在多处不一致，机制有效性主张未独立复核"
+        }
+      ],
+      "trigger": "振动信号受背景噪声与干扰源影响，故障冲击特征被淹没，传统包络谱只见微弱倍频（题面明示源域有噪声时优先评估是否需要）",
+      "baseline_gap": "直接包络谱分析在强噪声下失效；单阶段模态分解有模态混叠与端点效应，恢复不彻底",
+      "representation": "失效证据量化 -> 一阶分解重构(TVFEMD类) -> 自适应寻优的二阶解卷积(MOMEDA类) -> 特征频率及谐波闭环验证",
+      "module_reason": "一阶模块修复模态分离，二阶模块修复冲击增强；两模块职责不同，参数用优化算法自适应而非人工设定",
+      "assumptions": [
+        "故障为冲击型且存在可识别的特征频率",
+        "噪声水平高到基线失效可测量",
+        "信号分段内近似平稳"
+      ],
+      "interface": "原始时域信号进，重构信号出；故障周期与滤波长度等参数由寻优目标函数驱动；输出须接同一口径的包络谱闭环验证",
+      "counterexample": "轻噪声数据上两阶段处理可能过度平滑真实冲击；特征频率不存在的故障类型（如渐发磨损）不适用；寻优目标函数选错会收敛到虚假周期",
+      "validation": {
+        "level": "source_review_only",
+        "observation": "来源论文给出失效->部分有效->闭环的图组证据链；但其附录代码与正文在 IMF 选择、WESK 定义、模型输入上不一致",
+        "not_established": "机制有效性未本地复现；源文代码可信度不足，迁移前须自行实现并小样本验证"
+      },
+      "limitations": [
+        "只迁移证据链结构与失效驱动逻辑，不迁移任何参数、频段或代码",
+        "轻噪声下可能无收益甚至有害"
+      ],
+      "transfer_boundary": "迁移'失效->修复->闭环'的论证顺序与自适应寻参思想；信号类型、噪声水平、特征频率均须按新题重新确认"
+    },
+    {
+      "id": "huaweibei_2025_E_unlabeled_voting_calibration",
+      "case_id": "huaweibei_2025_E",
+      "competition": "huaweibei",
+      "question_id": "Q3",
+      "review_status": "locally_tested",
+      "source_refs": [
+        {
+          "kind": "local_pilot",
+          "location": "analysis/e_ab_test/candidate_ws (results/q3_labels.json, q3_compare.json)",
+          "scope": "2025 E 题留出对照中实际运行；目标域无真值，标定绝对正确性未建立"
+        }
+      ],
+      "trigger": "目标域无标签且需逐文件标定，任何单一方法的输出都不可验证",
+      "baseline_gap": "单模型直迁输出无法证伪；置信度 softmax 分数不等于真实正确率",
+      "representation": "多方法族同口径平行 -> 2/3 多数投票 -> 置信分层(high/medium/suspect) -> 机理交叉核验标记强冲突",
+      "module_reason": "投票把单点失败变成可见分歧；分层把'不能同等确信'显式交付；机理核验提供独立于模型的物证通道",
+      "assumptions": [
+        "各方法族错误不完全相关",
+        "机理判据先在源域标定过强弱",
+        "标签空间闭合"
+      ],
+      "interface": "各方法输出文件级标签 -> 投票聚合 -> 分层写进标签 JSON 的 tier 字段 -> 机理冲突清单进正文局限",
+      "counterexample": "方法族共享同一错误前提时会集体投错（本实验中两侧均零 N 输出）；机理判据弱时（源域仅 0.69 准确率）冲突标记只能降级不能裁决",
+      "validation": {
+        "level": "local_proxy_only",
+        "observation": "分层与冲突标记机制工作正常；但与论文共识一致率仅 1/16，证明机制能暴露不确定性，不能保证标签正确",
+        "not_established": "目标域真实准确率；投票收敛到正确标签的条件"
+      },
+      "limitations": [
+        "不能替代真值验证",
+        "某合法类别零预测时投票整体失效（须先触发退化输出阻断）"
+      ],
+      "transfer_boundary": "迁移'无真值下多证据分层交付'的结构；投票阈值、分层阈值、机理判据须按新题重新标定"
+    },
+    {
+      "id": "huaweibei_2025_E_order_spectrum_alignment",
+      "case_id": "huaweibei_2025_E",
+      "competition": "huaweibei",
+      "question_id": "Q3",
+      "review_status": "locally_tested",
+      "source_refs": [
+        {
+          "kind": "local_pilot",
+          "location": "analysis/e_ab_test/baseline_ws (results/q3_metrics.json, q3_model.md)",
+          "scope": "2025 E 题留出对照中实际运行；R0/R1 消融对照量化净贡献"
+        }
+      ],
+      "trigger": "源域与目标域转速不同导致故障特征频率在绝对频率轴上系统性错位（如 1750rpm vs 600rpm）",
+      "baseline_gap": "绝对频率特征跨转速不可比：同一故障在不同转速下落在不同 Hz 位置，直接迁移失效（R0 机理核验 0/9）",
+      "representation": "包络谱按 f/fr 插值到阶次轴 -> 特征频率在两域对齐到同一阶次 -> 再接域适应",
+      "module_reason": "阶次=每转冲击次数是转速不变量；把转速差从模型负担变成输入表示的几何对齐",
+      "assumptions": [
+        "转速已知或可估计（本实验用 600rpm 名义值+副口径复核）",
+        "故障为冲击型且有特征频率",
+        "目标域工况近似恒转速"
+      ],
+      "interface": "时域切片 + 转速 -> 包络谱 -> 阶次插值 -> 特征向量进诊断/迁移模型",
+      "counterexample": "转速估计错则全轴错位；变转速段内插值会涂抹谱峰；无特征频率的故障类型（渐发磨损）不适用",
+      "validation": {
+        "level": "local_proxy_only",
+        "observation": "R0(绝对频率)vs R1(阶次)对照中阶次路线机理核验 4/6 且域对齐显著优于绝对频率 0/9；DANN 主路线机理一致 7/2 为五路线最优",
+        "not_established": "对论文共识的标签正确率（主路线与其一致率仍低）；转速估计误差敏感度未量化"
+      },
+      "limitations": [
+        "转速须已知或可估",
+        "机理核验判据本身需在源域标定"
+      ],
+      "transfer_boundary": "迁移'转速差用表示层对齐而非模型层硬扛'的思想；阶次范围、插值点数、谐波族设计按新题重新定"
+    },
+    {
+      "id": "huaweibei_2021_F_optimality_anchoring",
+      "case_id": "huaweibei_2021_F",
+      "competition": "huaweibei",
+      "question_id": "Q1",
+      "review_status": "source_checked",
+      "source_refs": [
+        {
+          "kind": "deep_read_record",
+          "location": "competitions/huaweibei/papers/manual_paper_reviews.json papers[10] (graduate:paper:2021-F:8da8ff7c36fa) modeling_body_by_q[*].validation_link; reusable_patterns",
+          "scope": "深读记录复核论文内容；未重跑论文算法，论文数值未搬运"
+        }
+      ],
+      "trigger": "调度类问题规模超出精确求解器可解范围，只能用启发式/分层求解，但结论需要解质量证据而非只有目标值",
+      "baseline_gap": "启发式只报目标值与运行时间，快不等于接近最优（同域多篇自认或被深读点名缺最优性参照与差距定量报告）",
+      "representation": "先建精确模型(ILP/MILP) -> 小规模实例求精确最优 -> 同实例对齐启发式解并报间隙 -> 大规模显式给出降级理由(决策变量规模)并报告可得下界",
+      "module_reason": "精确模型承担可行性与解质量锚点，启发式承担大规模可解性；锚定让启发式结果可评价",
+      "assumptions": [
+        "小规模实例保留完整约束结构（各类约束均被激活）",
+        "精确求解器在小规模实例上的时间预算可控"
+      ],
+      "interface": "同一套模型定义（变量/目标/约束）分别喂给精确求解器与启发式；对齐结果以同实例目标值差写入结果表",
+      "counterexample": "小规模实例缺某类约束时校准不可迁移；精确模型建模有误时锚点错误并传导至大规模结论",
+      "validation": {
+        "level": "source_review_only",
+        "observation": "论文在小规模数据上与精确最优解一致并以此校准大规模启发式，降级理由显式；reusable_patterns 含'小规模精确解校准大规模启发式'",
+        "not_established": "大规模实例上的最优间隙定量报告；我方未复算论文算法"
+      },
+      "limitations": [
+        "锚定范围受精确可解的小规模子集限制，不证明大规模近优",
+        "间隙口径（目标值差还是下界差）须显式声明"
+      ],
+      "transfer_boundary": "迁移锚定纪律（精确先行/小规模对齐/降级理由显式/间隙入表），不迁移论文的规模划分与数值"
+    }
+  ]
+}

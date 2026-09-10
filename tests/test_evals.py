@@ -217,6 +217,10 @@ def build_fake_repo(root: Path) -> None:
         encoding="utf-8")
     (root / "dist").mkdir()
     (root / "dist" / "old.txt").write_text("旧包, 防自递归", encoding="utf-8")
+    (root / ".mimosa" / "hook-state").mkdir(parents=True)
+    (root / ".mimosa" / "hook-state" / "sess_x.json").write_text("{}", encoding="utf-8")
+    (root / "outputs" / "figures").mkdir(parents=True)
+    (root / "outputs" / "figures" / "_smoke_test.png").write_bytes(b"\x89PNG")
 
 
 class PackageDistTests(unittest.TestCase):
@@ -267,6 +271,8 @@ class PackageDistTests(unittest.TestCase):
         self.assertFalse((dest / "scripts" / "__pycache__").exists())
         self.assertFalse((dest / "%TEMP%").exists())
         self.assertFalse((dest / "evals" / "results").exists())
+        self.assertFalse((dest / ".mimosa").exists())
+        self.assertFalse((dest / "outputs").exists())
         # dist 本体不进包 (防自递归)
         self.assertFalse((dest / "dist").exists())
 

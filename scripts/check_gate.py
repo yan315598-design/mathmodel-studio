@@ -18,6 +18,8 @@ check_gate.py — 阶段推进门禁脚本 (v2.3.0)
      qi_status 键 / sub_problems 键 (排除 _template) 三者必须全部登记且集合相等
    - 评分落盘检查 (E 合并): scores 必须有 stage N 的合法评分记录
      (stage 5 双路径: scores["5"] stage-level 或 scores["5_per_qi"] 覆盖全部 Qi)
+   - 答题义务台账 (候选版, 仅 gate 5/8): stages.2.obligations 存在时校验
+     (unstarted 拦截; partial 提示披露义务; 缺失仅提示不拦截)
 2. --checkpoint <key>: 只查该必停点是否真 answered, 不查 scores
    (阶段中途人工停点用; 合法键: kickoff_5q / analysis_confirm / card_decision /
     figure_menu.Q<n> / qi_verdict.Q<n>, 其余键业务 FAIL)
@@ -69,6 +71,9 @@ VALID_VERDICTS = {
 
 # 评分记录必填字段 (score_artifact.py update_decision_log 写入口径)
 SCORE_ENTRY_REQUIRED_FIELDS = ("iteration", "scores", "min", "mean", "verdict", "ts")
+
+# 答题义务台账状态 (候选版, modeling_evidence_protocol.md Stage 2)
+OBLIGATION_STATUS = ("unstarted", "partial", "verified")
 
 
 def resolve_decision_log_path(cli_arg: str = None) -> Path:
@@ -325,7 +330,65 @@ def check_gate(log: dict, gate: int) -> dict:
                     missing.append(f"checkpoints.qi_verdict['{qi}'] 未 answered"
                                    f"{_unanswered_note(qi_verdict.get(qi))}: 该问 verdict 未经用户逐问确认")
 
+    # 3. 答题义务台账镜像 (候选版; 仅 gate 5/8)
+    if gate in (5, 8):
+        ob_missing, ob_notes = _obligation_problems(log, gate)
+        missing.extend(ob_missing)
+        notes.extend(ob_notes)
+
     return {"pass": not missing, "missing": missing, "notes": notes}
+
+
+def _obligation_problems(log: dict, gate: int) -> tuple:
+    """答题义务台账镜像检查 (候选版, modeling_evidence_protocol.md Stage 2)。
+
+    stages.2.obligations 缺失 → 仅 notes 提示 (兼容旧 state 与未采用台账的流程);
+    存在则校验: 非空 list, 每条含 id/min_output, status ∈ {unstarted, partial, verified}。
+    unstarted → FAIL (必须先完成或经用户确认降级情景并在台账记录);
+    partial → 不拦截, 但 gate 5 提示移交纪律, gate 8 提示 stage 9 须确认正文如实披露。
+    """
+    missing, notes = [], []
+    stages = log.get("stages")
+    stage2 = stages.get("2") if isinstance(stages, dict) else None
+    if not isinstance(stage2, dict) or "obligations" not in stage2:
+        notes.append("stages.2.obligations 未登记 (答题义务台账镜像): 候选版建议 stage 2 "
+                     "把每条题面义务写为 {id, statement, min_output, status, gap}, 供 gate 5/8 追踪漏答")
+        return missing, notes
+    obs = stage2.get("obligations")
+    if not isinstance(obs, list) or not obs:
+        missing.append("stages.2.obligations 已登记但为空或类型错误 (应为非空 list)")
+        return missing, notes
+    unstarted, partial = [], []
+    for i, ob in enumerate(obs):
+        label = f"stages.2.obligations[{i}]"
+        if not isinstance(ob, dict):
+            missing.append(f"{label} 不是 dict")
+            continue
+        ob_id = str(ob.get("id", "")).strip()
+        if not ob_id:
+            missing.append(f"{label} 缺 id")
+            ob_id = f"#{i}"
+        if not str(ob.get("min_output", "")).strip():
+            missing.append(f"{label} (id={ob_id}) 缺 min_output (该义务的最小可验收输出)")
+        status = ob.get("status")
+        if status not in OBLIGATION_STATUS:
+            missing.append(f"{label} (id={ob_id}) status 非法: {status!r} "
+                           f"(合法: {'/'.join(OBLIGATION_STATUS)})")
+        elif status == "unstarted":
+            unstarted.append(ob_id)
+        elif status == "partial":
+            partial.append(ob_id)
+    if unstarted:
+        missing.append(f"答题义务仍未启动: {', '.join(unstarted)} — "
+                       "先完成，或经用户确认降级为明确情景/范围并在台账记录缺口")
+    if partial:
+        if gate == 5:
+            notes.append(f"答题义务 partial: {', '.join(partial)} — "
+                         "允许带缺口移交, 但 stage 8 正文不得写成已全部回答")
+        else:
+            notes.append(f"答题义务 partial: {', '.join(partial)} — "
+                         "stage 9 须确认正文与摘要已如实披露缺口与适用范围")
+    return missing, notes
 
 
 def expected_qis(log: dict, notes: list) -> tuple:
@@ -380,12 +443,12 @@ def _figure_menu_content_problems(qi: str, entry) -> list:
         problems.append(f"checkpoints.figure_menu['{qi}'].count 非法 (须为 0-9 的整数), 实际: {count!r}")
     elif count <= 1:
         if entry.get("exception") is not True:
-            problems.append(f"checkpoints.figure_menu['{qi}'].count={count} 低于每问默认 ≥2 图的硬门, "
-                            "须走 D.1 例外确认: 条目加 \"exception\": true")
+            problems.append(f"checkpoints.figure_menu['{qi}'].count={count} 为低频决策, "
+                            "须按 D.1 登记披露: 条目加 \"exception\": true")
         reason = entry.get("reason")
         if not isinstance(reason, str) or not reason.strip():
             problems.append(f"checkpoints.figure_menu['{qi}'].count={count} 须登记非空 reason "
-                            "(经用户确认的例外理由, 表格证据替代说明)")
+                            "(该问 0/1 图的证据呈现方式说明, 作决策追溯)")
     return problems
 
 

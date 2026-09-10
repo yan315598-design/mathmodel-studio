@@ -119,7 +119,7 @@ def plot_stacked(allocation: dict[str, list[float]], out_stem: str | None = None
     ax.set_ylabel(f"分配量（{unit}）")
     ax.set_ylim(0, max(bottoms) * 1.12)
     ygrid(ax)  # 1.1.0: 堆叠条只留极淡 y 向网格
-    ax.set_title("优化分配结果（按资源类别堆叠）")
+    # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
     ax.legend(loc="upper right", ncol=2)
     return _save(fig, out_stem, "make_optimization_allocation_stacked")
 
@@ -167,7 +167,7 @@ def plot_gantt(tasks: list[tuple[str, float, float, str]],
     ax.xaxis.grid(True, color=load_neutral("grid"), alpha=0.45, linewidth=0.7)
     ax.yaxis.grid(False)
     ax.set_axisbelow(True)
-    ax.set_title("优化分配执行计划（甘特图）")
+    # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
     from matplotlib.patches import Patch
 
     ax.legend(

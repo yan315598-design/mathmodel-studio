@@ -5,7 +5,7 @@ version 从 .codex-plugin/plugin.json 读取 (限安全单段字符集, 防路�
 
     运行时/缓存 (可再生产物):
       .git/  .pytest_cache/  **/__pycache__/  %TEMP%/  dist/  evals/results/
-      state/ (仅保留 .gitkeep, 保证目录占位)
+      .mimosa/  outputs/  state/ (仅保留 .gitkeep, 保证目录占位)
     许可证受限 (不可再分发, 见 templates/figures/vendor/VENDOR.md §5):
       templates/figures/vendor/scibox-diagram/
       templates/figures/vendor/scibox-figure/
@@ -38,11 +38,12 @@ _SKILL_ROOT = Path(__file__).resolve().parent.parent
 _VERSION_RE = re.compile(r"[0-9A-Za-z][0-9A-Za-z._-]*")
 
 # 任意层级按目录名剔除 (缓存/版本库/运行时产物; dist 防自递归复制)
-EXCLUDED_DIR_NAMES = {".git", ".pytest_cache", "__pycache__", "%TEMP%", "dist"}
+EXCLUDED_DIR_NAMES = {".git", ".pytest_cache", "__pycache__", "%TEMP%", "dist", ".mimosa"}
 
 # 相对仓库根的精确路径剔除; reason 会进 VENDOR_NOTICES.md / dry-run 统计
 EXCLUDED_REL_DIRS = {
     "evals/results": "评测结果为本地运行时产物",
+    "outputs": "运行时图表输出目录 (vendor 冒烟测试可再生产物)",
     "templates/figures/vendor/scibox-diagram": (
         "sci-box 上游未附正式 LICENSE, 不得再分发 (VENDOR.md §5)"),
     "templates/figures/vendor/scibox-figure": (
@@ -183,9 +184,10 @@ scibox-figure 的 11 件差异图型 (tpe_surface、marginal_grid、cv_roc_ci �
 
 | 被剔除路径 | 原因 |
 |---|---|
-| `.git/`, `.pytest_cache/`, `**/__pycache__/`, `%TEMP%/`, `dist/` | 版本库与缓存 |
+| `.git/`, `.pytest_cache/`, `**/__pycache__/`, `%TEMP%/`, `dist/`, `.mimosa/` | 版本库、缓存与本地工具会话状态 |
 | `state/` | 运行时状态目录, 仅保留 `.gitkeep` 占位 |
 | `evals/results/` | 本地评测结果, 运行 `evals/run_eval.py score-run` 再生 |
+| `outputs/` | 运行时图表输出目录 (vendor 冒烟测试可再生产物) |
 
 完整规则与默认 dry-run 行为见 `scripts/package_dist.py` 模块 docstring。
 """

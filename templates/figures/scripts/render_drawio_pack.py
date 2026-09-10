@@ -22,7 +22,7 @@
     python render_drawio_pack.py stageflow --highlight 3 --out figs/flow
 
 注意: figqa.py 只检测 matplotlib .py 出图脚本, 不支持 .drawio 文件;
-.drawio 的质量门是两层: 落盘后 minidom 自验（XML 合法性 + 节点/连线计数）
+.drawio 的质量门是两层: 落盘后 XML 自验（合法性 + 节点/连线计数）
 + 1.3.0 起 finalize() 自动运行 drawio_check.py 版式体检（文字溢出/越界/
 重复 id/实心盒重叠/连线穿盒/位图内嵌 = FAIL,  FAIL 即退出码 1;
 MATHMODEL_DRAWIO_CHECK=0 关闭, MATHMODEL_DRAWIO_STRICT=1 时 WARN 也判失败）。
@@ -129,7 +129,7 @@ def print_list() -> None:
     print("英文别名: " + ", ".join(
         f"{k} -> {v}" for k, v in sorted(ALIASES.items()) if k.isascii()))
     print("\n质量门: figqa.py 只检测 matplotlib 出图脚本, 不支持 .drawio 文件;"
-          "\n.drawio 两层质量门: minidom 自验 + drawio_check.py 版式体检"
+          "\n.drawio 两层质量门: XML 自验 + drawio_check.py 版式体检"
           "\n（文字溢出/越界/重叠/穿盒/位图 = FAIL 即退出码 1;"
           "\n MATHMODEL_DRAWIO_CHECK=0 关闭, MATHMODEL_DRAWIO_STRICT=1 时 WARN 也失败）。")
 

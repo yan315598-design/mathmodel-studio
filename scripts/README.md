@@ -21,6 +21,8 @@
 | `figqa.py` | 图表渲染碰撞检测（六类，--strict 硬门，--self-test 自检） (0.7.5) |
 | `figure_lint.py` | 图表设计规则 lint（图例/标记/基线/cmap/spines） (0.7.5) |
 | `pdf_qa.py` | 渲染后 PDF 终检：页数/重复图题/匿名扫描/空白页 (0.7.5) |
+| `claim_consistency_check.py` | 结论-结果核验：正文"收敛/最优/提升/区间"强结论 vs 结果文件状态 + 数字可追溯（结果文件同值舍入匹配）+ 同对象两数值矛盾；fail/warn/info 三级，--strict 时 fail 即 exit 1 (候选版) |
+| `mechanism_reviews.py` | 机制侧录加载与校验：`competitions/<comp>/cases/mechanism_reviews.json` → Stage 3/5/8/9 知识包附带 (候选版) |
 
 相似案例检索：
 

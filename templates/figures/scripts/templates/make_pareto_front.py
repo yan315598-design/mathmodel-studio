@@ -120,7 +120,8 @@ def plot_pareto(
         points: (目标1, 目标2) 可行解序列, 至少 2 个。
         obj_names: 两目标轴名; None 用默认占位名。
         minimize: 两轴是否越小越优（默认双双最小化）。
-        title: 图标题; None 用默认标题。
+        title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
+            保留参数仅为兼容旧调用, 不再渲染。
         out_stem: 输出文件前缀; None 时写系统临时目录。
 
     Raises:
@@ -201,7 +202,7 @@ def plot_pareto(
 
     ax.set_xlabel(xname)
     ax.set_ylabel(yname)
-    ax.set_title(title or "双目标优化 Pareto 前沿")
+    # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
     ygrid(ax)  # 1.1.0: 散点/前沿图只留极淡 y 向网格
 
     legend = ax.legend(loc="upper right", frameon=True, fontsize=9)

@@ -3,7 +3,7 @@
 适用: 二分类 / 多分类 / 不平衡数据
 
 国赛常见: Logistic / SVM / 随机森林 / XGBoost
-变体名建议: "Stacking 集成分类模型"
+如实际使用 Stacking 集成，名称如实写 "Stacking 集成分类模型"
 """
 
 import numpy as np
@@ -90,7 +90,7 @@ def compare_models(X, y, test_size=0.2):
 
 
 # ============================================================
-# 3. Stacking 集成 (winning_patterns §4 命名变体)
+# 3. Stacking 集成
 # ============================================================
 def stacking_classifier(X_train, X_test, y_train, y_test):
     """

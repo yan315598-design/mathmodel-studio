@@ -106,7 +106,8 @@ def plot_raincloud(
         groups: [(组名, 数值数组)], 按顺序自下而上排列, 按顺序取色板色。
         palette: 色板名, 默认 academic_blue。
         value_name: 数值轴名(进 x 轴标签)。
-        title: 图标题; None 用默认。
+        title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
+            保留参数仅为兼容旧调用, 不再渲染。
         out_prefix: 输出前缀(不带扩展名); None 时写系统临时目录。
         seed: 雨点垂直抖动的随机种子(固定可复现)。
 
@@ -190,8 +191,7 @@ def plot_raincloud(
     ax.set_yticks(range(len(groups)), [name for name, _ in groups])
     ax.set_ylim(-0.55, len(groups) - 0.45)
     ax.set_xlabel(value_name)
-    ax.set_title(title or "云雨图：多组分布形态对比（云=KDE，箱=五数概括，雨=样本点）",
-                 fontsize=11, fontweight="bold", pad=10)
+    # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
     # 数值轴为 x → 读数导向开 x 向网格(ygrid 的转置语义, 见模块 docstring)
     ax.xaxis.grid(True, color=load_neutral("grid"), alpha=0.45, linewidth=0.7)
     ax.yaxis.grid(False)

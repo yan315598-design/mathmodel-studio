@@ -58,7 +58,9 @@
       "key_constraints": [],
       "objective_per_subproblem": {},
       "data_schema": {},
-      "subproblem_dependency": {}
+      "subproblem_dependency": {},
+      "obligations": [],
+      "_obligations_doc": "答题义务台账镜像 (候选版): [{id, statement, min_output, status, gap}], status ∈ unstarted/partial/verified; stage 2 落盘, stage 5/8 更新; check_gate.py --gate 5/8 校验: unstarted 拦截, partial 提示披露义务; 权威全文在 真源.md 答题义务表"
     },
     "3": {
       "_label": "model_selection",

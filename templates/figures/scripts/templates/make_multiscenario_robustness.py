@@ -77,7 +77,7 @@ def plot_robustness(
     Args:
         scenarios: 场景名 → 指标样本列表。
         baseline: 基准参考线值（画水平虚线并在图内标注）。
-        metric: 指标名（进 y 轴标签/标题）。
+        metric: 指标名（进 y 轴标签）。
         mode: box=箱线图, violin=小提琴图。
         out_stem: 输出文件前缀; None 时写系统临时目录。
 
@@ -148,7 +148,7 @@ def plot_robustness(
 
     ax.set_xticks(range(len(names)), names)
     ax.set_ylabel(metric)
-    ax.set_title(f"多场景稳健性对比（{metric}）")
+    # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
     return _save(fig, out_stem, "make_multiscenario_robustness")
 
 

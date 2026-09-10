@@ -1,15 +1,19 @@
 ---
 name: mathmodel-studio
-description: 数学建模竞赛端到端工作流, 用于 CUMCM 国赛 / 中国研究生数学建模竞赛（华为杯）/ 华数杯 / MCM·ICM 美赛 / 电工杯 / APMCM 亚太杯中文赛等竞赛的赛前兵检、选题、相似题与子问检索、建模求解、灵敏度分析、Stage 知识包、统一配色图表、论文证据链、动态写作、去AI味润色、评委模拟器终审与提交打包. Use when the user says 建模、数模、开始建模、研究生数学建模竞赛、研究生赛、华为杯、华数杯、CUMCM、国赛、MCM、ICM、美赛、电工杯、APMCM、亚太杯、相似题、子问检索、模型选择、稳健性检验、摘要写作、图表规划、图表配色、色板、论文证据追踪、终稿 review、panel 审核、评委模拟、扣分制评审、数字冻结、提交检查、打包提交. 5 幕 10 步（Stage -1~9）+ 2 道质量门 + 评委模拟器, LaTeX 6 套自写竞赛模板, 全程编号问答式, 支持多 runtime skill 入口与 AGENTS.md/plugin packaging, state 跨 Codex 与 Claude Code 互通.
+description: 数学建模竞赛全流程助手。从选题、审题、建模、求解、验算，到写论文、画图、模拟评审、打包提交，按阶段带你走完一篇可提交的竞赛论文。支持华为杯研究生赛、CUMCM 国赛、华数杯、MCM/ICM 美赛、电工杯、APMCM 亚太杯。内置从历年优秀论文提炼的建模经验库和分题型写作范式；图表统一配色、出图自动质检；论文里每个数字都可回溯；提交前有评委模拟终审。全程问答式，用户只需选编号。Use when the user says 建模、数模、开始建模、数学建模、华为杯、研究生赛、研究生数学建模竞赛、华数杯、CUMCM、国赛、MCM、ICM、美赛、电工杯、APMCM、亚太杯、选题、相似题、模型选择、灵敏度分析、稳健性检验、摘要写作、图表规划、图表配色、论文润色、论文审阅、终审、评委模拟、提交打包.
 ---
 
-# mathmodel-studio — 数学建模 多竞赛通用 Skill (v2.3.0, 数模工坊 MathModel Studio)
+# mathmodel-studio — 数学建模 多竞赛通用 Skill (v2.5.0, 数模工坊 MathModel Studio)
 
-5 幕 10 步把"3-4 天打 1 篇竞赛论文"工程化, **全程问答式**——用户只需回答编号问题, 不必手敲 bash / python / json。每阶段产出经过 rubric 自评 + section-level patch 精修, 跨阶段一致性回检, 终局多视角 panel。六个一等竞赛分支中，研究生赛、华数杯和国赛共享检索、模型接口与论文证据链，但题目、奖项、经验统计和案例身份严格隔离。
+## 版本与总述
 
-**当前版本 v2.3.0**（2026-09-06）: 2025 华为杯 F 题实测修复：五必停点 + check_gate 程序门禁 + 默认细问模式 + 每 Qi 图表菜单 + skill_issues 台账正式化 + 评分落盘强制 + icarus-figures vendor 收编（MIT）。历史版本与旧编号对照见 `CHANGELOG.md`。
+**当前版本 v2.5.0**（2026-09-10）。本版做了三件事：① 给华为杯三个常考领域（信号诊断、空间几何、调度优化）各写了一份"高手动作手册"——写清普通做法在哪失效、优秀论文补了什么机制、什么情况下不适用，每条都标证据来源；② 33 篇深读论文支持按领域快速检索；③ 图表规范对齐正式论文：图名和结论写在图注里，不烧进图片本身，并有自动检查把关。上一版 v2.4.0（2026-09-09）主打建模证据纪律与必停点门禁。完整历史见 `CHANGELOG.md`。
 
-图表能力速览: 数据图 17 件（统一色板 + figqa/figure_lint 硬门，`render_modeling_pack.py --list`）/ 示意图 4 件 + drawio 可编辑模板 6 件（落盘自动过 drawio_check 版式门禁）/ vendor 内嵌 scibox-diagram、scibox-figure、diagram-design、icarus-figures 四上游——icarus（v2.3.0 收编, MIT）补齐复杂多面板主图、物理场/动力学图、网络流图与 TikZ 框架图（总路由表见 `references/figure_skill_bridge.md` 顶部；许可证与使用约束见 `templates/figures/vendor/VENDOR.md`）。
+建模证据纪律（现行规则）：进入 Stage 2/3/5/8 时按需读取 `references/modeling_evidence_protocol.md`，机制案例另读 `references/mechanism_distillation.md`。历史范例中的固定变量数、强制凑三族、修饰词命名和默认复用，不再作为质量要求；题面给定输入优先于跨问复用。
+
+流程分五幕、共十个阶段（-1~9），把"3-4 天打 1 篇竞赛论文"变成可检查的步骤，全程问答式——用户只需回答编号问题，不必手敲命令。每阶段产出经过自评打分和局部精修，终局由多评委模拟评审把关。六个竞赛分支中，研究生赛、华数杯和国赛共享检索、模型接口与论文证据链，但题目、奖项、经验统计和案例身份严格隔离。
+
+图表能力速览：自写模板 27 件（数据图 17 + 示意图 4 + 可编辑 drawio 6），统一色板，出图自动过质量检查——文字重叠越界直接报错，图内不放图名（图名写图注）。复杂多面板主图、物理场图、网络流图、TikZ 框架图由内嵌开源图表库补齐，路由细则见 `references/figure_skill_bridge.md`。
 
 ---
 
@@ -52,7 +56,7 @@ Codex 菜单格式:
 | "比较 A/B/C 题" / "帮我选题" / "华数杯选哪题" | Stage 1 | 加载 `topic_specs.json`; **huashubei 额外加载 `references/huashubei_topic_decision.md`** |
 | "写摘要" / "写华数杯摘要" / "写亚太杯摘要" | Stage 8 局部写作 | 加载对应竞赛 `abstract_template.md` + `phrase_bank.md` |
 | "写问题分析/模型段/结果解释/图表说明" | Stage 8 局部写作 | 只生成对应章节, 不改 state, 除非用户要求进入完整流程 |
-| "画图/生成图/美化图/规划图表/终审图表" | 图表桥接 | 加载 `references/figure_skill_bridge.md`（配色规范：`references/color_typology.md` + 设计令牌宪法 `references/design_tokens.md`; 1.4.0 起总路由表在桥接文件顶部）; 论文示意图高密度交付默认走 `templates/figures/vendor/scibox-diagram/`, 轻量快速路径用自写 drawio 模板 `render_drawio_pack.py --list`, 示意图配色默认走 `DIAGRAM_FAMILIES` 色族（与数据图表色板分离, 见 `color_typology.md` §2.4）; 复杂多面板主图/物理场图/网络流图/TikZ 框架图走 `vendor/icarus-figures/`（v2.3.0, 约束见 VENDOR.md 第 6 条）; **huashubei 额外加载 `references/huashubei_figure_pack.md`** |
+| "画图/生成图/美化图/规划图表/终审图表" | 图表桥接 | 加载 `references/figure_skill_bridge.md`（配色规范：`references/color_typology.md` + 设计令牌宪法 `references/design_tokens.md`; 1.4.0 起总路由表在桥接文件顶部）; 论文示意图高密度交付默认走 `templates/figures/vendor/scibox-diagram/`（开源分发版无 scibox-*, 自动降级为自写 drawio/matplotlib 模板, 见桥接文件"开源分发版注意"）, 轻量快速路径用自写 drawio 模板 `render_drawio_pack.py --list`, 示意图配色默认走 `DIAGRAM_FAMILIES` 色族（与数据图表色板分离, 见 `color_typology.md` §2.4）; 复杂多面板主图/物理场图/网络流图/TikZ 框架图走 `vendor/icarus-figures/`（v2.3.0, 约束见 VENDOR.md 第 6 条）; **huashubei 额外加载 `references/huashubei_figure_pack.md`** |
 | "终审论文" / "最后 6 小时检查" | Stage 9 | 进入极速终审路径, 优先查摘要定量结果、图表解释、符号一致、结论对应题问 |
 | "继续 stage N" / "看进度" | 恢复 state | 读 `cwd/state/decision_log.json`, 加载对应 stage |
 
@@ -126,8 +130,8 @@ Claude Code: 用 `AskUserQuestion` 工具; Codex: 用 markdown 编号列表 (最
 | 必停点 | 触发时机 | 登记键 | 呈现方式 |
 |---|---|---|---|
 | 启动 5 问 | 完整流程启动时一次性 5 问（竞赛/题号/队员/截止/PDF） | `checkpoints.kickoff_5q` | AskUserQuestion 或 Codex 编号菜单 |
-| 审题呈现确认 | Stage 2 审题门三查呈现后、进入分解前 | `checkpoints.analysis_confirm` | 同上 |
-| 选择卡拍板 | Stage 3 选择卡人类拍板门（先问四问、后亮短名单） | `checkpoints.card_decision` | 同上 |
+| 审题呈现确认 | Stage 2 审题门四查呈现后、进入分解前 | `checkpoints.analysis_confirm` | 同上 |
+| 选择卡拍板 | Stage 3 选择卡人类拍板门（先亮短名单+候选档案，用户拍板） | `checkpoints.card_decision` | 同上 |
 | 每问图表菜单 | Stage 5 每个 Qi 验证通过后、生成图表前（见 `references/stage_05_subproblem_loop.md`） | `checkpoints.figure_menu["Q<i>"]` | 同上 |
 | 每问 verdict | Stage 5 每个 Qi 的 per-Qi L1 评分产出 verdict 时**即问即登记**该问条目（refine_partial 时明确问修哪问）；聚合整体决策登记进 `stages["5"]` 既有字段，不复制进 qi_verdict | `checkpoints.qi_verdict["Q<i>"]` | 同上 |
 
@@ -242,7 +246,7 @@ Codex 首屏优先加载 `references/codex_practical_menu.md` 的"比赛工作�
 | 幕 | 步骤 (stage) | 干什么 | 时长 |
 |---|---|---|---|
 | 一、备战与选题 | 赛前兵检 (-1) → 启动 (0) → 选题 (1) | 模板预编译与 solver 冒烟；工作区初始化；多题对比定一题 | 兵检 2-4h (赛前) + 1h + 2-4h |
-| 二、审题与选型 | 审题三查 (2) → 模型选型 (3) → 假设符号 (4) | 边界/目标/假设三查防读错题 + 图表规格冻结；≥3 候选路线比较拍板；假设/符号/术语冻结 | 2-3h + 2-4h + 1h |
+| 二、审题与选型 | 审题四查 (2) → 模型选型 (3) → 假设符号 (4) | 边界/权利/目标/假设四查防读错题 + 图表规格冻结；短名单带候选档案比较拍板；假设/符号/术语冻结 | 2-3h + 2-4h + 1h |
 | 三、建模求解 | 子问循环 (5) → 稳健性 (6) | 每问 A-H 步求解，验证后立即写章节草稿卡（E2 write-as-you-solve）；全局灵敏度/稳健性 | 6-12h × n + 2-3h |
 | 四、论文成稿 | 模型评价 (7) → 写作组装 (8) | 优缺点与推广；草稿卡组装成正文 + 摘要三遍制 | 1-2h + 12-30h |
 | 五、终审提交 | 终审 (9) | 评委模拟器 panel：资格门 + 扣分制 + 校准锚；一致性审计与打包 | 2-6h |
@@ -257,69 +261,60 @@ Codex 首屏优先加载 `references/codex_practical_menu.md` 的"比赛工作�
 
 **只在进入阶段 N 时加载** `references/stage_NN_*.md`。**切勿**一次性全读。
 
-各阶段额外加载 (按需 + 按 competition 切换):
+每阶段通用:
 - 每阶段开头: `cwd/state/decision_log.json` 必读
 - 每阶段结尾: `cwd/state/decision_log.json` 必写 (核心决策 + 5 维评分)
 - stage 1-9: `references/rubrics.md` 对应章节 (L1 评分用)
-- **stage 1**: `competitions/<comp>/topic_specs.json`; 国赛、研究生赛和华数杯加载各自 `case_retrieval.md`，由 agent 运行 `scripts/build_stage_pack.py --stage 1`；需要跨赛结构参考时使用 `--competition all`
-- **stage 3, 5**: 加载 `references/model_catalog.md` 与 `references/knowledge_workflow.md`；运行 Stage 知识包与子问级检索，使用路线比较、假设风险和必做验证，禁止迁移历史数值
-- **stage 5**: per-Qi 评分跑完后调 `scripts/score_artifact.py --mode aggregate_qi` 聚合
-- **stage 8**: `competitions/<comp>/{winning_patterns, phrase_bank, abstract_template, paper_skeleton}.md`；运行 `generate_paper_plan.py` 生成动态章节、图表计划和 evidence ledger
-- **图表任务**: `references/figure_skill_bridge.md`; 规划用 `figure-table-planner`, 生成用 `math-figure-generator`, 终审质检用 `nature-figure` 的 QA 规则; **huashubei 额外加载 `references/huashubei_figure_pack.md` (按题型图表代码模板)**
-- **stage 5/8 图表**: CUMCM/研究生赛加载各自 `distilled_figures.md`, 从命中案例的 `figure_story` 组织“结构—机制—中间状态—结果—可信边界”，基础 `figure_plan` 只作兜底
-- **stage 8 CUMCM/研究生赛写作**: 从命中案例读取 `writing_blueprint`，按“为什么—模型—中间状态—结果—验证—回答”写每问；研究生赛另按需读取 `papers/manual_paper_reviews.json` 的章节逻辑，只迁移结构，不复制原句
-- **stage 8 经验校准**: 先加载 `config/rating_contract.json`，再与 `competitions/<comp>/empirical.json.scoring_policy` 取交集；国赛、研究生赛、华数杯只允许可靠的摘要长度和页数校准，图表数/章节数/正文字数/词频均不得作硬阈值
-- **stage 9**: `competitions/<comp>/anti_patterns.md` + `rubric_overlay.json` 的 panel personas；运行 `trace_claims.py --strict`，摘要证据链未通过则阻断终稿
-- 触发反馈时: 对应 `references/feedback_layer*.md`
-- harness 适配差异 (Codex 用户必读): `references/harness_compat.md`
-- **0.7.0 华数杯专项加载 (competition=huashubei 时)**:
-  - stage 0 kickoff: `references/huashubei_battle_plan_72h.md` (72h 逐小时时间表)
-  - stage 1 选题: `references/huashubei_topic_decision.md` (选题决策矩阵) + `competitions/huashubei/topic_specs.json`
-  - stage 3/5 建模: `competitions/huashubei/distilled_modeling.md` (A/B/C 三题型分章建模范式)
-  - stage 5/8 图表: `references/huashubei_figure_pack.md` (按题型图表代码模板)
-  - stage 8 写作: `competitions/huashubei/{winning_patterns, abstract_template, phrase_bank, paper_skeleton, distilled_structures, distilled_formats}.md`
-  - stage 8 评分: `competitions/huashubei/empirical.json` + `rubric_overlay.json` (6 维度国一标准)
-  - stage 9 终审: `competitions/huashubei/anti_patterns.md` (32 条) + rubric_overlay 的 4 角色 panel
-- **0.7.2 研究生赛专项加载 (competition=huaweibei 时)**:
-  - 通用入口: `references/cross_competition_distillation.md`，只共享结构与方法接口
-  - stage 1/3/5: `competitions/huaweibei/topic_specs.json` + `case_retrieval.md` + `distilled_modeling.md` + `scripts/retrieve_cases.py --competition huaweibei`
-  - stage 5/8 图表: `competitions/huaweibei/distilled_figures.md` + 命中案例 `figure_story`
-  - stage 8 写作: `competitions/huaweibei/{winning_patterns, abstract_template, phrase_bank, paper_skeleton, distilled_structures, distilled_formats, writing_voice, writing_playbook, writing_examples}.md`（writing_voice 管语气/摘要定量密度/公式呈现/推导四步叙事/结果分析五步/结论三招, 为华为杯写作必载件; writing_playbook 按 5 题型给公式-推导-结果分析差异化重点; writing_examples 为正反例对照库——三者均 v2.2.0 扩容, 证据基础 33 篇深读）；需要提名（2021）/优秀论文（2025）范式时按证据 ID 读取 `papers/manual_paper_reviews.json`
-  - stage 8 评分: 只使用 `empirical.json` 中摘要长度和页数的完整覆盖分位
-  - stage 9 终审: `anti_patterns.md` + `rubric_overlay.json` 的五角色 panel，强制检查竞赛键、奖项身份和来源边界
-- **0.7.3 三赛联合工具**:
-  - 题目/子问检索: `scripts/retrieve_cases.py --competition all --level both`
-  - Stage 知识包: `scripts/build_stage_pack.py --stage 1|3|5|8|9`
-  - 动态骨架与图表计划: `scripts/generate_paper_plan.py`
-  - 结果证据追踪: `scripts/trace_claims.py`
-  - 增量更新与版本: `scripts/update_knowledge.py`；默认预览，明确更新时才用 `--apply`
-- **v1.0.0 新增按需加载**:
-  - stage 2 审题门: 边界/目标/假设三查 + 审题质询员红队 (stage_02 内嵌); 建模防错查 `references/modeling_norms.md` 对应题型节
-  - 决策弹窗: 所有选项卡以 `references/decision_ui_map.md` 为唯一登记处
-  - 图表模板: 数据图 17 件 `templates/figures/scripts/render_modeling_pack.py --list`; 示意图 4 件 `templates/figures/scripts/render_diagram_pack.py --list`; drawio 可编辑模板 6 件 `templates/figures/scripts/render_drawio_pack.py --list`（1.3.0 起落盘自动过 `drawio_check.py` 版式门禁, FAIL 即退出码 1）; **1.4.0 起 vendor 内嵌原版**: 高密度论文示意图走 `templates/figures/vendor/scibox-diagram/`（4 模板, content JSON 驱动）, 差异数据图型走 `vendor/scibox-figure/`, 答辩/展示级 HTML 走 `vendor/diagram-design/`; **v2.3.0 增补 icarus-figures**: 复杂多面板主图（hero panel）、物理场/动力学/网络流图、TikZ 框架图走 `vendor/icarus-figures/`（paperfig 48 函数 + 5 个可编译 TikZ 范例; 不启用 journal 列宽, 产物落 cwd, critique.py 与 figqa/figure_lint 双门都过; 路由细则见 `figure_skill_bridge.md`）（路由总表见 `figure_skill_bridge.md` 顶部）
-  - stage 8/9 一致性: `scripts/consistency_audit.py` (未冻结数字/摘要结论打架/图表断链/符号脱节/版本错乱)
-- **0.7.5 新增按需加载**:
-  - stage 9 终审: 评委模拟器（stage_09 内嵌：资格门 → 冻结原子扣分清单 → 扣分制 + 格式乘数）; panel 隔离规则见 `references/feedback_layer3_panel.md`; huaweibei 先核对 `competitions/huaweibei/current_rules.md` 日期戳
-  - 数字冻结: `scripts/freeze_numbers.py` (freeze/check/unfreeze/list, workspace_protocol §9); 运行清单: `scripts/run_manifest.py` (record/verify, §10 级联失效)
-  - 图表硬门: 出图后跑 `scripts/figqa.py --strict` (六类碰撞) + `scripts/figure_lint.py` (设计规则); 新图模板 `templates/figures/scripts/` (tornado/优化分配/多场景/技术路线图, dispatcher `render_modeling_pack.py`)
-  - 提交终检: `scripts/pdf_qa.py` (页数/重复图题/匿名扫描/空白页) 并入 package_submission 流程
-  - mcm 写作: `competitions/mcm/memo_letter_guide.md` (Memo/Letter 框架)
-  - 模型选型: stage_03 内嵌"选择卡"人类拍板门; `references/model_catalog.md` §12 失效边界
-- **0.7.4 新增按需加载**:
-  - 赛前 (T-7~T-1): `references/stage_preseason.md` 跑一次兵检, 输出 `state/preseason_report.json`
-  - stage 0: `references/workspace_protocol.md` (唯一工作区/真源 SSOT/会话恢复四步); 检测同竞赛旧工作区必须先编号菜单确认归档; 真源 md 的公式/符号/题注/编号格式规范见 `references/md_authoring_spec.md` (v2.2.0, PDF/docx 双链实测口径)
-  - stage 2 末尾: 图表规格冻结 (stage_02 内嵌小节), 登记进真源.md 图表登记表
-  - 任何并行派发前: `references/parallel_dispatch.md`; 迭代预算耗尽输出 decision_memo
-  - 图表任务配色: `references/color_typology.md` + 设计令牌宪法 `references/design_tokens.md` + `templates/figures/style/{palettes.py, mathmodel.mplstyle}`; 模板脚本公共底座 `templates/figures/scripts/figkit.py`; 图表计划记录 `palette` 字段
-  - stage 2/8 文献需求: `references/reference_skill_bridge.md` (检索硬上限 ≤5 次/阶段, T1→T3 路由, 四要素核验, 期刊分级与参数溯源)
-  - 外部数据需求 (任何阶段): `references/data_acquisition.md` (数据源优先级/数据集登记 SSOT/网络安全约束/论文数据声明; v2.0.0 新增)
-  - stage 5 每问验证后: 写章节草稿卡 `paper_workspace/sections/q{i}_draft.md` (write-as-you-solve, 见 stage_05 E2 节); stage 8 组装时优先复用草稿卡
-  - stage 8 每节成稿: `references/ai_flavor_removal.md` 十类自查; 重述/附录用 `templates/shared/{restatement_card.md, appendix_checklist.md}`
-  - stage 9 提交: `references/submission_checklists.md` + `scripts/package_submission.py` (默认 dry-run); docx 审阅件导出 `scripts/export_docx.py` (md 真源 → submission/ 时间戳 docx, v2.1.0)
-  - **competition=huaweibei 时**: stage 0 加载 `references/huaweibei_battle_plan_72h.md` (逐小时作战表 + h48 硬冻结[72h 基线时点, 2026 100h 赛制按表头映射转换] + 独立验收三选二), 与 huashubei 作战表同级
-- **v2.3.0 新增按需加载**:
-  - stage 0: `state/skill_issues.md` 台账随工作区骨架创建, 自我纠错时追加 (协议见 `references/workspace_protocol.md` §11); stage 9 终审读台账
-  - 任何 stage 推进前: `scripts/check_gate.py --gate <N>` 门禁 (必停点 + 评分落盘, 见"必停点协议 (v2.3.0)")
+
+### 通用与跨阶段加载
+
+- 触发反馈时: 对应 `references/feedback_layer*.md`; harness 适配差异 (Codex 用户必读): `references/harness_compat.md`
+- 任何并行派发前: `references/parallel_dispatch.md`; 迭代预算耗尽输出 `decision_memo`
+- 外部数据需求 (任何阶段): `references/data_acquisition.md` (数据源优先级/数据集登记 SSOT/网络安全约束/论文数据声明)
+- stage 2/8 文献需求: `references/reference_skill_bridge.md` (检索硬上限 ≤5 次/阶段, T1→T3 路由, 四要素核验, 期刊分级与参数溯源)
+- 图表任务: `references/figure_skill_bridge.md` (路由总表见其顶部); 规划用 `figure-table-planner`, 生成用 `math-figure-generator`, 终审质检用 `nature-figure` 的 QA 规则; 数据图 17 件 `templates/figures/scripts/render_modeling_pack.py --list`; 示意图 4 件 `templates/figures/scripts/render_diagram_pack.py --list`; drawio 可编辑模板 6 件 `templates/figures/scripts/render_drawio_pack.py --list`（落盘自动过 `drawio_check.py` 版式门禁, FAIL 即退出码 1）; vendor 路由: 高密度论文示意图走 `templates/figures/vendor/scibox-diagram/`（4 模板, content JSON 驱动）, 差异数据图型走 `vendor/scibox-figure/`, 答辩/展示级 HTML 走 `vendor/diagram-design/`, 复杂多面板主图（hero panel）、物理场/动力学/网络流图、TikZ 框架图走 `vendor/icarus-figures/`（paperfig 48 函数 + 5 个可编译 TikZ 范例; 不启用 journal 列宽, 产物落 cwd, critique.py 与 figqa/figure_lint 双门都过; 路由细则见 `figure_skill_bridge.md`）
+- 图表硬门: 出图后跑 `scripts/figqa.py --strict` (六类碰撞) + `scripts/figure_lint.py` (设计规则); 新图模板 `templates/figures/scripts/` (tornado/优化分配/多场景/技术路线图, dispatcher `render_modeling_pack.py`)
+- 图表配色: `references/color_typology.md` + 设计令牌宪法 `references/design_tokens.md` + `templates/figures/style/{palettes.py, mathmodel.mplstyle}`; 模板脚本公共底座 `templates/figures/scripts/figkit.py`; 图表计划记录 `palette` 字段
+- 任何 stage 推进前: `scripts/check_gate.py --gate <N>` 门禁 (必停点 + 评分落盘, 见”必停点协议 (v2.3.0)”)
+- 数字冻结: `scripts/freeze_numbers.py` (freeze/check/unfreeze/list, workspace_protocol §9); 运行清单: `scripts/run_manifest.py` (record/verify, §10 级联失效)
+- 三赛联合工具: 题目/子问检索 `scripts/retrieve_cases.py --competition all --level both`; Stage 知识包 `scripts/build_stage_pack.py --stage 1|3|5|8|9`; 动态骨架与图表计划 `scripts/generate_paper_plan.py`; 结果证据追踪 `scripts/trace_claims.py`; 增量更新与版本 `scripts/update_knowledge.py`（默认预览, 明确更新时才用 `--apply`）
+- 决策弹窗: 所有选项卡以 `references/decision_ui_map.md` 为唯一登记处
+- 评分重释: `config/rating_contract.json` dimension_interpretations 16 键, 配额不作评分依据; L1 分数落盘带 `self_assessed: true`
+
+### 按 stage 加载表
+
+| stage | 额外加载 |
+|-------|----------|
+| -1 赛前 (T-7~T-1) | `references/stage_preseason.md` 跑一次兵检, 输出 `state/preseason_report.json` |
+| 0 | `references/workspace_protocol.md` (唯一工作区/真源 SSOT/会话恢复四步; 检测同竞赛旧工作区必须先编号菜单确认归档); 真源 md 的公式/符号/题注/编号格式规范 `references/md_authoring_spec.md` (PDF/docx 双链实测口径); `state/skill_issues.md` 台账随工作区骨架创建, 自我纠错时追加 (协议见 `references/workspace_protocol.md` §11); 华数杯/研究生赛各自 `battle_plan_72h` 作战表 (见竞赛专项加载) |
+| 1 | `competitions/<comp>/topic_specs.json`; 国赛、研究生赛和华数杯加载各自 `case_retrieval.md`，由 agent 运行 `scripts/build_stage_pack.py --stage 1`；需要跨赛结构参考时使用 `--competition all`; 华数杯另加 `references/huashubei_topic_decision.md` 选题决策矩阵 (见竞赛专项加载) |
+| 2 | 审题门: 边界/权利/目标/假设四查 + 审题质询员红队 (stage_02 内嵌); 建模防错查 `references/modeling_norms.md` 对应题型节; 义务台账 `decision_log.stages.2.obligations` 镜像, gate 5/8 校验 unstarted 拦截; 末尾图表规格冻结 (stage_02 内嵌小节), 登记进真源.md 图表登记表 |
+| 3 | stage 3/5 建模通用: `references/model_catalog.md` (含 §12 失效边界) + `references/knowledge_workflow.md`，运行 Stage 知识包与子问级检索，使用路线比较、假设风险和必做验证，禁止迁移历史数值; “选择卡”人类拍板门 (stage_03 内嵌); 研究生赛另加 `competitions/huaweibei/playbooks/` 与 `competitions/huaweibei/papers/domain_index.md` (见竞赛专项加载) |
+| 5 | per-Qi 评分跑完后调 `scripts/score_artifact.py --mode aggregate_qi` 聚合; 每问验证后写章节草稿卡 `paper_workspace/sections/q{i}_draft.md` (write-as-you-solve, 见 stage_05 E2 节); stage 8 组装时优先复用草稿卡; 图表 (stage 5/8): CUMCM/研究生赛加载各自 `distilled_figures.md`, 从命中案例的 `figure_story` 组织“结构—机制—中间状态—结果—可信边界”，基础 `figure_plan` 只作兜底 |
+| 8 | `competitions/<comp>/{winning_patterns, phrase_bank, abstract_template, paper_skeleton}.md` (各赛加件见竞赛专项加载)；运行 `generate_paper_plan.py` 生成动态章节、图表计划和 evidence ledger; 经验校准: 先加载 `config/rating_contract.json`，再与 `competitions/<comp>/empirical.json.scoring_policy` 取交集，国赛、研究生赛、华数杯只允许可靠的摘要长度和页数校准，图表数/章节数/正文字数/词频均不得作硬阈值; CUMCM/研究生赛写作: 从命中案例读取 `writing_blueprint`，按“为什么—模型—中间状态—结果—验证—回答”写每问，研究生赛另按需读取 `papers/manual_paper_reviews.json` 的章节逻辑，只迁移结构，不复制原句; 每节成稿: `references/ai_flavor_removal.md` 十类自查; 重述/附录用 `templates/shared/{restatement_card.md, appendix_checklist.md}`; 结论核验 (stage 5/8): `scripts/claim_consistency_check.py --draft <正文> --results results/ [--strict]` (收敛/最优/提升 vs 结果文件状态); mcm 写作: `competitions/mcm/memo_letter_guide.md` (Memo/Letter 框架) |
+| 9 | `competitions/<comp>/anti_patterns.md` + `rubric_overlay.json` 的 panel personas；运行 `trace_claims.py --strict`，摘要证据链未通过则阻断终稿; 一致性 (stage 8/9): `scripts/consistency_audit.py` (未冻结数字/摘要结论打架/图表断链/符号脱节/版本错乱); 评委模拟器（stage_09 内嵌：资格门 → 冻结原子扣分清单 → 扣分制 + 格式乘数）, panel 隔离规则见 `references/feedback_layer3_panel.md`; huaweibei 先核对 `competitions/huaweibei/current_rules.md` 日期戳; 提交终检 `scripts/pdf_qa.py` (页数/重复图题/匿名扫描/空白页) 并入 package_submission 流程; 提交: `references/submission_checklists.md` + `scripts/package_submission.py` (默认 dry-run); docx 审阅件导出 `scripts/export_docx.py` (md 真源 → submission/ 时间戳 docx); 终审核对 `state/skill_issues.md` 台账 |
+
+### 竞赛专项加载 (competition=X 时)
+
+**huashubei (华数杯)**:
+- stage 0 kickoff: `references/huashubei_battle_plan_72h.md` (72h 逐小时时间表)
+- stage 1 选题: `references/huashubei_topic_decision.md` (选题决策矩阵) + `competitions/huashubei/topic_specs.json`
+- stage 3/5 建模: `competitions/huashubei/distilled_modeling.md` (A/B/C 三题型分章建模范式)
+- stage 5/8 图表: `references/huashubei_figure_pack.md` (按题型图表代码模板)
+- stage 8 写作: `competitions/huashubei/{winning_patterns, abstract_template, phrase_bank, paper_skeleton, distilled_structures, distilled_formats}.md`
+- stage 8 评分: `competitions/huashubei/empirical.json` + `rubric_overlay.json` (6 维度国一标准)
+- stage 9 终审: `competitions/huashubei/anti_patterns.md` (32 条) + rubric_overlay 的 4 角色 panel
+
+**huaweibei (研究生赛)**:
+- 通用入口: `references/cross_competition_distillation.md`，只共享结构与方法接口
+- stage 0: `references/huaweibei_battle_plan_72h.md` (逐小时作战表 + h48 硬冻结[72h 基线时点, 2026 100h 赛制按表头映射转换] + 独立验收三选二), 与 huashubei 作战表同级
+- stage 1/3/5: `competitions/huaweibei/topic_specs.json` + `case_retrieval.md` + `distilled_modeling.md` + `scripts/retrieve_cases.py --competition huaweibei`
+- stage 1/3: `competitions/huaweibei/playbooks/`（按题目域命中 README 索引后读对应域文件; playbook 动作清单是 stage 3 候选生成输入之一, 不替代缺口驱动选型）
+- stage 3: `competitions/huaweibei/papers/domain_index.md`（33 篇深读域级索引, 命中后按 paper_id 定向读 `papers/manual_paper_reviews.json`）
+- stage 5/8 图表: `competitions/huaweibei/distilled_figures.md` + 命中案例 `figure_story`
+- stage 8 写作: `competitions/huaweibei/{winning_patterns, abstract_template, phrase_bank, paper_skeleton, distilled_structures, distilled_formats, writing_voice, writing_playbook, writing_examples}.md`（writing_voice 管语气/摘要定量密度/公式呈现/推导四步叙事/结果分析五步/结论三招, 为华为杯写作必载件; writing_playbook 按 5 题型给公式-推导-结果分析差异化重点; writing_examples 为正反例对照库, 证据基础 33 篇深读）；需要提名（2021）/优秀论文（2025）范式时按证据 ID 读取 `papers/manual_paper_reviews.json`
+- stage 8 评分: 只使用 `empirical.json` 中摘要长度和页数的完整覆盖分位
+- stage 9 终审: `anti_patterns.md` + `rubric_overlay.json` 的五角色 panel，强制检查竞赛键、奖项身份和来源边界
 
 ---
 

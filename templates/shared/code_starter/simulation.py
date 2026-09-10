@@ -2,8 +2,8 @@
 仿真类 code starter — 对应论文 §5.x 仿真 / §6 灵敏度
 适用: 蒙特卡罗 / 拉丁超立方采样 (LHS) / 系统动力学 ODE / Agent-based
 
-国赛超高频: 与灵敏度分析联用 (winning_patterns §7 多变量联合扰动)
-变体名建议: "拉丁超立方蒙特卡罗稳健性仿真"
+国赛超高频: 与灵敏度分析联用 (winning_patterns.md 灵敏度节)
+如实际使用 LHS，名称如实写 "拉丁超立方蒙特卡罗稳健性仿真"
 """
 
 import numpy as np
@@ -131,7 +131,7 @@ def sobol_indices(simulator, param_names, baseline_params, n_samples=1024):
 # ============================================================
 def seir_with_quarantine(t, y, beta, sigma, gamma, kappa):
     """
-    改进 SEIR 含潜伏期与隔离 (winning_patterns §4 命名变体)
+    SEIR 含潜伏期与隔离（仅在实现该结构时以此命名）
 
     y = [S, E, I, R]
     """

@@ -44,7 +44,7 @@ Appendix 含 (a) full code listing, (b) data source URL/DOI, (c) parameter value
 
 ## 7. **Strengths and Weaknesses 真实**
 
-≥3 条具体局限 + ≥1 条改进路线 (含 alternative method 名 + 改进幅度估计 + 计算成本估计)。不写 "could be improved with more data"。
+具体局限与改进路线 (含 alternative method 名 + 改进幅度与计算成本估计, 有依据才量化)。条数不设下限；不写 "could be improved with more data" 这类套话。
 
 `stage 7 / rubric §7 dim2`
 

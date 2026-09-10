@@ -42,7 +42,7 @@
 
 ### C1. 直接套用 textbook 模型, 无任何扩展
 **症状**: "We use linear regression to ..." — 没改进 / 没组合 / 没起新名。
-**修复**: 命名变体 (e.g. "Time-Aware Linear Regression with Holiday Dummies"), 或组合 2 个方法。
+**修复**: 说明实质改动（特征/损失/约束/验证任一）并如实命名；无实质改动就用原名并说明教科书方法已足够。
 
 ### C2. Approach 段不声明 novel contribution
 **症状**: Outstanding 评语高频出现 "novel approach"; 反过来普通论文是 "applied X to Y"。

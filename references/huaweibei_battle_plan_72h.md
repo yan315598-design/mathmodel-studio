@@ -58,7 +58,7 @@
 - [ ] 子问依赖图：哪些子问复用前面结果。
 
 **h6-h8：模型候选 + 图表规格定稿（h24 前可修订）**
-- [ ] 每个子问 ≥3 候选模型，加载 `references/model_catalog.md`。
+- [ ] 每个子问按 stage 3 短名单规格定候选（1 主 + 1 baseline + 至多 1 条件性备用），加载 `references/model_catalog.md`。
 - [ ] 检索相似案例支撑选型：`retrieve_cases.py --competition huaweibei --level question --query "<子问关键词>"`。
 - [ ] **图表规格定稿**（`workspace_protocol.md` §2/§5，`stage_02_analysis.md` 图表规格冻结节；h24 前可修订，h24 起硬冻结）：
   - 每问张数预算（多子问题赛制总量 10-20 张起步）。

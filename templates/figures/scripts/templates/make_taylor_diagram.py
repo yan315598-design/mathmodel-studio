@@ -125,7 +125,8 @@ def plot_taylor(
         models: [(模型名, 标准差 σ_m, 相关系数 r)] 列表, 按顺序取色板色。
         palette: 色板名, 默认 academic_blue。
         rmse_levels: RMSE 等值线半径元组(与 σ 同单位)。
-        title: 图标题; None 用默认。
+        title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
+            保留参数仅为兼容旧调用, 不再渲染。
         out_prefix: 输出前缀(不带扩展名); None 时写系统临时目录。
 
     Raises:
@@ -202,8 +203,7 @@ def plot_taylor(
             transform=ax.transAxes, ha="right", va="bottom", fontsize=8,
             color=load_neutral("secondary"))
 
-    ax.set_title(title or "泰勒图：多模型与观测的综合一致性", fontsize=11,
-                 fontweight="bold", pad=14)
+    # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.02), ncol=2,
               fontsize=9, columnspacing=1.2)
     if out_prefix is None:
