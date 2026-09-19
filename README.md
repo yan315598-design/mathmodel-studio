@@ -1,5 +1,7 @@
 # mathmodel-studio · 数模工坊
 
+[![Version](https://img.shields.io/badge/version-v3.1.0-blueviolet)](CHANGELOG.md)
+
 **用于数学建模竞赛的 AI Skill，协助完成审题、建模、求解、验证和论文整理。**
 
 数模工坊为 AI 编程助手提供建模流程、方法参考和配套脚本。你可以带着一道完整赛题从头开始，也可以拿已有代码、计算结果或论文草稿，只处理当前需要帮助的部分。
