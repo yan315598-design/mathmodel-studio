@@ -11,6 +11,7 @@ mathmodel-studio 1.2.0 图表共享工具库 (figkit)
   - panel_label()        (a)(b)(c) 子图标签, 全 skill 统一偏移
   - despine() / ygrid()  坐标轴与网格的现代处理
   - wrap_text_balanced() CJK 感知均衡换行, 消除吊行
+  - format_label()       图内文案模板填充 (占位符收数值, 失败转 ValueError)
   - elbow_arrow()        正交圆角连接器 (示意图替代斜插直线箭头)
   - soft_shadow()        卡片微阴影 path effect
   - check_cjk_font()     中文字体可用性检查与提示
@@ -48,6 +49,7 @@ mathmodel-studio 1.2.0 图表共享工具库 (figkit)
 """
 from __future__ import annotations
 
+import functools
 import importlib.util
 import math
 import os
@@ -128,14 +130,80 @@ _DIAGRAM_GRID_FALLBACK = 4
 _DIAGRAM_FONT_MONO_FALLBACK = ["Consolas", "DejaVu Sans Mono", "Courier New"]
 FOCAL_MAX = 2   # 焦点盒上限: 每图至多 1-2 个焦点节点, 超过等于没有焦点
 
+_MATH_ITALIC = "it"  # matplotlib 常规数学正斜 = mathtext.default "it" (golden 样张行为)
+
 _palettes_mod = None  # 缓存动态导入的 palettes 模块
 
 
 # ============================================================
 # 样式与色板加载
 # ============================================================
-def apply_style() -> bool:
+def _apply_math_policy(upright_math: bool | None) -> None:
+    """按政策写 `mathtext.default`（内部 helper, 只被 apply_style 调用）。
+
+    None 表示"不碰当前政策"（保持 mplstyle 放开行启用/调用方自设的值）。
+    """
+    import matplotlib.pyplot as plt
+
+    if upright_math is None:
+        return
+    plt.rcParams["mathtext.default"] = "regular" if upright_math else _MATH_ITALIC
+
+
+def restore_style_on_error(func):
+    """装饰出图函数: 调用抛异常时还原全局 rcParams 并关掉本次新建的 Figure。
+
+    出图模板的动作顺序是"参数校验 → `apply_style()` 改全局样式 → 建图 → 落盘"。
+    校验都在前面, 但**落盘失败**（父目录被文件占位/无写权限）或渲染期异常会带着
+    已改过的样式抛出去: 调用方拿到异常的同时还继承了半套样式（同一进程里接着画
+    第二张图就串了）, 未关闭的 Figure 也留在全局管理器里。本装饰器只补这个缺口:
+
+    - 异常路径: 还原 rcParams + 关闭本次调用新建的 Figure, 再原样向上抛
+      （异常类型与信息不变）;
+    - 成功路径: 什么都不做（Figure 生命周期仍由 `save_fig(close=True)` 负责）。
+
+    参数校验只做到"建图前"的模板, 异常路径本来就不碰 rcParams（预校验的效果）;
+    本装饰器是兜底, 覆盖校验盖不住的路径。`functools.wraps` 保留 `__name__`/
+    `__doc__`, 且 `inspect.signature` 会沿 `__wrapped__` 取原签名——模板入参
+    契约与文档不受影响。
+    """
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        import matplotlib.pyplot as plt
+
+        saved_rc = dict(plt.rcParams)
+        fignums_before = set(plt.get_fignums())
+        try:
+            return func(*args, **kwargs)
+        except BaseException:
+            plt.rcParams.update(saved_rc)
+            for num in set(plt.get_fignums()) - fignums_before:
+                plt.close(num)
+            raise
+
+    return wrapper
+
+
+def apply_style(upright_math: bool | None = False) -> bool:
     """加载 ../style/mathmodel.mplstyle; 文件缺失时回退等价内联 rcParams。
+
+    Args:
+        upright_math: 图内数学字体政策（B4）, 三态——
+
+            - True: 数学符号取**正体**（`mathtext.default: regular`）, 与全文
+              公式正斜政策一致。正文拍板全正体（`cn_presentation_spec.md` §5.6,
+              docx 链 `m:sty="p"`）时图内也必须正体, 否则"图文两套字体"是排查
+              成本最高的不一致（2026 国赛 A 题实战里正文 631 处斜体清零后,
+              14 张图轴标签仍是斜体数学符号）。
+            - False（默认）: 显式回到 matplotlib 常规数学正斜（斜体数学符号,
+              即 golden 样张行为）。**本态是幂等复位**——`apply_style(True)` 之后
+              再调 `apply_style(False)` 必须能切回来: `plt.style.use()` 只覆盖
+              样式文件里声明过的键, 而 .mplstyle 不声明 `mathtext.default`, 不显式
+              复位的话正体会跨调用残留（同一个进程里先画"全正体论文"的图再画
+              常规图就会串）。
+            - None: **不碰**当前 `mathtext.default`。给第二条开启路径留位——
+              mplstyle 里放开 `mathtext.default : regular` 注释行启用正体,
+              或调用方在外部 rcParams/rc_context 里自设政策时, 本函数不该覆盖。
 
     Returns:
         True 表示成功加载 .mplstyle 文件, False 表示走了内联回退。
@@ -144,6 +212,7 @@ def apply_style() -> bool:
 
     if MPLSTYLE_PATH.is_file():
         plt.style.use(str(MPLSTYLE_PATH))
+        _apply_math_policy(upright_math)
         return True
     # 内联回退: 与 mathmodel.mplstyle 关键项保持一致
     plt.rcParams.update({
@@ -176,6 +245,7 @@ def apply_style() -> bool:
         "xtick.direction": "out",
         "ytick.direction": "out",
     })
+    _apply_math_policy(upright_math)
     return False
 
 
@@ -489,14 +559,18 @@ def save_fig(fig, out_prefix, formats: tuple[str, ...] = ("png", "svg", "pdf"),
 
     异常行为: 某一格式 savefig 抛异常（如非法格式名）时, close=True 会先
     close(fig) 再让异常向上抛（不泄漏 figure）; 异常前已写出的部分文件保留
-    在磁盘上不回滚, 由调用方决定清理。
+    在磁盘上不回滚, 由调用方决定清理。**路径本身不可用**（父目录被同名文件
+    占位/无写权限/非法字符）时 mkdir 会抛 OSError——该分支同样在
+    try/finally 内, figure 也会被 close（否则路径报错会留下未关闭的 Figure）。
     """
     import matplotlib.pyplot as plt
 
     prefix = Path(str(out_prefix))
-    prefix.parent.mkdir(parents=True, exist_ok=True)
     written: list[str] = []
     try:
+        # mkdir 放进 try: 路径类异常（父目录是文件/权限不足/名字非法）与
+        # savefig 异常一样, 都不得把 figure 留在全局管理器里
+        prefix.parent.mkdir(parents=True, exist_ok=True)
         for fmt in formats:
             path = f"{prefix}.{fmt}"
             fig.savefig(path)
@@ -526,15 +600,56 @@ def ygrid(ax, color: str | None = None, alpha: float = 0.45, lw: float = 0.7):
 
 def panel_label(ax, label: str, x: float = -0.08, y: float = 1.04,
                 fontsize: float = 11, bold: bool = True):
-    """子图标签 (a)/(b)/(c), transAxes 坐标, 全 skill 统一偏移 -0.08/1.04。"""
-    ax.text(x, y, f"({label})", transform=ax.transAxes,
-            fontsize=fontsize, fontweight="bold" if bold else "normal",
-            va="bottom", ha="left", color=load_neutral("ink"))
+    """子图标签 (a)/(b)/(c), transAxes 坐标, 全 skill 统一偏移 -0.08/1.04。
+
+    Returns:
+        matplotlib Text 对象（3.0.1 起）。此前返回 None, 调用方只能
+        ax.texts[-1] 取回——现直接返回, 便于加白描边等后处理。
+    """
+    return ax.text(x, y, f"({label})", transform=ax.transAxes,
+                   fontsize=fontsize, fontweight="bold" if bold else "normal",
+                   va="bottom", ha="left", color=load_neutral("ink"))
 
 
 # ============================================================
 # CJK 感知文字宽度与均衡换行
 # ============================================================
+def format_label(template: str, where: str = "", /, **values) -> str:
+    """填充图内文案模板（`str.format` 口径）, 失败统一转 ValueError。
+
+    模板里出现 `{占位符}` 时按 `str.format` 填值, 无占位符则原样返回。**占位符
+    收数值本身而不是预格式化字符串**: 传 `"合同承诺 {value:.1%}"` 配
+    `value=0.85` 得到 "合同承诺 85.0%"; 若先 `f"{0.85:.3f}"` 再填, 模板里的
+    `:.1%` 会因对象已是 str 而报 "Unknown format code 'f'"。
+
+    错误处理与本函数的调用时机配套: 模板畸形（`"{"`/`"{missing}"`）时抛
+    ValueError 而不是原生 KeyError/IndexError, 方便出图脚本**在建图前**做
+    预校验——建图之后才抛异常会留下未关闭的 Figure 与已改动的全局 rcParams。
+
+    Args:
+        template: 文案模板, 如 `"基准线 {value:.3f}"` / `"Richardson 外推 p≈{p:.1f}"`。
+        where: 报错定位用的入参名（如 "best_label"）, 位置传参; 省略时消息里
+            只说"文案模板"。占位符名与本参数不冲突（位置传参, 不会被
+            `**values` 吞掉）。
+        **values: 占位符名 → 数值（键名即模板里的字段名）。
+
+    Returns:
+        填充后的文案。
+
+    Raises:
+        ValueError: 模板语法错误、字段名缺失或多写了未提供的字段。
+    """
+    fields = ", ".join("{" + name + "}" for name in values)
+    who = f"{where} " if where else "文案模板"
+    try:
+        return template.format(**values)
+    except Exception as exc:  # noqa: BLE001 - 统一转成带指引的 ValueError
+        raise ValueError(
+            f"{who}无法填充: {template!r} ({exc!r}); 请检查花括号转义, "
+            f"可用占位符: {fields or '（无）'}"
+        ) from exc
+
+
 def char_width_px(ch: str, fontsize: float) -> float:
     """估算单字符像素宽: 全角≈1.45×字号, 半角≈0.72×字号 (经验值, 免 GUI 测量)。"""
     if ord(ch) > 0x2E7F:  # CJK 及全角符号区间
@@ -1062,6 +1177,26 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     print(f"use_diagram_font() 后 font.sans-serif 首位 = "
           f"{plt.rcParams['font.sans-serif'][0]}")
+
+    # ---- B4 图内数学字体政策: 三态语义与复位幂等 ----
+    assert plt.rcParams["mathtext.default"] == "it", "默认该是常规数学正斜(斜体)"
+    apply_style(upright_math=True)
+    assert plt.rcParams["mathtext.default"] == "regular"
+    apply_style(upright_math=False)
+    assert plt.rcParams["mathtext.default"] == "it", "False 未复位正体政策"
+    plt.rcParams["mathtext.default"] = "regular"
+    apply_style(upright_math=None)
+    assert plt.rcParams["mathtext.default"] == "regular", "None 不该改动外部政策"
+    apply_style()  # 收尾复位, 免得影响后面的冒烟渲染
+    # ---- 文案模板填充: 占位符收数值, 畸形模板转 ValueError ----
+    assert format_label("基准线 {value:.3f}", value=0.85) == "基准线 0.850"
+    assert format_label("无水花") == "无水花"
+    try:
+        format_label("{missing}", value=1.0)
+        raise AssertionError("畸形模板未报错")
+    except ValueError:
+        pass
+    print("B4 正斜政策三态复位 + format_label 模板填充: 通过")
 
     # 冒烟: 画一张最小示意图（标题条 + 两张卡片 + 族色箭头）走三格式导出
     fig, ax = plt.subplots(figsize=(6.0, 3.2), dpi=100)

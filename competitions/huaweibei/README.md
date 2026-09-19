@@ -23,7 +23,7 @@
 - `cases/index.json`：30 道题的检索基础索引。
 - `cases/manual_review_annotations.json`：30 题人工深度复核覆盖层。
 - `papers/manual_paper_reviews.json`：12 篇 2021 提名论文 + 21 篇 2025 优秀论文逐篇深读（2025 条目口径见 `field_provenance.papers_2025_*`）。
-- `all_cases_manual_audit.md`、`star_papers_deep.md`（2021 提名 12 篇 + 2025 优秀 21 篇两章）：适合人工阅读的总稿。
+- `all_cases_manual_audit.md`、`star_papers_deep.md`（2021 提名 12 篇 + 2025 优秀 21 篇两章）：适合人工阅读的维护期总稿，v2.8.0 起从本目录迁出运行路径，落在维护方本地的 maintenance 语料目录，**不随公开分发包发布**；公开包内可用的对应内容是 `papers/manual_paper_reviews.json` 的逐篇深读条目。
 - `distilled_modeling.md`：跨题型的建模链和路线选择。
 - `distilled_figures.md`：结构—机制—结果—可信边界图表逻辑。
 - `distilled_structures.md`、`distilled_formats.md`：章节功能与表达格式。

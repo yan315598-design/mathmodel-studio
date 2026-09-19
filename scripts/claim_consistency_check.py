@@ -7,7 +7,9 @@ claim_consistency_check.py — 结论-结果一致性核验 (候选版)
 
 - fail: 文字与结果文件直接矛盾 (如 draft 声称收敛但结果 converged=false)
 - warn: 强结论词缺少对应证据字段 (需人工核对, 不拦截)
-- info: 口径清单 (列出所有区间/置信表述, 供人工核对分母与水平)
+- info: 口径清单 (列出所有区间/置信表述, 供人工核对分母与水平);
+        T-09 降噪: 只出现在 display-math 内的公式常数豁免、科学记数法等价匹配
+        命中也计入 info 而非 warn
 
 用法:
     python scripts/claim_consistency_check.py --draft paper_workspace/sections --results results/
@@ -17,8 +19,11 @@ claim_consistency_check.py — 结论-结果一致性核验 (候选版)
 本脚本不判断结论是否正确, 只判断文字是否与结果文件状态冲突; 通过不等于结论成立。
 """
 
+from __future__ import annotations
+
 import argparse
 import json
+import math
 import re
 import sys
 from pathlib import Path
@@ -43,6 +48,20 @@ OPTIMAL_STATUS_VALUES = ("optimal", "optimal_inaccurate")
 NUMBER_PATTERN = re.compile(r"(?<![\w.\-])(-?\d+\.\d+|-?\d{4,})(?![\w.%])")
 NUMBER_SKIP = {1024, 2048, 4096, 8192, 1000, 10000}
 NUMBER_MAX_WARN = 15
+
+# T-09 降噪 ①: 科学记数法等价匹配。正文 token 后紧跟的 ×10 指数后缀
+# (\times 10^{-13} / ×10^-13 / ×10⁻¹³ / ·10⁻¹³) 与结果文件的 2.3e-13 视为同值
+SCI_EXPONENT_TEX_RE = re.compile(
+    r"\s*(?:\\times|\\cdot|×|·|\*)\s*10\s*\^\s*(?:\{\s*(-?\d+)\s*\}|(-?\d+))")
+SCI_EXPONENT_UNI_RE = re.compile(r"\s*(?:×|·)\s*10\s*([⁻⁺]?)\s*([⁰¹²³⁴⁵⁶⁷⁸⁹]+)")
+_SUPERSCRIPT_DIGITS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
+
+# T-09 降噪 ②: display-math 环境边界 ($$..$$ / \[..\] / equation|align 等),
+# 只出现在其中的数字是公式常数/几何量, 正文未对其做数值主张, 豁免追溯
+_DISPLAY_MATH_TOKEN_RE = re.compile(
+    r"\$\$|\\\[|\\\]"
+    r"|\\begin\{(?:equation|align|gather|multline|eqnarray)\*?\}"
+    r"|\\end\{(?:equation|align|gather|multline|eqnarray)\*?\}")
 
 # 同对象两数值矛盾 (候选版): 同一对象+同一指标的表述在文中出现两个不同值 (F2 案例型)
 # 上下文 = 数字前的 2-15 个连续汉字/词干; 只查小数或 ≥3 位整数, 降低噪声
@@ -74,6 +93,93 @@ def _number_traced(token: str, values: list[float]) -> bool:
             if round(cand, nd) == rx:
                 return True
     return False
+
+
+def _sci_exponent_after(line: str, pos: int) -> int | None:
+    """token 后若紧跟 ×10^{-13} / \\times 10^-13 / ×10⁻¹³ 形态的指数, 返回指数值。
+
+    无指数后缀返回 None (普通数字)。"""
+    m = SCI_EXPONENT_TEX_RE.match(line, pos)
+    if m:
+        return int(m.group(1) or m.group(2))
+    m = SCI_EXPONENT_UNI_RE.match(line, pos)
+    if m:
+        exp = int(m.group(2).translate(_SUPERSCRIPT_DIGITS))
+        return -exp if m.group(1) == "⁻" else exp
+    return None
+
+
+def _sci_traced(mantissa_token: str, exp: int, values: list[float]) -> bool:
+    """科学记数法等价匹配 (T-09): 正文 2.30×10⁻¹³ 与结果 2.3e-13 视为同值。
+
+    匹配条件 (满足其一): 把结果值缩放到正文指数后, 尾数按声明位数舍入相等;
+    或与正文数值的相对差 ≤ 0.1%。指数超出 float 可表示范围 (|exp| ≳ 300) 或
+    底数下溢时改用 log10 域比较, 门禁不得因此崩溃 (复审 P1-1); 相对容差不设
+    1e-300 下限——下限会比极小正文值大若干数量级, 把真矛盾吞掉 (复审 P1-2)。
+    """
+    x = float(mantissa_token)
+    nd = len(mantissa_token.lstrip("-").split(".")[1]) if "." in mantissa_token else 0
+    try:
+        scale = 10.0 ** exp
+    except OverflowError:
+        scale = None
+    if scale is not None and (scale == 0.0 or not math.isfinite(scale)):
+        scale = None
+    target = x * scale if scale is not None else None
+    if target is not None and not math.isfinite(target):
+        target = None
+    for v in values:
+        if scale is not None and target is not None:
+            try:
+                if round(v / scale, nd) == round(x, nd):
+                    return True
+            except (OverflowError, ZeroDivisionError):
+                pass
+            tol = 0.001 * abs(target) if target != 0 else 1e-303
+            try:
+                if abs(v - target) <= tol:
+                    return True
+            except OverflowError:
+                pass
+        else:
+            # log10 域比较: 相对差 0.1% ≈ |log10| 差 ≤ log10(1.001)
+            try:
+                if v != 0 and x != 0 and abs(
+                        math.log10(abs(v)) - (math.log10(abs(x)) + exp)
+                ) <= math.log10(1.001):
+                    return True
+            except (ValueError, OverflowError):
+                pass
+    return False
+
+
+class _DisplayMathTracker:
+    """跨行跟踪 display-math 区间, 把每行切成 (start, end, in_display) 段。
+
+    T-09 降噪 ②: 只出现在 display-math (公式/推导) 内的数字是公式常数或几何量,
+    正文未对其做数值主张, 豁免 untraceable_number 检查。行内 $...$ 不算。
+    """
+
+    def __init__(self) -> None:
+        self.active = False
+
+    def segments(self, line: str) -> list[tuple[int, int, bool]]:
+        segs: list[tuple[int, int, bool]] = []
+        pos = 0
+        cur = self.active
+        for m in _DISPLAY_MATH_TOKEN_RE.finditer(line):
+            segs.append((pos, m.start(), cur))
+            pos = m.end()
+            tok = m.group(0)
+            if tok == "$$":          # 开闭同形, 翻转
+                cur = not cur
+            elif tok == "\\]" or tok.startswith("\\end"):
+                cur = False
+            else:                    # \[ 或 \begin{...}
+                cur = True
+            self.active = cur
+        segs.append((pos, len(line), cur))
+        return segs
 
 
 def _iter_json_values(obj, path=""):
@@ -153,9 +259,25 @@ def check_claims(draft_path: Path, results_dir: Path) -> dict:
     optimal_claims = []
     improvement_claims = []
     interval_claims = []
-    draft_numbers = {}  # value -> (file, line) 首次出现位置
+    # (token, 科学记数指数|None) -> {"loc": (file, line), "prose": 是否在公式区外出现过}
+    draft_numbers: dict[tuple[str, int | None], dict] = {}
     ctx_numbers = {}  # norm_ctx -> [(value_str, file, line)] 同对象两数值检测
+    dm_tracker = _DisplayMathTracker()
+    in_fence = False
+    cur_file = None
     for fname, lineno, line in _iter_drafts(draft_path):
+        if fname != cur_file:
+            cur_file = fname
+            dm_tracker = _DisplayMathTracker()  # 公式区状态不跨文件
+            in_fence = False
+        if line.lstrip().startswith("```"):
+            # 代码围栏行不参与公式区跟踪: 围栏内的 $$ 是代码内容, 翻转状态机
+            # 会把其后整篇 prose 数字静默豁免 (复审 P2-2)
+            in_fence = not in_fence
+        if in_fence:
+            segs = [(0, len(line), False)]
+        else:
+            segs = dm_tracker.segments(line)
         for m in CONVERGENCE_CLAIM.finditer(line):
             if CONVERGENCE_NEGATION.search(line[max(0, m.start() - 4):m.end() + 1]):
                 continue
@@ -175,7 +297,11 @@ def check_claims(draft_path: Path, results_dir: Path) -> dict:
                 continue
             if value.is_integer() and (int(abs(value)) in NUMBER_SKIP or 1900 <= value <= 2100):
                 continue
-            draft_numbers.setdefault(raw, (fname, lineno))
+            exp = _sci_exponent_after(line, m.end())
+            in_display = any(s <= m.start() < e and flag for s, e, flag in segs)
+            rec = draft_numbers.setdefault((raw, exp), {"loc": (fname, lineno), "prose": False})
+            if not in_display:
+                rec["prose"] = True
         for m in CONTEXT_NUMBER_PATTERN.finditer(line):
             ctx = _norm_ctx(m.group("ctx"))
             if len(ctx) < 2 or ctx in CONTRADICTION_CTX_SKIP:
@@ -232,11 +358,45 @@ def check_claims(draft_path: Path, results_dir: Path) -> dict:
                       + "; ".join(f"{f}:{l} {s}" for f, l, s in interval_claims[:8]),
         })
 
-    # 规则 5: 数字可追溯 (warn) — 正文数字须在结果文件中按精度舍入匹配 (百分数口径互认)
+    # 规则 5: 数字可追溯 — 正文数字须在结果文件中按精度舍入匹配 (百分数口径互认)。
+    # T-09 降噪: 只出现在 display-math 内的数字按公式常数豁免 (info);
+    # 科学记数法按尾数舍入/相对容差 0.1% 等价匹配, 命中计入 info 而非 warn。
     if files_read and draft_numbers:
         values = res["numeric_values"]
-        untraced = [(tok, loc) for tok, loc in draft_numbers.items()
-                    if not _number_traced(tok, values)]
+        display_only: list[tuple[str, int | None, tuple]] = []
+        sci_matched: list[tuple[str, int | None, tuple]] = []
+        untraced: list[tuple[str, tuple]] = []
+        for (tok, exp), rec in draft_numbers.items():
+            if not rec["prose"]:
+                display_only.append((tok, exp, rec["loc"]))
+                continue
+            if exp is not None:
+                if _sci_traced(tok, exp, values):
+                    sci_matched.append((tok, exp, rec["loc"]))
+                    continue
+            elif _number_traced(tok, values):
+                continue
+            untraced.append((tok if exp is None else f"{tok}×10^{exp}", rec["loc"]))
+        if display_only:
+            sample = "; ".join(
+                f"{tok}" + (f"×10^{exp}" if exp is not None else "") + f" ({f}:{l})"
+                for tok, exp, (f, l) in display_only[:NUMBER_MAX_WARN])
+            findings.append({
+                "level": "info",
+                "rule": "display_math_constant",
+                "detail": f"{len(display_only)} 个数字仅出现在 display-math 公式内, "
+                          f"按公式常数/几何量豁免追溯: {sample}"
+                          f"{' …' if len(display_only) > NUMBER_MAX_WARN else ''}。",
+            })
+        if sci_matched:
+            sample = "; ".join(
+                f"{tok}×10^{exp} ({f}:{l})" for tok, exp, (f, l) in sci_matched[:NUMBER_MAX_WARN])
+            findings.append({
+                "level": "info",
+                "rule": "sci_notation_matched",
+                "detail": f"{len(sci_matched)} 个科学记数法数字按尾数舍入/相对容差 0.1% "
+                          f"等价匹配到结果值: {sample}。",
+            })
         if untraced:
             sample = "; ".join(f"{tok} ({f}:{l})" for tok, (f, l) in untraced[:NUMBER_MAX_WARN])
             findings.append({

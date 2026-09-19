@@ -1,12 +1,14 @@
 # 设计令牌 (Design Tokens) · mathmodel-studio 1.3.1
 
-> 本文是全 skill 图表/示意图的**审美宪法**。所有 make_*.py 模板、drawio 生成器、
-> 新图表必须从这里取令牌，禁止另行发明色值/字号/间距。
-> 实现出口：配色 `style/palettes.py`，共享工具 `scripts/figkit.py`。
+> 本文是全 skill 图表/示意图的**字阶/版式/间距审美宪法**。所有 make_*.py 模板、drawio 生成器、
+> 新图表必须从这里取令牌，禁止另行发明字号/间距/版式。
+> **管辖边界（v2.8.0 起）**：色值（数据色板、中性色令牌 NEUTRALS、示意图色族）唯一权威源 =
+> `references/color_typology.md` + `templates/figures/style/palettes.py`；字阶、版式、间距与反模式唯一权威源 = 本文件。两文件不得互设对方管辖的令牌。
+> 实现出口：配色 `templates/figures/style/palettes.py`，共享工具 `templates/figures/scripts/figkit.py`。
 > 1.2.0：示意图与数据图表配色彻底分类（§1.5 色族 / §4.5 示意图族版式）。
 > 1.3.0：编辑级排版纪律（§4.6）—— 4px 网格 / 圆角·描边·字阶梯 /
 > 焦点盒规则 / 连接器六条军规 / 中文排版预算，蒸馏自 diagram-design (MIT)
-> 与 sci-box scibox-diagram (MIT)；drawio 版式体检门禁 `drawio/drawio_check.py`。
+> 与 sci-box scibox-diagram (MIT)；drawio 版式体检门禁 `templates/figures/scripts/drawio/drawio_check.py`。
 > 1.3.1：追平 sci-box 信息架构 —— 字重层级制取代全字加粗（§4.5）、
 > 两段式富文本卡（`figkit.rich_box` / drawio `rich_card`）、编号徽章/竖排标签/
 > 结论脚注条零件、连线降重（1.3/小箭头头）、描边增 card=1.0 档、
@@ -21,20 +23,7 @@
 `npg` / `aaas` / `lancet` / `nejm`（后四套为 1.1.0 新增真期刊板，蒸馏自 ggsci 公开色值）。
 
 ### 1.2 中性色令牌（非语义灰）
-**禁止硬编码灰色系**，一律 `figkit.load_neutral(name)`：
-
-| 令牌 | 色值 | 用途 |
-|---|---|---|
-| `ink` | #1F2A36 | 标题/正文主文字（近黑深蓝灰，比纯黑柔和） |
-| `secondary` | #46535F | 次级文字、注释、轴标签 |
-| `faint` | #8A97A3 | 弱化文字、水印级说明 |
-| `grid` | #D9DEE4 | 数据图网格线 |
-| `edge` | #C7D3DE | 卡片/节点盒描边 |
-| `edge_strong` | #A9BDD0 | 节点盒强调描边 |
-| `arrow` | #6B7B8C | 示意图连接箭头/参考线 |
-| `panel_bg` | #F5F7FA | 面板/泳道浅底色 |
-| `hairline` | #E8ECF0 | 分隔细线 |
-| `white` | #FFFFFF | 卡片底 |
+**禁止硬编码灰色系**，一律 `figkit.load_neutral(name)`。NEUTRALS 十行令牌表（ink/secondary/faint/grid/edge/edge_strong/arrow/panel_bg/hairline/white 的色值与用途）唯一权威源是 `references/color_typology.md` §2.2，本文件不维护色值副本（v2.8.0 起删除逐字双份，避免加色时分裂）。
 
 ### 1.3 浅化/深化
 一律 `palettes.tint(color, f)`（向白）/ `palettes.shade(color, f)`（向黑），
@@ -192,13 +181,13 @@ figkit 同签名转发）。
   度量判溢出（`drawio_check.py`），两层互补。
 
 **⑦ 版式门禁（drawio）**
-`finalize()` 落盘后自动跑 `drawio/drawio_check.py`：文字溢出/越界/重复 id/
+`finalize()` 落盘后自动跑 `templates/figures/scripts/drawio/drawio_check.py`：文字溢出/越界/重复 id/
 实心盒重叠（>30% 小盒面积）/连线穿盒/位图内嵌 = **FAIL（退出码 1）**；
 端点压边/疑似空盒/字号 >4 档/填充色发散 = WARN；1.3.1 起 WARN 新增三个
 **平庸信号**：全字加粗（>90% 文字元素加粗）、实心盒 >20（密度超预算）、
 连线描边 >2.0。
 `MATHMODEL_DRAWIO_CHECK=0` 关闭，`MATHMODEL_DRAWIO_STRICT=1` 时 WARN 也失败。
-也可手动体检任意文件：`python drawio/drawio_check.py <file> [--strict]`。
+也可手动体检任意文件：`python templates/figures/scripts/drawio/drawio_check.py <file> [--strict]`（仓库根运行）。
 机器体检通过后仍须**看渲染图**做九区盘点（`figure_skill_bridge.md` §3.5）：
 机器查得出硬伤，查不出平庸。
 

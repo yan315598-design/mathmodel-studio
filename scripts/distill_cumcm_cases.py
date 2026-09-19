@@ -399,7 +399,10 @@ def main() -> int:
     index = {"schema_version": "1.0", "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
              "competition": "cumcm", "cases": cases}
     (cases_dir / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=2), encoding="utf-8")
-    (knowledge / "case_library.md").write_text(render_case_library(cases), encoding="utf-8")
+    # v2.8.0: 案例人读视图属维护资产，写入 maintenance/cumcm/（与已移入该目录的 case_library.md 对齐）
+    maintenance_dir = Path(__file__).resolve().parents[1] / "maintenance" / "cumcm"
+    maintenance_dir.mkdir(parents=True, exist_ok=True)
+    (maintenance_dir / "case_library.md").write_text(render_case_library(cases), encoding="utf-8")
     (knowledge / "source_manifest.json").write_text(
         json.dumps(compact_source_manifest(corpus), ensure_ascii=False, indent=2), encoding="utf-8"
     )

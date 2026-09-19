@@ -28,6 +28,12 @@ check_gate.py — 阶段推进门禁脚本 (v2.3.0)
     figure_menu.Q<n> / qi_verdict.Q<n> / per_qi_selection.Q<n>, 另接受裸组名
     per_qi_selection (按整体校验: 三来源对齐后逐问覆盖), 其余键业务 FAIL)
 3. 只读脚本: 绝不写 decision_log; 不提供任何跳过/绕过开关
+4. 评分时效软检查 (C5, 纯提示不拦截): --gate N 时取 stage N 相关评分
+   (gate 5 含 scores["5_per_qi"] 双路径) 的最新 ts, 与工作区产物目录
+   (results/ paper_workspace/ figures/, 扫描深度 <=2) 的最新文件 mtime 比较;
+   评分早于产物 mtime → notes 追加一行 "[提示] stage N 评分时间戳早于产物
+   最新 mtime, 建议复评 (不阻断)"。无评分时间戳或产物目录全缺时跳过。
+   工作区根 = decision_log 所在 state 目录的上一级; 不改变任何放行/拦截语义。
 
 退出码: 0 = 放行; 1 = 拦截 (缺失项以中文清单列出); 2 = argparse 标准 CLI
 参数语法错误 (argparse 自身行为, 业务放行/拦截一律只返回 0/1)。
@@ -80,6 +86,10 @@ SCORE_ENTRY_REQUIRED_FIELDS = ("iteration", "scores", "min", "mean", "verdict", 
 
 # 答题义务台账状态 (候选版, modeling_evidence_protocol.md Stage 2)
 OBLIGATION_STATUS = ("unstarted", "partial", "verified")
+
+# 评分时效软检查 (C5): stage 产物目录白名单与 mtime 扫描深度上限 (避免全盘扫)
+ARTIFACT_DIRS = ("results", "paper_workspace", "figures")
+ARTIFACT_SCAN_DEPTH = 2
 
 
 def resolve_decision_log_path(cli_arg: str = None) -> Path:
@@ -252,9 +262,96 @@ def validate_score_entries(entries, per_qi: bool = False) -> list:
     return problems
 
 
-def check_gate(log: dict, gate: int) -> dict:
+def _max_artifact_mtime(workspace: Path, max_depth: int = ARTIFACT_SCAN_DEPTH):
+    """扫描 workspace 下三个产物目录 (results/paper_workspace/figures) 的最新文件 mtime。
+
+    只下钻到产物目录下第 max_depth 层 (目录本身为第 0 层, 直接子文件为第 1 层),
+    避免全盘扫描。Returns (mtime_epoch, Path); 目录全缺/全空返回 (None, None)。
+    """
+    best_mtime, best_path = None, None
+    for name in ARTIFACT_DIRS:
+        root = workspace / name
+        if not root.is_dir():
+            continue
+        base_parts = len(root.parts)
+        for dirpath, dirnames, filenames in os.walk(root):
+            depth = len(Path(dirpath).parts) - base_parts
+            if depth >= max_depth:
+                dirnames[:] = []  # 深度封顶, 不再下钻
+                continue  # 该层文件深度 = depth+1 > max_depth, 不参与比较
+            for filename in filenames:
+                path = Path(dirpath) / filename
+                try:
+                    mtime = path.stat().st_mtime
+                except OSError:
+                    continue
+                if best_mtime is None or mtime > best_mtime:
+                    best_mtime, best_path = mtime, path
+    return best_mtime, best_path
+
+
+def _parse_ts(text):
+    """评分 ts 字符串 → aware datetime; 非字符串/不可解析返回 None (naive 按本地时区补全)。"""
+    if not isinstance(text, str) or not text.strip():
+        return None
+    try:
+        dt = datetime.fromisoformat(text.strip().replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return dt.astimezone() if dt.tzinfo is None else dt
+
+
+def _latest_score_dt(log: dict, gate: int):
+    """stage N 相关评分 (gate 5 含 scores['5_per_qi'] 双路径) 的最新时间戳; 无则 None。"""
+    scores = log.get("scores")
+    if not isinstance(scores, dict):
+        return None
+    keys = [str(gate)] + (["5_per_qi"] if gate == 5 else [])
+    best = None
+    for key in keys:
+        entries = scores.get(key)
+        if not isinstance(entries, list):
+            continue
+        for entry in entries:
+            if not isinstance(entry, dict):
+                continue
+            dt = _parse_ts(entry.get("ts"))
+            if dt is not None and (best is None or dt > best):
+                best = dt
+    return best
+
+
+def score_freshness_note(log: dict, gate: int, workspace):
+    """评分时效软检查 (C5): stage N 最新评分时间戳早于产物目录最新 mtime → 返回提示文本, 否则 None。
+
+    纯提示, 不改放行语义; 评分无时间戳 / 产物目录全缺 / workspace 未提供时跳过。
+    """
+    if workspace is None:
+        return None
+    workspace = Path(workspace)
+    latest_score = _latest_score_dt(log, gate)
+    if latest_score is None:
+        return None
+    mtime, path = _max_artifact_mtime(workspace)
+    if mtime is None:
+        return None
+    artifact_dt = datetime.fromtimestamp(mtime).astimezone()
+    if latest_score >= artifact_dt:
+        return None
+    try:
+        rel = path.relative_to(workspace).as_posix()
+    except ValueError:
+        rel = str(path)
+    return (f"stage {gate} 评分时间戳早于产物最新 mtime "
+            f"(最新评分 {latest_score.isoformat(timespec='seconds')} < {rel} @ "
+            f"{artifact_dt.isoformat(timespec='seconds')}), 建议复评 (不阻断)")
+
+
+def check_gate(log: dict, gate: int, workspace=None) -> dict:
     """
     检查 gate N 的放行条件。返回 {"pass": bool, "missing": [中文缺失项], "notes": [提示]}。
+
+    workspace (可选): 工作区根目录; 提供时追加评分时效软检查 (C5, 纯提示不拦截)。
     """
     missing = []
     notes = []
@@ -356,6 +453,11 @@ def check_gate(log: dict, gate: int) -> dict:
         ob_missing, ob_notes = _obligation_problems(log, gate)
         missing.extend(ob_missing)
         notes.extend(ob_notes)
+
+    # 4. 评分时效软检查 (C5, 纯提示不拦截): 评分 ts 早于产物目录最新 mtime → 建议复评
+    freshness = score_freshness_note(log, gate, workspace)
+    if freshness:
+        notes.append(freshness)
 
     return {"pass": not missing, "missing": missing, "notes": notes}
 
@@ -612,7 +714,10 @@ def main() -> int:
         result = check_checkpoint(log, args.checkpoint)
         return _emit(result, args, decision_log_path, "checkpoint")
 
-    result = check_gate(log, args.gate)
+    # 评分时效软检查的工作区根: state 目录的上一级 (state 名不符时保守取上一级)
+    state_dir = decision_log_path.parent
+    workspace = state_dir.parent if state_dir.name.lower() == "state" else state_dir
+    result = check_gate(log, args.gate, workspace)
     return _emit(result, args, decision_log_path, "gate")
 
 

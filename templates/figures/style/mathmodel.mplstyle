@@ -45,6 +45,15 @@ ytick.labelsize    : 9
 legend.fontsize    : 9
 legend.frameon     : False
 
+# --- 图内数学字体正斜开关 (B4, v3.1.0) ---
+# 默认 = 现行为: 图内数学符号斜体(与 golden 样张一致), 本行不启用。
+# 全文公式拍板"全局正体"时 (cn_presentation_spec.md §5.6), 图内必须同步正体——
+# 正文正体而图内斜体是排查成本最高的图文不一致。开启方式二选一:
+#   1. figkit.apply_style(upright_math=True)   ← 推荐: 脚本内显式声明
+#   2. 取消下面一行的注释
+# 开启后在设计卡第 ④ 要素注明"图内正体, 与正文 §5.6 一致"。
+# mathtext.default : regular
+
 # --- 画布与输出: 屏显轻量, 落盘 300dpi 紧边距 ---
 figure.dpi         : 110
 figure.figsize     : 7.2, 4.5

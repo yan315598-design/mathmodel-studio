@@ -65,6 +65,10 @@
   columns=flexible,
 }
 
+% ---- pandoc 3.x 输出兼容（T-01 修复）----
+\providecommand{\pandocbounded}[1]{#1}  % pandoc 3 给未指定宽度图片的包壳
+\usepackage{array}   \usepackage{calc}  % pandoc longtable 列格式依赖
+
 \begin{document}
 
 % ============================================================

@@ -139,9 +139,9 @@ python <skill>/scripts/package_submission.py --competition <comp>   # dry-run; �
 
 ## 格式
 
-- 中文赛用 GB/T 7714, 具体格式模板与范例指向 `competitions/<comp>/distilled_formats.md`（已有该文件的竞赛: cumcm / huaweibei / huashubei / apmcm; mcm / diangong 无此文件, 直接按 GB/T 7714 与当年通知执行）。
+- 中文赛用 GB/T 7714, 具体格式模板与范例指向 `competitions/<comp>/distilled_formats.md`（已有该文件的竞赛: huaweibei / huashubei / apmcm; cumcm 的 distilled_formats 已废止, 呈现格式以 `references/cn_presentation_spec.md` 为准; mcm / diangong 无此文件, 直接按 GB/T 7714 与当年通知执行）。
 - 英文赛（mcm）按当年赛题说明的引用风格, 无要求时用编号制。
-- 单条格式化可交给 `nature-citation` 核验, 但格式基准以 distilled_formats.md 为准。
+- 单条格式化可交给 `nature-citation` 核验, 但格式基准以 distilled_formats.md 为准（cumcm 以 `references/cn_presentation_spec.md` 为准）。
 
 ---
 

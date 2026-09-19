@@ -68,7 +68,9 @@ rm -rf evals/holdout_index
 
 剔除索引只挡住"检索"这一条泄漏路径, 以下残余泄漏源必须在评测报告里如实声明:
 
-1. **蒸馏结论残留**: `competitions/huaweibei/distilled_*.md`、`star_papers_deep.md`
+1. **蒸馏结论残留**: `competitions/huaweibei/distilled_*.md`、
+   `competitions/huaweibei/papers/manual_paper_reviews.json`（12 + 21 篇逐篇深读条目;
+   其展开的人读总稿属维护期本地材料, 不随公开分发包发布）
    等文档是全届语料蒸馏产物, 可能包含 2024 题的方法论片段。评测时若 agent 读到
    这些文件, 属于轻度泄漏 (迁移的是模式而非数值, 与实战条件一致), 报告中注明即可。
 2. **empirical 校准锚点**: `empirical.json` 的分位数含 2024 论文统计, 会进入

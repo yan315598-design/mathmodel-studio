@@ -101,6 +101,59 @@ class ClaimConsistencyTest(unittest.TestCase):
         self.assertIn("0.9876", warns[0]["detail"])
         self.assertNotIn("0.9896", warns[0]["detail"])
 
+    def test_display_math_constants_exempt_from_untraceable(self):
+        """T-09 回归: 只出现在 display-math 内的公式常数 (-0.89/2450/12.66) 不进 warn。"""
+        _write(self.draft / "sec.md",
+               "标定常数见下式：\n$$\nL_0 = 12.66, \\quad \\alpha = -0.89\n$$\n"
+               "对照算例潜热取\n\\begin{equation}\nr = 2450 \\times q\n\\end{equation}\n")
+        _write(self.results / "q1.json", json.dumps({"objective": 123}))
+        report = check_claims(self.draft, self.results)
+        self.assertEqual([], [f for f in report["findings"] if f["rule"] == "untraceable_number"])
+        infos = [f for f in report["findings"] if f["rule"] == "display_math_constant"]
+        self.assertEqual(1, len(infos))
+        self.assertEqual("info", infos[0]["level"])
+        for tok in ("12.66", "-0.89", "2450"):
+            self.assertIn(tok, infos[0]["detail"])
+
+    def test_display_math_number_also_in_prose_still_checked(self):
+        """display-math 与正文都出现的数字仍是正文主张, 不豁免。"""
+        _write(self.draft / "sec.md",
+               "$$\nL_0 = 12.66\n$$\n经验算 L_0 = 12.66，与实测吻合。\n")
+        _write(self.results / "q1.json", json.dumps({"objective": 1}))
+        report = check_claims(self.draft, self.results)
+        warns = [f for f in report["findings"] if f["rule"] == "untraceable_number"]
+        self.assertEqual(1, len(warns))
+        self.assertIn("12.66", warns[0]["detail"])
+
+    def test_scientific_notation_unicode_matched(self):
+        """T-09 回归: 正文 2.30×10⁻¹³ 与结果 2.3e-13 等价匹配, 不进 warn。"""
+        _write(self.draft / "sec.md", "残差范数量级为 2.30×10⁻¹³，量级稳定。\n")
+        _write(self.results / "q1.json", json.dumps({"residual_norm": 2.3e-13}))
+        report = check_claims(self.draft, self.results)
+        self.assertEqual([], [f for f in report["findings"] if f["rule"] == "untraceable_number"])
+        infos = [f for f in report["findings"] if f["rule"] == "sci_notation_matched"]
+        self.assertEqual(1, len(infos))
+        self.assertEqual("info", infos[0]["level"])
+
+    def test_scientific_notation_tex_form_matched(self):
+        """T-09 回归: tex 写法 2.30\\times10^{-13} 同样等价匹配 (行内 $..$ 属正文)。"""
+        _write(self.draft / "sec.tex",
+               "误差量级为 $2.30\\times10^{-13}$，满足精度要求。\n")
+        _write(self.results / "q1.json", json.dumps({"residual_norm": 0.0000000000002303}))
+        report = check_claims(self.draft, self.results)
+        self.assertEqual([], [f for f in report["findings"] if f["rule"] == "untraceable_number"])
+        infos = [f for f in report["findings"] if f["rule"] == "sci_notation_matched"]
+        self.assertEqual(1, len(infos))
+
+    def test_scientific_notation_unmatched_still_warns(self):
+        """科学记数法降噪不吞真问题: 结果里没有同值量级仍进 warn。"""
+        _write(self.draft / "sec.md", "残差范数量级为 2.30×10⁻¹³，量级稳定。\n")
+        _write(self.results / "q1.json", json.dumps({"residual_norm": 0.05}))
+        report = check_claims(self.draft, self.results)
+        warns = [f for f in report["findings"] if f["rule"] == "untraceable_number"]
+        self.assertEqual(1, len(warns))
+        self.assertIn("2.30×10^-13", warns[0]["detail"])
+
     def test_number_percent_form_traced(self):
         """百分数口径可互认: 正文 98.96% 对应结果 0.9896。"""
         _write(self.draft / "sec.md", "宏 F1 为 98.96%。\n")

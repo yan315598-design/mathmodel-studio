@@ -48,6 +48,7 @@ from figkit import (
     apply_style,
     get_cmap,
     load_neutral,
+    restore_style_on_error,
     save_fig,
 )
 
@@ -85,11 +86,15 @@ def _text_color_for(rgba: tuple) -> str:
     return load_neutral("ink") if luma > LUMA_THRESHOLD else "white"
 
 
+@restore_style_on_error
 def plot_confusion_matrix(
     matrix: np.ndarray,
     class_names: list[str],
     title: str | None = None,
     out_prefix: str | None = None,
+    xlabel: str = "预测类别",
+    ylabel: str = "真实类别",
+    cbar_label: str = "召回率（行归一化）",
 ) -> list[str]:
     """绘制美化混淆矩阵并三格式导出, 返回写出路径列表。
 
@@ -99,6 +104,9 @@ def plot_confusion_matrix(
         title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
             保留参数仅为兼容旧调用, 不再渲染; 总体准确率等结论也一并移出图内。
         out_prefix: 输出前缀(不带扩展名); None 时写系统临时目录。
+        xlabel/ylabel: 列/行轴名（3.0.1 参数化, 默认"预测类别"/"真实类别";
+            英文赛或非分类场景可改写）。
+        cbar_label: 色条名（3.0.1 参数化, 默认按行归一化召回率口径）。
 
     Raises:
         ValueError: 矩阵非方阵/形状与类别数不齐/含负数或非整数/全零。
@@ -137,8 +145,8 @@ def plot_confusion_matrix(
 
     ax.set_xticks(range(n), class_names)
     ax.set_yticks(range(n), class_names)
-    ax.set_xlabel("预测类别")
-    ax.set_ylabel("真实类别")
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
     for spine in ax.spines.values():
         spine.set_visible(False)
     ax.tick_params(length=0)
@@ -146,7 +154,7 @@ def plot_confusion_matrix(
     # 1.4.1 图题纪律: 图名与"总体准确率"等结论写进论文 caption, 不入图内
 
     cbar = fig.colorbar(im, ax=ax, shrink=0.82, pad=0.03)
-    cbar.set_label("召回率（行归一化）", fontsize=9)
+    cbar.set_label(cbar_label, fontsize=9)
     cbar.ax.tick_params(labelsize=8)
     cbar.outline.set_edgecolor(load_neutral("edge"))
 

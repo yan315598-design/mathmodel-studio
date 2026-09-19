@@ -2,7 +2,7 @@
 
 > **此目录数据为种子版本 (seed_v0.1), 未做真 PDF 烘焙。**
 > 阈值取自 COMAP 公开 scoring rubric + 已发表 MCM 备赛教材共识。
-> 后续若提交 30+ 篇 Outstanding Winner PDF, 可用 `scripts/ingest_papers.py` 重新烘焙覆盖。
+> 历史流程已退役：`scripts/legacy/ingest_papers.py` 的烘焙产物仅保留复核用，不得再生成统计真值；脚本已移入 scripts/legacy/（v2.8.0）。
 
 ## 数据缺口提示
 
@@ -29,4 +29,4 @@ CUMCM 现只保留有完整覆盖的可靠指标；本目录仍是手工 seed �
 
 1. **优先使用模式定性**: `winning_patterns.md` 列的 Outstanding 共性是更可靠的 anchor
 2. **数值阈值仅作参考**: L1 critic 见到 `seed` 标记后弱化数值评判, 强化模式匹配
-3. **若用户能提供历年 Outstanding 论文**: 跑 `scripts/ingest_papers.py --competition mcm`, 覆盖本 JSON
+3. **若用户能提供历年 Outstanding 论文**: 不再跑 `scripts/ingest_papers.py --competition mcm` 烘焙覆盖（历史流程已退役，产物仅保留复核用，不得再生成统计真值；脚本已移入 scripts/legacy/（v2.8.0）），按本文件口径人工重建 empirical.json

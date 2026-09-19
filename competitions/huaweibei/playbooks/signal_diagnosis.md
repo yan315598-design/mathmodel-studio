@@ -1,6 +1,6 @@
 # 信号诊断域 Playbook
 
-证据锚点约定：**论文深读** = `papers/manual_paper_reviews.json` 信号诊断域 3 篇（`papers[26]`–`papers[28]`，2025 E 题，域级索引入口 `papers/domain_index.md`）；优秀论文 vs 我方工作区的对照差距归纳为内部审计产物，分发版不含。**我方实验第 N 轮** = E 题五轮 A/B 对比报告为内部审计产物，分发版不含，已固化结论经 **机制记录** = `../cases/mechanism_reviews.json` 入库（已入库条目附 id）。风险语言对齐 `../distilled_modeling.md`：本域为八类外新增域，近邻风险是高维预测的类别不平衡与数据泄漏、时空外推的工况外推。
+证据锚点约定：**论文深读** = `../papers/manual_paper_reviews.json` 信号诊断域 3 篇（`papers[26]`–`papers[28]`，2025 E 题，域级索引入口 `../papers/domain_index.md`）；优秀论文 vs 我方工作区的对照差距归纳为内部审计产物，分发版不含。**我方实验第 N 轮** = E 题五轮 A/B 对比报告为内部审计产物，分发版不含，已固化结论经 **机制记录** = `../cases/mechanism_reviews.json` 入库（已入库条目附 id）。风险语言对齐 `../distilled_modeling.md`：本域为八类外新增域，近邻风险是高维预测的类别不平衡与数据泄漏、时空外推的工况外推。
 
 ## 触发条件
 

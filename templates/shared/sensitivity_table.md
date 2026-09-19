@@ -40,7 +40,7 @@
 - **图 2: Tornado** (单参数 Sobol $S_1$ 与 $S_T$ 对比)
 - **图 3 (championship): 失稳预警曲线** (临界参数变化 vs Hamming 距)
 
-实现代码 (LHS 采样 + Sobol + 绘图): 见 `templates/code_starter/simulation.py` (本文不重复)。
+实现代码 (LHS 采样 + Sobol + 绘图): 见 `templates/shared/code_starter/simulation.py` (本文不重复)。
 
 ---
 

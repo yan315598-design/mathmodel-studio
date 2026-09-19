@@ -50,6 +50,7 @@ from figkit import (
     apply_style,
     load_neutral,
     load_palette,
+    restore_style_on_error,
     save_fig,
 )
 
@@ -69,6 +70,7 @@ def _check_finite(values, label: str) -> None:
             raise ValueError(f"{label} 含非有限数值或非数值: {v!r}")
 
 
+@restore_style_on_error
 def plot_radar(
     data: dict[str, list[float]],
     labels: list[str],

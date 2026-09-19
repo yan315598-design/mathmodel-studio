@@ -53,6 +53,7 @@ from figkit import (
     apply_style,
     get_cmap,
     load_neutral,
+    restore_style_on_error,
     save_fig,
 )
 
@@ -80,12 +81,14 @@ def _demo_data() -> tuple[np.ndarray, list[str], list[str]]:
     return values, samples, metrics
 
 
+@restore_style_on_error
 def plot_circular_heatmap(
     values: np.ndarray,
     sample_names: list[str],
     metric_names: list[str],
     title: str | None = None,
     out_prefix: str | None = None,
+    cbar_label: str = "归一化得分",
 ) -> list[str]:
     """绘制环形热图并三格式导出, 返回写出路径列表。
 
@@ -96,6 +99,8 @@ def plot_circular_heatmap(
         title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
             保留参数仅为兼容旧调用, 不再渲染。
         out_prefix: 输出前缀(不带扩展名); None 时写系统临时目录。
+        cbar_label: 色条名（3.0.1 参数化, 默认"归一化得分"; 列内 min-max
+            归一化口径, 指标带物理量纲时改写）。
 
     Raises:
         ValueError: 矩阵非二维/行列数与名字数不齐/元素非有限。
@@ -152,7 +157,7 @@ def plot_circular_heatmap(
     # 色标: figure 级 colorbar 放右侧
     sm = ScalarMappable(norm=Normalize(0.0, 1.0), cmap=cmap)
     cbar = fig.colorbar(sm, ax=ax, pad=0.14, fraction=0.05)
-    cbar.set_label("归一化得分", fontsize=9)
+    cbar.set_label(cbar_label, fontsize=9)
     cbar.ax.tick_params(labelsize=8)
     cbar.outline.set_edgecolor(load_neutral("edge"))
 

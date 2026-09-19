@@ -77,59 +77,9 @@
 
 ---
 
-## 启动协议 (与 SKILL.md "Quick Start" 等价)
+## 启动协议 (强制读取 SKILL.md "Quick Start")
 
-用户说"开始建模"/"打研究生赛"/"华为杯"/"华数杯"/"打 cumcm"/"打 mcm"/"打电工杯"/"打亚太杯"时:
-
-1. **一段话自我介绍** (≤50 字): "启动数学建模工作台, 10 阶段 + 多竞赛, 全程编号菜单."
-
-2. **先给工作台菜单** (`references/codex_practical_menu.md`):
-
-```text
-【需要你选择: 当前要做什么】
-
-  1) 完整建模流程 — 从 Stage 0 开始
-  2) 比较 A/B/C 题 — 进入选题矩阵
-  3) 局部任务工作台 — 写作、摘要、图表规划与生成、终审检查
-  4) 模型选型建议 — 每一问给候选模型与算法、依据、文献来源和失效边界, 由你拍板
-  5) 继续已有进度 — 读取 state/decision_log.json
-
-回复数字 (1-5)。
-```
-
-3. 用户选择 `1` 后, **一次性提 5 个问题** (Codex: 编号菜单和短输入项; Claude Code: 单条 AskUserQuestion):
-   - Q1 竞赛 (huaweibei/huashubei/cumcm，或进入其他竞赛子菜单；默认按上下文，否则 cumcm)
-   - Q2 题号 (huaweibei A-F / huashubei A-C / cumcm A-E / mcm A-F / diangong A-B / apmcm A-C / 未公布)
-   - Q3 队员数 + 各人擅长 (建模/编程/写作)
-   - Q4 截止时间 (ISO 字符串或"距现在 X 小时")
-   - Q5 题目 PDF 路径 ("未公布"亦可)
-
-Codex 首屏模板:
-
-```text
-启动数学建模工作流, 10 阶段 + 多竞赛, 全程问答式。
-
-【需要你选择: Q1 竞赛】
-
-  1) huaweibei 研究生赛（华为杯）— 中文, A-F，题号不固定映射题型
-  2) huashubei 华数杯 — 中文, A-C
-  3) cumcm 国赛 — 中文, A-E
-  4) 其他竞赛 — 继续选择 mcm / diangong / apmcm
-  5) 让我决定 — 按上下文判断，否则暂按 cumcm 建立 state
-
-Q2 题号: 回复 A/B/C/... 或"未公布"。
-Q3 队员: 回复人数和各人擅长。
-Q4 截止时间: 回复具体时间或"距现在 X 小时"。
-Q5 题目 PDF 路径: 回复路径或"未公布"。
-```
-
-4. 自动初始化:
-   - 若 `cwd/state/decision_log.json` 不存在: 从 `templates/shared/decision_log.json` 拷贝
-   - 写入 `decision_log.competition` = Q1 答案
-   - 已存在: 读 `current_stage` 决定恢复点
-
-5. 加载 `competitions/<comp>/winning_patterns.md` 一次, 后续不再重复读
-6. 进入 Stage 0 (`references/stage_00_kickoff.md`)
+用户说"开始建模"/"打研究生赛"/"华为杯"/"华数杯"/"打 cumcm"/"打 mcm"/"打电工杯"/"打亚太杯"时, **必须先读 `SKILL.md` 的 "Quick Start" 节并按其执行**——一段话介绍、工作台菜单（`references/codex_practical_menu.md`）、一次性 5 问、state 自动初始化、进 Stage 0 的完整步骤与首屏模板都在那里。本文件不再复述该流程（v2.8.0 起指针化，消除与 SKILL.md 的双份维护漂移）。Codex 侧唯一补充: 5 问与所有决策点一律用 Markdown 编号菜单呈现（见上文"问答式协议"）。
 
 > Codex 安装建议 (0.6.0 起): 作为 skill 使用时, 目录应位于 `$HOME/.agents/skills/mathmodel-studio/` 或 `<repo>/.agents/skills/mathmodel-studio/`; 作为 plugin 分发时, `.codex-plugin/plugin.json` 会声明该目录包含 skill。
 
@@ -139,7 +89,7 @@ Q5 题目 PDF 路径: 回复路径或"未公布"。
 
 | 类型 | 位置 | 例 |
 |------|------|-----|
-| skill 内通用 | `<skill>/references/`, `<skill>/templates/shared/` | `references/stage_05.md` |
+| skill 内通用 | `<skill>/references/`, `<skill>/templates/shared/` | `references/stage_05_subproblem_loop.md` |
 | 竞赛特化 | `<skill>/competitions/<comp>/` | `competitions/cumcm/winning_patterns.md` |
 | LaTeX 模板 | `<skill>/templates/latex/<comp>/` | `templates/latex/cumcm/main.tex` |
 | 用户产物 | `<cwd>/state/`, `<cwd>/results/`, `<cwd>/figures/`, `<cwd>/paper_workspace/` | `cwd/state/decision_log.json` |

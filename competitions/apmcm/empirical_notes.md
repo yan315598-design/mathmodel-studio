@@ -1,6 +1,6 @@
 # APMCM 实测分位说明
 
-本文件对应 `empirical.json`，由 `tools/build_apmcm_pack.py` 从用户本地优秀论文 PDF 自动抽取。
+本文件对应 `empirical.json`，由用户本地一次性脚本从 12 篇优秀论文 PDF 自动抽取（抽取脚本未随 skill 分发，仓库内无 tools/ 目录）。
 
 ## 样本
 

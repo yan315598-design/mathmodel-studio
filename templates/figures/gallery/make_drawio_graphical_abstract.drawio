@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="mathmodel-studio" type="device">
+  <diagram id="drawio-page-1" name="作战地图">
+    <mxGraphModel dx="1000" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1220" pageHeight="592" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="作战地图：三问题一页总览" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;rounded=0;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=16;fontColor=#1F2A36;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="14" width="1140" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="band1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EEF6FD;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="56" width="1140" height="136" as="geometry" />
+        </mxCell>
+        <mxCell id="band1_header" value="问题一&lt;br&gt;板材干燥温度&lt;br&gt;场如何演化" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#4060B0;strokeColor=#2C4488;strokeWidth=1.2;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=12;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="48" y="64" width="190" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="band1_method1" value="&lt;b&gt;PDE 热传导模型&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EEF6FD;strokeColor=#3B547F;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="246" y="64" width="287" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="band1_method2" value="&lt;b&gt;有限体积离散&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EEF6FD;strokeColor=#3B547F;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="549" y="64" width="287" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="band1_result" value="&lt;b&gt;温度场演化规律&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot; color=&quot;#46535F&quot;&gt;最大误差 0.8 °C&lt;/font&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EEF6FD;strokeColor=#3B547F;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="852" y="64" width="320" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="band1_thumb" value="缩略图占位: F1_temp_field.png（精修时嵌入真实结果）" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#EEF6FD;strokeColor=#3B547F;strokeWidth=1;dashed=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#262626;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="246" y="132" width="926" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="band2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FCEAD9;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="236" width="1140" height="136" as="geometry" />
+        </mxCell>
+        <mxCell id="band2_header" value="问题二&lt;br&gt;含水率何时形成干壳" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#D06818;strokeColor=#A04E10;strokeWidth=1.2;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=12;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="48" y="244" width="190" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="band2_method1" value="&lt;b&gt;耦合扩散模型&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FCEAD9;strokeColor=#C08B5C;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="246" y="244" width="287" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="band2_method2" value="&lt;b&gt;Crank-Nicolson 求解&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FCEAD9;strokeColor=#C08B5C;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="549" y="244" width="287" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="band2_result" value="&lt;b&gt;干壳形成时刻&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot; color=&quot;#46535F&quot;&gt;t* = 2.4 h&lt;/font&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FCEAD9;strokeColor=#C08B5C;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="852" y="244" width="320" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="band2_thumb" value="缩略图占位: Q2_C1_stages.png（精修时嵌入真实结果）" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FCEAD9;strokeColor=#C08B5C;strokeWidth=1;dashed=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#262626;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="246" y="312" width="926" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="band3" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DBEEF4;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="416" width="1140" height="136" as="geometry" />
+        </mxCell>
+        <mxCell id="band3_header" value="问题三/四&lt;br&gt;工艺参数如&lt;br&gt;何反演优化" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#1F6F6F;strokeColor=#14504F;strokeWidth=1.2;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=12;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="48" y="424" width="190" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="band3_method1" value="&lt;b&gt;阈值穿越反演&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#DBEEF4;strokeColor=#668D89;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="246" y="424" width="287" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="band3_method2" value="&lt;b&gt;网格收敛验证&lt;/b&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#DBEEF4;strokeColor=#668D89;strokeWidth=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="549" y="424" width="287" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="band3_result" value="&lt;b&gt;最优工艺参数窗口&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot; color=&quot;#46535F&quot;&gt;λ ∈ [0.42, 0.58]&lt;/font&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#BAE2E4;strokeColor=#668D89;strokeWidth=2;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=10.5;fontColor=#262626;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="852" y="424" width="320" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="band3_thumb" value="缩略图占位: Q34_C1_gridconv.png（精修时嵌入真实结果）" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#DBEEF4;strokeColor=#668D89;strokeWidth=1;dashed=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#262626;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="246" y="492" width="926" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_band1__band2_1" value="输出温度场 → 驱动水分迁移" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#7B5530;strokeWidth=1.6;endArrow=block;endFill=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="band1" target="band2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_band2__band3_2" value="输出临界判据 → 反演工艺窗口" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;strokeColor=#5F8484;strokeWidth=1.6;endArrow=block;endFill=1;fontFamily=Microsoft YaHei,PingFang SC,Hiragino Sans GB,Helvetica;fontSize=9;fontColor=#46535F;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="band2" target="band3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

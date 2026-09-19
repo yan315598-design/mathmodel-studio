@@ -20,8 +20,6 @@
 | `cases/index.json` | 25 个案例的基础结构化索引 | Stage 1—5 |
 | `cases/manual_review_annotations.json` | 25 题、64 篇论文的人工复核覆盖层 | Stage 1/3/5/8 |
 | `cases/annotations.json` | 可重建的人工深度标注 | 维护期 |
-| `case_library.md` | 案例人读视图 | 人工复核 |
-| `all_cases_manual_audit.md` | 人工复核的人读总表 | 人工审计 |
 | `distilled_modeling.md` | 九类内容型建模范式 | Stage 3/5 |
 | `distilled_figures.md` | 图表证据组合 | Stage 5/8 |
 | `winning_patterns.md` | 高质量论文原则 | Stage 8 |
@@ -29,7 +27,9 @@
 | `rubric_overlay.json` | CUMCM 评分与来源审计要求 | Stage 3/8/9 |
 | `source_manifest.json` | 来源、哈希、状态和排除理由 | 审计 |
 
-`distilled_phrases.md`、`distilled_naming.md`、`distilled_structures.md` 和 `distilled_formats.md` 属于旧写作辅助层；其中任何旧定量表述都不得覆盖 `empirical.json` 和 `winning_patterns.md` 的新规则。
+案例人读视图 `case_library.md`（由 `scripts/distill_cumcm_cases.py` 重建时写出）与人工复核总表 `all_cases_manual_audit.md` 属**维护期本地材料**（v2.8.0 起从本目录迁出运行路径，落在维护方本地的 maintenance 语料目录）：只在维护工作副本里存在，**不随公开分发包发布**，公开包里没有这两个文件。公开包内可用的对应内容是 `cases/index.json`（25 题结构化索引）与 `cases/manual_review_annotations.json`（25 题、64 篇论文的人工复核覆盖层）——运行时检索只读这两份，不依赖本地维护材料。
+
+旧写作辅助层 `distilled_phrases.md`、`distilled_structures.md`、`distilled_formats.md` 已废止并整体归档至 `docs/legacy/cumcm/`（v2.8.0），不再出现在本目录；其中任何旧定量表述都不得覆盖 `empirical.json` 和 `winning_patterns.md` 的新规则。（`distilled_naming.md` 已删除：修饰词命名不作质量要求，见 `references/rubrics.md` 对模型命名的解释。）
 
 ## 来源
 

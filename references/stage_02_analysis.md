@@ -194,11 +194,12 @@ Q3: max E_ξ [ Σ_i p_i * x_i - C(x) - λ * Var(...) ]
 **动作**:
 
 1. 每个子问题规划图表：数量由论证需要决定（每张须回答一个具体问题），不设总量配额。competition=huaweibei 时版面充裕，按 `competitions/huaweibei/distilled_figures.md` 的"版面与图量"节执行四层证据铺满（结构/机制/结果/可信边界）。
-2. 每张图在 `真源.md` 图表登记表 (`references/workspace_protocol.md` §2) 登记四要素:
+2. 每张图在 `真源.md` 图表登记表 (`references/workspace_protocol.md` §7) 登记四项 + 设计卡列（v3.0.0 起）:
    - **回答什么问题** (无论证价值的图不画)
    - **数据源** (`results/` 哪个文件或哪段中间状态)
    - **色板** — 取自 `templates/figures/style/palettes.py` 八套之一 (默认 academic_blue; 另有 1.1.0 期刊板 npg / aaas / lancet / nejm), 选用规则见 `references/color_typology.md`
-   - **类型** — 过程图 (机理 / 中间状态 / 算法行为) 还是结果图
+   - **类型** — 过程图 (机理 / 中间状态 / 算法行为) 还是结果图；**作战地图为每篇必选件**（整页 graphical abstract，stage 8 生成，规范见 `references/figure_skill_bridge.md` 图叙事章）
+   - **设计卡** — 生成前填写的五要素卡（回答什么问题/图型/证据层/注释预算/评委一眼所见），登记表填"已写"即可
 3. 信息密度导向: 每张图尽量承载多个信息维度 (如 对比+趋势 / 灵敏度+排序)，过程图与结果图搭配；不设数值硬指标。
 4. 规格 24h 后冻结; 变更须在 `真源.md` 修订记录登记 (时间/原因/影响)。
 

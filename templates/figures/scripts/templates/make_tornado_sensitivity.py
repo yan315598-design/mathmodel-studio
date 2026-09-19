@@ -46,6 +46,7 @@ from figkit import (
     apply_style,
     get_cmap,
     load_neutral,
+    restore_style_on_error,
     save_fig,
 )
 
@@ -67,11 +68,18 @@ def _check_finite(values, label: str) -> None:
             raise ValueError(f"{label} 含非有限数值或非数值: {v!r}")
 
 
+@restore_style_on_error
 def plot_tornado(
     params: list[tuple[str, float, float]],
     metric: str = "总成本",
     delta: float = 0.10,
     out_stem: str | None = None,
+    *,
+    label_fmt: "str | object" = "{:+.1%}",
+    axis_percent: bool = True,
+    xlabel: str | None = None,
+    legend_labels: tuple[str, str] | None = None,
+    figsize: tuple[float, float] | None = None,
 ) -> tuple[Path, Path]:
     """绘制龙卷风图并保存 PNG+SVG+PDF 三格式, 返回前两个输出路径。
 
@@ -80,6 +88,22 @@ def plot_tornado(
         metric: 被扰动的输出指标名（进 x 轴标签）。
         delta: 扰动幅度（进 x 轴标签文案）。
         out_stem: 输出文件前缀; None 时写系统临时目录。
+        label_fmt: 条端数值标签格式（仅限关键字）, 三种形态——① 完整格式模板
+            （默认 "{:+.1%}" 相对变化率口径，含 `{}` 占位符即按 str.format
+            填值, 占位符收**数值**变化率）;
+            ② 纯 format spec（如 "+.1%" 或 ".3f"，按 f-string 格式规格处理）;
+            ③ 单参数可调用对象（如绝对值口径 v: f"{v:+.2f} h"）。v3.1.0 参数化。
+        axis_percent: True 时 x 轴刻度按百分比格式化（PercentFormatter,
+            默认, 与相对变化率口径配套）; False 时回到默认数值刻度
+            （绝对量纲口径）; 3.0.1 参数化。**轴刻度与条端标签须同口径**:
+            条端走绝对量纲（label_fmt 用 ".3f" 等）时这里同步传 False。
+        xlabel: x 轴名全称覆盖; None 时保持默认组合文案
+            f"参数 ±{delta:.0%} 扰动下{metric}的相对变化"。
+        legend_labels: (负向图例文案, 正向图例文案); None 保持默认
+            （"负向影响（输出下降）"/"正向影响（输出上升）"）;
+            3.0.1 参数化（供注入基线等额外图例语义时改写）。
+        figsize: 画布尺寸; None 保持默认 (7.2, 4.5)（多参数行数多时
+            可传更高画布, 3.0.1 参数化）。
 
     Raises:
         ValueError: params 为空 / 行不是三元组 / 参数名为空 / 变化率非有限数值。
@@ -93,8 +117,15 @@ def plot_tornado(
         if not str(name).strip():
             raise ValueError(f"参数名不能为空: {row!r}")
         _check_finite((low, high), f"参数 {name!r} 的变化率")
+    if callable(label_fmt):
+        fmt_value = label_fmt
+    elif "{" in str(label_fmt):
+        # 完整格式模板（默认 "{:+.1%}"）: 用 str.format 填值
+        fmt_value = lambda v: str(label_fmt).format(v)  # noqa: E731
+    else:
+        # 纯 format spec（如 "+.1%"）: 走 f-string 格式规格
+        fmt_value = lambda v: f"{v:{label_fmt}}"  # noqa: E731 - format spec 字符串闭包
 
-    apply_style()
     import numpy as np
 
     # 按灵敏度（两向影响的最大绝对值）降序排列, 最敏感的参数放最上方
@@ -103,7 +134,24 @@ def plot_tornado(
     lows = np.array([r[1] for r in rows])
     highs = np.array([r[2] for r in rows])
 
-    fig, ax = plt.subplots(figsize=(7.2, 4.5))
+    # 标签预格式化（建图前完成, 审查要求）: 用**真实数据**逐个格式化并缓存——
+    #   ① 不留"试值成功、真值失败"的窗口, 也不留未关闭 Figure（畸形串
+    #      "{"/"{missing}"/"{1}" 曾抛在建图之后, Figure 进全局管理器泄漏）;
+    #   ② 不像固定试值那样误拒只对实际数据域有效的 callable
+    #      （如 lambda v: f"{math.log10(v):.2f}" 在负数试值上会 domain error）。
+    # 顺序要点: 本步在 apply_style() **之前**——格式串非法时连全局 rcParams
+    # 都不该动（第四轮审查实测: 先 apply_style 会让失败调用留下样式副作用）。
+    try:
+        labels_high = [fmt_value(float(v)) for v in highs]
+        labels_low = [fmt_value(float(v)) for v in lows]
+    except Exception as exc:  # noqa: BLE001 - 统一转成带指引的 ValueError
+        raise ValueError(
+            f"label_fmt 无法格式化条端数值: {label_fmt!r} ({exc!r}); "
+            f"请用完整模板 \"{{:+.1%}}\"、纯 spec \"+.1%\" 或单参数可调用对象"
+        ) from exc
+
+    apply_style()
+    fig, ax = plt.subplots(figsize=figsize or (7.2, 4.5))
     y = np.arange(len(rows))
     bar_h = 0.36
     cmap = matplotlib.colormaps[get_cmap("diverging")]  # 1.1.0: 发散色经语义出口
@@ -115,12 +163,12 @@ def plot_tornado(
     ax.barh(y - bar_h / 2, lows, height=bar_h, color=cmap(norm(lows)),
             edgecolor="white", linewidth=0.6)
 
-    # 条端数值标签: 放在远离零线一侧, 避免压条压线
+    # 条端数值标签: 放在远离零线一侧, 避免压条压线（文案用上面预格式化的结果）
     pad = vmax * 0.02
-    for yi, v in zip(y + bar_h / 2, highs):
-        ax.text(v + pad, yi, f"{v:+.1%}", va="center", ha="left", fontsize=9)
-    for yi, v in zip(y - bar_h / 2, lows):
-        ax.text(v - pad, yi, f"{v:+.1%}", va="center", ha="right", fontsize=9)
+    for yi, v, text in zip(y + bar_h / 2, highs, labels_high):
+        ax.text(v + pad, yi, text, va="center", ha="left", fontsize=9)
+    for yi, v, text in zip(y - bar_h / 2, lows, labels_low):
+        ax.text(v - pad, yi, text, va="center", ha="right", fontsize=9)
 
     ax.axvline(0.0, color=load_neutral("arrow"), linewidth=1.2)
     ax.set_yticks(y, names)
@@ -129,19 +177,23 @@ def plot_tornado(
     ax.xaxis.grid(True, color=load_neutral("grid"), alpha=0.45, linewidth=0.7)
     ax.yaxis.grid(False)
     ax.set_axisbelow(True)
-    from matplotlib.ticker import PercentFormatter
+    if axis_percent:
+        from matplotlib.ticker import PercentFormatter
 
-    ax.xaxis.set_major_formatter(PercentFormatter(xmax=1.0, decimals=0))
-    ax.set_xlabel(f"参数 ±{delta:.0%} 扰动下{metric}的相对变化")
+        ax.xaxis.set_major_formatter(PercentFormatter(xmax=1.0, decimals=0))
+    ax.set_xlabel(xlabel if xlabel is not None
+                  else f"参数 ±{delta:.0%} 扰动下{metric}的相对变化")
     # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
 
     # 语义图例: 颜色编码影响方向而非扰动方向
     from matplotlib.patches import Patch
 
+    neg_label, pos_label = legend_labels or ("负向影响（输出下降）",
+                                             "正向影响（输出上升）")
     ax.legend(
         handles=[
-            Patch(color=cmap(0.15), label="负向影响（输出下降）"),
-            Patch(color=cmap(0.85), label="正向影响（输出上升）"),
+            Patch(color=cmap(0.15), label=neg_label),
+            Patch(color=cmap(0.85), label=pos_label),
         ],
         loc="lower right",
         frameon=True,

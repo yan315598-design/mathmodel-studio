@@ -43,7 +43,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from figkit import (
     apply_style,
+    format_label,
     load_palette,
+    restore_style_on_error,
     save_fig,
     ygrid,
 )
@@ -65,12 +67,15 @@ def _check_finite(values, label: str) -> None:
             raise ValueError(f"{label} 含非有限数值或非数值: {v!r}")
 
 
+@restore_style_on_error
 def plot_robustness(
     scenarios: dict[str, list[float]],
     baseline: float,
     metric: str = "服务水平",
     mode: str = "box",
     out_stem: str | None = None,
+    *,
+    baseline_label: str | None = None,
 ) -> tuple[Path, Path]:
     """绘制多场景稳健性对比图并保存 PNG+SVG+PDF 三格式, 返回前两个输出路径。
 
@@ -80,10 +85,14 @@ def plot_robustness(
         metric: 指标名（进 y 轴标签）。
         mode: box=箱线图, violin=小提琴图。
         out_stem: 输出文件前缀; None 时写系统临时目录。
+        baseline_label: 基准参考线标注文案（仅限关键字; 3.0.1 参数化; None
+            保持默认 f"基准线 {baseline:.3f}", 传入 str 可用 {value} 占位符
+            引用基准值（占位符收**数值**, 可写 "合同承诺 {value:.1%}"）, 无
+            占位符则原样使用）。
 
     Raises:
         ValueError: scenarios 为空 / 某场景样本列表为空 / 样本或 baseline
-            非有限数值。
+            非有限数值 / baseline_label 模板畸形。
     """
     if not scenarios:
         raise ValueError("scenarios 不能为空: 至少提供一个场景")
@@ -92,6 +101,15 @@ def plot_robustness(
             raise ValueError(f"场景 {name!r} 的样本列表为空")
         _check_finite(samples, f"场景 {name!r} 样本")
     _check_finite((baseline,), "baseline")
+
+    # 基准线文案预填充（建图前完成）: 模板畸形必须在这里就抛 ValueError——
+    # 放到 ax.text 里抛会留下未关闭的 Figure（进全局管理器）且 apply_style()
+    # 已改过全局 rcParams。占位符收**数值**（不是预格式化字符串）: 传
+    # "合同承诺 {value:.1%}" 时由格式规格自己决定小数位; 先 f-string 再填值会让
+    # %.1% 报 "Unknown format code"。
+    baseline_text = (format_label(baseline_label, "baseline_label", value=baseline)
+                     if baseline_label is not None
+                     else f"基准线 {baseline:.3f}")
 
     apply_style()
     colors = load_palette("cool_nature")
@@ -133,7 +151,7 @@ def plot_robustness(
     ax.text(
         len(names) - 0.42,
         baseline + span * 0.025,
-        f"基准线 {baseline:.3f}",
+        baseline_text,
         color=red,
         ha="right",
         va="bottom",

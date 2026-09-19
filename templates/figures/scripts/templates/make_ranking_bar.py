@@ -49,6 +49,7 @@ from figkit import (
     apply_style,
     load_neutral,
     load_palette,
+    restore_style_on_error,
     save_fig,
 )
 
@@ -72,12 +73,15 @@ def _check_finite(values, label: str) -> None:
             raise ValueError(f"{label} 含非有限数值或非数值: {v!r}")
 
 
+@restore_style_on_error
 def plot_ranking(
     scores: dict[str, dict[str, float]],
     weights: dict[str, float],
     xlabel: str = "综合得分",
     title: str | None = None,
     out_stem: str | None = None,
+    *,
+    total_fmt: str = ".2f",
 ) -> tuple[Path, Path]:
     """绘制评价排序（权重分解堆叠）条形图并保存 PNG+SVG+PDF 三格式。
 
@@ -88,10 +92,13 @@ def plot_ranking(
         title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
             保留参数仅为兼容旧调用, 不再渲染。
         out_stem: 输出文件前缀; None 时写系统临时目录。
+        total_fmt: 条端总得分标签的格式规格（仅限关键字; Python format spec,
+            默认 ".2f"; 3.0.1 参数化——概率/百分比口径可传 ".3f"/".1%" 等。
+            非法规格在建图前抛 ValueError, 不留 Figure/rcParams 副作用）。
 
     Raises:
         ValueError: scores/weights 为空 / 指标集不一致 / 得分权重非负约束 /
-            名称含空串 / 数值非有限。
+            名称含空串 / 数值非有限 / total_fmt 非法。
     """
     if not scores:
         raise ValueError("scores 不能为空: 至少提供一个方案")
@@ -128,12 +135,13 @@ def plot_ranking(
     if len(inds) > 8:
         raise ValueError(f"指标数 {len(inds)} > 8, 堆叠段过多难辨认; 请合并同类指标")
 
-    apply_style()
+    # 每方案各段贡献 = w * score, 总得分 = 求和; 按总得分降序排条。
+    # 预计算放在建图前: total_fmt 非法必须在这里就抛 ValueError——等到循环里
+    # 的 ax.text 才抛会留下未关闭的 Figure（进全局管理器）且 apply_style() 已改
+    # 过全局 rcParams。格式规格作用于**数值**总得分（先 f-string 再填值会让
+    # "{:.2f}" 之类规格失效）。
     import numpy as np
 
-    colors = load_palette("academic_blue")
-
-    # 每方案各段贡献 = w * score, 总得分 = 求和; 按总得分降序排条
     contrib: dict[str, np.ndarray] = {}
     totals: dict[str, float] = {}
     for name, comp in scores.items():
@@ -141,6 +149,17 @@ def plot_ranking(
             [weights[ind] for ind in inds], dtype=float)
         contrib[name] = c
         totals[name] = float(c.sum())
+    try:
+        total_texts = {name: f"{total:{total_fmt}}" for name, total in totals.items()}
+    except Exception as exc:  # noqa: BLE001 - 统一转成带指引的 ValueError
+        raise ValueError(
+            f"total_fmt 无法格式化条端总得分: {total_fmt!r} ({exc!r}); "
+            f"请用 Python format spec, 如 \".2f\"/\".1%\""
+        ) from exc
+
+    apply_style()
+    colors = load_palette("academic_blue")
+
     order = sorted(scores, key=lambda n: totals[n], reverse=True)
     xmax = max(totals.values())
 
@@ -159,8 +178,8 @@ def plot_ranking(
             ax.barh(y[i], val, left=left, height=0.58, color=colors[j % len(colors)],
                     edgecolor="white", linewidth=0.5, zorder=3)
             left += val
-        ax.text(left, y[i], f" {totals[name]:.2f}", va="center", ha="left",
-                fontsize=9, color=load_neutral("ink"), zorder=5)
+        ax.text(left, y[i], f" {total_texts[name]}", va="center",
+                ha="left", fontsize=9, color=load_neutral("ink"), zorder=5)
 
     ax.set_yticks(y)
     ax.set_yticklabels(order)
@@ -174,7 +193,9 @@ def plot_ranking(
     ax.set_axisbelow(True)
     _fit_left_margin(fig, ax, pad_px=14)  # 长方案名防画布左缘裁剪
 
-    # 指标贡献图例: 横向单行外置图下方（轴底之上还有 xlabel, 锚点取 -0.13）
+    # 指标贡献图例: 横向单行外置图下方（轴底之上还有 xlabel, 锚点取 -0.13）。
+    # 图例 loc 不作为入参: 外置锚点与 _fit_left_margin 的左缘自适应联动,
+    # 改 loc 会破坏"超长分类名不裁切"的不变量; 需内嵌图例时先调画布比例再拍板。
     handles = [
         plt.Line2D([0], [0], marker="s", markersize=11, linewidth=0,
                    markerfacecolor=colors[j % len(colors)], label=inds[j])

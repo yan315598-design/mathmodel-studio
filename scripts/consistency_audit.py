@@ -8,11 +8,21 @@
   2. 摘要-结论一致性   —— 定位"摘要"与"结论"章节 (md 标题 / \\section /
      \\begin{abstract} 等), 同单位家族数值两两配对, 相距 >1% 且 <=20%
      (疑似同一指标) 给 ❌ (例: 摘要 4368 元/吨 vs 结论 4638 元/吨)。
-  3. 图表引用闭环      —— 引用了未定义的图/表编号 ❌; 定义了从未被引用 ⚠️。
-     md/pdf: "图 1：标题" / "表 2-1 标题" 行式题注为定义, "如图 2 所示" 为引用;
-     tex: 由 \\label{fig:..}/\\ref{..} 符号闭环 + figure/table 计数器推导编号闭环。
+  3. 图表式引用闭环    —— 引用了未定义的图/表/式编号 ❌; 定义了从未被引用 ⚠️;
+     编号不连续 (定义 1,2,4 缺 3) ❌。
+     md/pdf 行式题注 "图 1：标题" / "表 2-1 标题" 为定义;
+     docx 链 md 真源 (md_authoring_spec §3) 的第三形态: ": 表 N：标题" 与
+     "![图 N 说明](路径)" 同为定义 (A6 修复, 2026 A 题 92 条误报教训);
+     tex: 由 \\label{fig:..}/\\ref{..} 符号闭环 + figure/table 计数器推导编号闭环;
+     自动编号 (caption 不写 "图 N") 时, \\label{fig:N}/\\label{tab:N} 的数字部分
+     与 figure/table/longtable 环境内 caption 计数序均计入定义集 (T-06 修复);
+     公式编号闭环 (A6 新增): 定义 = $$ 块内 "\\qquad (N)", 引用 = 正文 "式（N）"
+     与 "式(N)"; "结果表 50 格" 类数量短语 (编号后紧跟量词) 不算引用。
   4. 符号表脱节        —— 存在符号表 ("符号说明"标题节 / 含"符号+含义"表头) 时,
      正文 $\\alpha$、$x_i$、希腊字母等形似符号未在表内定义 → ⚠️ 清单。
+     代码围栏 (``` / ~~~, 变长围栏按开栏长度配对) 与行内代码 span 不参与抽取;
+     常用哑变量/单字母白名单 (SYMBOL_WHITELIST, D3 修复); 带下标复合符号
+     ($r_i$) 以下标所属基名整体判定, 不拆出下标字母单独告警。
   5. 版本错乱检测      —— 工作区内 (除 _archive/、submission/ 等) 存在多个
      "v\\d|副本|最终版|修订版|final|old|backup" 命名的 .md/.tex/.docx → ⚠️,
      提示按 workspace_protocol 只留 main + _archive/。
@@ -26,6 +36,12 @@
 正文文件: 扫描 <workspace>/paper_workspace/ 下全部 .md/.tex (可嵌套, 按文件名
 顺序合并为一份文档处理, 支持 main + sections/ 拆分结构); --paper 指定单文件
 (.pdf 亦可, 需 pip install pypdf 做文本提取)。
+归档过滤: 扫描根下的 _archive/ submission/ tmp/ figures/ results/ state/ code/
+等目录不参与审计 —— 只按**工作区相对**目录名判定 (v3.1.1 修复: 修复前按整条
+绝对路径逐段匹配, 工作区绝对路径里出现 tmp/Temp 这类同名父目录时, 工作区下全部
+正文都被误判为已归档, 脚本直接报"未找到正文文件"——静默漏检全部正文)。
+人读输出为摘要 (每个检查最多 PRINT_FINDINGS_CAP 处逐条打印, 含文件:行与摘录);
+完整清单走 --json, 或 --report <path> 落盘后按路径查看。
 
 退出码:
     0  通过 (无 ❌ 级问题; ⚠️ 只提示不阻塞)
@@ -36,6 +52,7 @@
 from __future__ import annotations
 
 import argparse
+import bisect
 import json
 import os
 import re
@@ -114,10 +131,12 @@ SKIP_DIRS = {"_archive", "submission", ".git", "__pycache__", "node_modules",
              ".venv", "venv", "tmp", "figures", "results", "state", "code"}
 
 CHECK_NAMES = {
-    1: "未冻结数字", 2: "摘要-结论一致性", 3: "图表引用闭环",
+    1: "未冻结数字", 2: "摘要-结论一致性", 3: "图表式引用闭环",
     4: "符号表脱节", 5: "版本错乱检测",
 }
 MARK = {"error": "❌", "warn": "⚠️ "}
+# 人读摘要每个检查最多逐条打印的处数; 其余折算一行并指路完整清单 (--json/--report)。
+PRINT_FINDINGS_CAP = 8
 
 CODE_FENCE_MD = re.compile(r"^[ \t]*```")
 CODE_BEGIN_TEX = re.compile(r"^[ \t]*\\(?:begin)\{(?:verbatim|lstlisting)\}")
@@ -130,11 +149,12 @@ TEX_HEADING_RE = re.compile(
 TEX_ABSTRACT_ENV = re.compile(r"^[ \t]*\\begin\{abstract\}")
 TEX_END_ABSTRACT = re.compile(r"^[ \t]*\\end\{abstract\}")
 TEX_CAPTION_RE = re.compile(r"\\caption\{([^}]*)\}")
-TEX_LABEL_RE = re.compile(r"\\label\{((?:fig|tab|table)[^}]*)\}")
+TEX_LABEL_RE = re.compile(r"\\label\{((?:fig|tab|table)[^}]*)\}", re.I)
 TEX_REF_RE = re.compile(r"\\(?:autoref|cref|Cref|vref|Vref|ref)\{([^}]*)\}")
 TEX_FIG_ENV = re.compile(r"\\begin\{figure\*?\}(?:\[[^\]]*\])?")
-TEX_TAB_ENV = re.compile(r"\\begin\{table\*?\}(?:\[[^\]]*\])?")
-TEX_ENV_END = re.compile(r"\\end\{(figure|table)\*?\}")
+# table 环境含 longtable (pandoc md 表格输出形态), 自动编号按 caption 计数序覆盖它
+TEX_TAB_ENV = re.compile(r"\\begin\{(?:table|longtable)\*?\}(?:\[[^\]]*\])?")
+TEX_ENV_END = re.compile(r"\\end\{(figure|table|longtable)\*?\}")
 TEX_COUNTER_DASH = re.compile(
     r"\\counterwithin\{(?:figure|table)\}\{section\}"
     r"|\\renewcommand\{\\the(?:figure|table)\}[^}]*\\arabic\{section\}",
@@ -146,6 +166,31 @@ _CLAUSE_MARKERS = ("所示", "可见", "如图", "见图", "见下表", "见上�
                    "见附图", "如下", "参考", "对比图", "表明", "展示")
 _PLAIN_TITLE_LINES = {"摘要", "摘 要", "Abstract", "abstract",
                       "结论", "结 论", "结语", "Conclusion", "conclusion"}
+
+# A6: docx 链 md 真源题注第三形态 (md_authoring_spec §3)
+#   表定义: 行首 ": 表 N：…" (前缀冒号, 兼容全角);  图定义: "![图 N 说明](路径)"
+_DOCX_TAB_CAPTION_RE = re.compile(r"^[:：]\s*表\s*(\d[\d.\-]*)")
+_DOCX_FIG_CAPTION_RE = re.compile(r"^!\[图\s*(\d[\d.\-]*)")
+# A6: 公式编号闭环 —— 定义 = $$ 块内 "\qquad (N)"; 引用 = 正文 式（N）/ 式(N)
+# 引用排除复合词 (方式/公式/形式/格式/样式/模式 + (N) 非编号引用)
+_EQ_NUM_DEF_RE = re.compile(r"\\qquad\s*[（(]\s*(\d+(?:\.\d+)?)\s*[）)]")
+_EQ_REF_RE = re.compile(r"(?<![方公形格样模])式\s*[（(]\s*(\d+(?:\.\d+)?)\s*[）)]")
+_DISPLAY_MATH_RE = re.compile(r"\$\$(.+?)\$\$", re.S)
+# A6: 数量短语豁免 —— "结果表 50 格逐格" 的 "表 50 格" 是格数描述而非编号引用
+_REF_MEASURE_BLOCK = re.compile(r"^\s*(?:格|行|列|个|项|条|张|款|次|点|位|步)")
+# A6: md 代码围栏 (变长配对: 关栏字符同、长度 ≥ 开栏、栏后仅空白)
+_MD_FENCE_OPEN_RE = re.compile(r"^[ \t]*(`{3,}|~{3,})")
+_MD_FENCE_CLOSE_RE = re.compile(r"^[ \t]*(`{3,}|~{3,})[ \t]*$")
+
+# D3: 符号白名单 —— 常用哑变量与通用单字母, 只豁免"裸单字母"形态的告警;
+# 带下标的复合符号 ($r_i$) 以基名 r 整体判定, 不因下标字母 i 在白名单而整体豁免。
+# 模块级常量, 项目可按需扩展 (如补 "pi"、"mu" 等普适常数名)。
+SYMBOL_WHITELIST = frozenset({
+    "i", "j", "k", "n", "m",    # 求和/迭代/下标哑变量
+    "e",                        # 自然对数底 (指数形式 e^{-...})
+    "a", "b",                   # 待定系数 / 区间端点
+    "x", "y", "t",              # 通用自变量
+})
 
 
 # ---------------------------------------------------------------- 工具
@@ -242,6 +287,18 @@ class Doc:
         self.sections: list[str] = []     # 每行的章节标签: "", "abstract", "conclusion", "symbol"
         self.figdefs: list[tuple[str, int]] = []     # (canon token, line_idx)
         self.tabdefs: list[tuple[str, int]] = []
+        # 行文可见的"字面题注"定义 (A6): md 行式题注 "图 N：" 与 docx 链
+        # ": 表 N" / "![图 N"。tex 计数器/\label 推导的定义不在此列 ——
+        # 编号连续性检查只对字面题注做 (自动编号由编译器管理, 文件级重构不可靠)。
+        self.figdefs_lit: list[tuple[str, int]] = []
+        self.tabdefs_lit: list[tuple[str, int]] = []
+        # label 派生的自动编号定义 (T-06): 只用于"引用了未定义编号"的闭环判定,
+        # 不参与"已定义但从未引用"告警——纯 \label+\ref 文档没有纯文本引用,
+        # 数字定义必未被引用, 参与告警会产生噪声 (复审 P1-4)。
+        self.figdefs_autonum: list[tuple[str, int]] = []
+        self.tabdefs_autonum: list[tuple[str, int]] = []
+        self.eqdefs: list[tuple[str, int]] = []      # A6: $$ 块内 \qquad (N)
+        self.eqrefs: list[tuple[str, int]] = []      # A6: 正文 式（N）/式(N)
         self.figrefs: list[tuple[str, int]] = []
         self.tabrefs: list[tuple[str, int]] = []
         self.symrefs: list[tuple[str, int]] = []     # tex \\ref 符号引用 (id, line)
@@ -261,6 +318,7 @@ class Doc:
         self._compute_spans()
         self._number_tex_float_envs()
         self._collect_cross_refs()
+        self._collect_equation_defs()
         self._assembled = True
 
     # -- 标题行分类 (跳过注释与代码围栏行) ----------------------------
@@ -293,11 +351,14 @@ class Doc:
                 self.headings.append((level, title, i))
 
     def _compute_exclusions(self) -> None:
-        """标记 md 代码围栏 / tex verbatim/lstlisting / tex 行注释。"""
-        md_fence = False
+        """标记 md 代码围栏 / tex verbatim/lstlisting / tex 行注释。
+
+        md 围栏按 CommonMark 配对 (D3): ``` 与 ~~~ 均可开栏; 关栏须同字符、
+        长度 ≥ 开栏、栏后仅空白 —— ```` 外栏内的 ``` 行不再被误判为关栏。
+        """
+        md_fence: tuple[str, int] | None = None   # (fence 字符, 开栏长度)
         tex_block = False
         for i, raw in enumerate(self.lines):
-            st = raw.lstrip()
             if self._kind_at(i) == "tex":
                 if tex_block:
                     self.excluded.add(i)
@@ -311,11 +372,19 @@ class Doc:
                 if TEX_COMMENT.match(raw):
                     self.excluded.add(i)
                     continue
-            elif st.startswith("```"):
+                continue
+            if md_fence is None:
+                m = _MD_FENCE_OPEN_RE.match(raw)
+                # 反引号开栏的信息串不得再含反引号 (CommonMark); ~~~ 无此限制
+                if m and (m.group(1)[0] == "~" or "`" not in raw[m.end():]):
+                    md_fence = (m.group(1)[0], len(m.group(1)))
+                    self.excluded.add(i)
+            else:
                 self.excluded.add(i)
-                md_fence = not md_fence
-            elif md_fence:
-                self.excluded.add(i)
+                m = _MD_FENCE_CLOSE_RE.match(raw)
+                if m and m.group(1)[0] == md_fence[0] \
+                        and len(m.group(1)) >= md_fence[1]:
+                    md_fence = None
 
     # -- 章节区间 ----------------------------------------------------
     def _compute_spans(self) -> None:
@@ -451,18 +520,38 @@ class Doc:
             if i in self.excluded:
                 continue
             kind = self._kind_at(i)
+            st = raw.strip()
+            # A6: docx 链题注第三形态 —— ": 表 N：…" 与 "![图 N …](路径)"。
+            # 定义行整体跳过 (题注文本里的 "表 N/图 N" 不计为引用)
+            m = _DOCX_TAB_CAPTION_RE.match(st)
+            if m:
+                tok = _canon_ref(m.group(1))
+                self.tabdefs.append((tok, i))
+                self.tabdefs_lit.append((tok, i))
+                continue
+            m = _DOCX_FIG_CAPTION_RE.match(st)
+            if m:
+                tok = _canon_ref(m.group(1))
+                self.figdefs.append((tok, i))
+                self.figdefs_lit.append((tok, i))
+                continue
             # 行式题注 -> 定义 (tex 中显式编号题注或 md/pdf 题注行)
             tok = _caption_token(raw)
             if tok:
                 head = raw.strip().lstrip("-*+>#!| \t")
                 if head.startswith(("表", "Table")):
                     self.tabdefs.append((tok, i))
+                    self.tabdefs_lit.append((tok, i))
                 else:
                     self.figdefs.append((tok, i))
+                    self.figdefs_lit.append((tok, i))
                 continue  # 题注行不计引用
             # 图片 markdown 行整体跳过 (避免路径/替代文本里的 "图 N")
             if re.search(r"^\s*!\[", raw):
                 continue
+            # A6: 公式引用 "式（N）" / "式(N)"
+            for m in _EQ_REF_RE.finditer(raw):
+                self.eqrefs.append((_canon_ref(m.group(1)), i))
             if TEX_REF_RE.search(raw):
                 for body in TEX_REF_RE.findall(raw):
                     for lab in (x.strip() for x in body.split(",") if x.strip()):
@@ -470,11 +559,21 @@ class Doc:
                             self.symrefs.append((lab, i))
             if kind == "tex":
                 for lab in TEX_LABEL_RE.findall(raw):
-                    if lab.startswith(("fig:", "tab:", "table:")):
-                        if lab.startswith("fig:"):
-                            self.figdefs.append((lab, i))
-                        else:
-                            self.tabdefs.append((lab, i))
+                    low = lab.lower()
+                    is_fig = low.startswith("fig:")
+                    is_tab = not is_fig and low.startswith(("tab:", "table:"))
+                    if not (is_fig or is_tab):
+                        continue
+                    defs = self.figdefs if is_fig else self.tabdefs
+                    defs.append((lab, i))
+                    # 自动编号 (T-06 修复): \label{fig:N}/\label{tab:N} (前缀大小写
+                    # 兼容) 的数字部分计入数值定义集, 供正文纯文本 "图 N/表 N" 闭环;
+                    # 进 autonum 侧表, 不参与"已定义但从未引用"告警 (P1-4)
+                    m_num = re.match(r"^[A-Za-z]+\s*:\s*(\d+)\s*$", lab)
+                    if m_num:
+                        autonum = (self.figdefs_autonum if is_fig
+                                   else self.tabdefs_autonum)
+                        autonum.append((_canon_ref(m_num.group(1)), i))
             # 文字引用 "图 2-1"/"表 1" (中文与英文写法)
             for m in re.finditer(
                 r"(?<![A-Za-z])(?:(?:图|表)\s*(\d[\d.\-]*)|"
@@ -482,6 +581,9 @@ class Doc:
             ):
                 tokraw = m.group(1) or m.group(2)
                 if tokraw is None:
+                    continue
+                # A6: 数量短语不算引用 —— "结果表 50 格逐格" 的 50 是格数
+                if _REF_MEASURE_BLOCK.match(raw[m.end():]):
                     continue
                 head = raw[m.start():m.start() + 2]
                 if "图" in head:
@@ -492,6 +594,25 @@ class Doc:
                     self.tabrefs.append((_canon_ref(tokraw), i))
                 else:
                     self.figrefs.append((_canon_ref(tokraw), i))
+
+    # -- 公式编号定义 (A6): $$ 块内 \qquad (N) --------------------------
+    def _collect_equation_defs(self) -> None:
+        parts: list[str] = []
+        starts: list[int] = []
+        pos = 0
+        for i, line in enumerate(self.lines):
+            if i in self.excluded:
+                continue
+            starts.append(pos)
+            parts.append(line)
+            pos += len(line) + 1
+        text = "\n".join(parts)
+        for m in _DISPLAY_MATH_RE.finditer(text):
+            for mm in _EQ_NUM_DEF_RE.finditer(m.group(1)):
+                tok = _canon_ref(mm.group(1))
+                off = m.start(1) + mm.start()
+                ln = bisect.bisect_right(starts, off) - 1
+                self.eqdefs.append((tok, ln))
 
     # 便于取章节标签列表
     @property
@@ -652,9 +773,12 @@ def check_abstract_conclusion(doc: Doc, findings: list[dict]) -> dict:
 
 
 def check_figures(doc: Doc, findings: list[dict]) -> dict:
-    """检查 3: 图表引用闭环。数值编号系统 + tex 符号 (\\label/\\ref) 系统。"""
+    """检查 3: 图/表/式引用闭环。数值编号系统 + tex 符号 (\\label/\\ref) 系统。"""
 
-    def closure(defs, refs, cname) -> tuple[int, int]:
+    def closure(defs, refs, cname, warn_defs=None,
+                miss_hint="(未找到对应题注/\\label)") -> tuple[int, int]:
+        # warn_defs: 参与"已定义但从未引用"告警的定义集, 缺省等于 defs;
+        # label 派生的自动编号定义只进 defs (闭环用) 不进 warn_defs (P1-4)
         errs = warns = 0
         ref_seen: set[tuple] = set()
         def_warned: set[tuple] = set()
@@ -670,11 +794,15 @@ def check_figures(doc: Doc, findings: list[dict]) -> dict:
                 findings.append({
                     "check": 3, "severity": "error", "file": doc.names[ln],
                     "line": ln + 1,
-                    "msg": f"引用了未定义的{cname}编号 [{tok}] (未找到对应题注/\\label)",
+                    "msg": f"引用了未定义的{cname}编号 [{tok}] {miss_hint}",
                     "excerpt": _excerpt(doc.lines[ln]),
                 })
         # 定义了从未被引用 (同一编号跨多文件/双路径推导只告警一次)
-        for tok, ln in defs:
+        # 符号 token (含 ":", 如 fig:1) 跳过: 其未引用提示由下方符号系统路径
+        # ("\label 定义了但从未被 \ref 引用") 负责, 数值闭环不再重复告警
+        for tok, ln in (warn_defs if warn_defs is not None else defs):
+            if isinstance(tok, str) and ":" in tok:
+                continue
             key = (tok, doc.names[ln])
             if tok in used_tokens or key in def_warned:
                 continue
@@ -688,8 +816,36 @@ def check_figures(doc: Doc, findings: list[dict]) -> dict:
             })
         return errs, warns
 
-    e1, w1 = closure(_uniq(doc.figdefs), doc.figrefs, "图")
-    e2, w2 = closure(_uniq(doc.tabdefs), doc.tabrefs, "表")
+    def continuity(defs, cname) -> int:
+        """A6: 编号连续性 (1..N 无缺号)。只对字面题注/公式编号做;
+        混合编号风格 (含 2-1 或符号 token) 时无法可靠判定, 跳过。"""
+        toks = {t for t, _ in defs}
+        nums = sorted(int(t) for t in toks if re.fullmatch(r"\d+", str(t)))
+        if not nums or len(nums) != len(toks):
+            return 0
+        if nums == list(range(1, len(nums) + 1)):
+            return 0
+        missing = sorted(set(range(1, nums[-1] + 1)) - set(nums))
+        first_def = min((ln for t, ln in defs if str(t) == str(nums[0])),
+                        default=0)
+        findings.append({
+            "check": 3, "severity": "error", "file": doc.names[first_def],
+            "line": first_def + 1,
+            "msg": f"{cname}编号不连续: 已定义编号 {nums}, 缺少 {missing}",
+            "excerpt": _excerpt(doc.lines[first_def]),
+        })
+        return 1
+
+    e1, w1 = closure(_uniq(doc.figdefs) + _uniq(doc.figdefs_autonum),
+                     doc.figrefs, "图", warn_defs=_uniq(doc.figdefs))
+    e2, w2 = closure(_uniq(doc.tabdefs) + _uniq(doc.tabdefs_autonum),
+                     doc.tabrefs, "表", warn_defs=_uniq(doc.tabdefs))
+    # A6: 公式编号闭环 (定义 = $$ 块内 \qquad (N); 引用 = 式（N）/式(N))
+    e3, w3 = closure(_uniq(doc.eqdefs), doc.eqrefs, "式",
+                     miss_hint="(未找到对应 \\qquad (N) 公式编号)")
+    c1 = continuity(doc.figdefs_lit, "图")
+    c2 = continuity(doc.tabdefs_lit, "表")
+    c3 = continuity(doc.eqdefs, "式")
 
     # ---- 符号系统 (tex \ref{fig:..}) ----
     # 无条件执行: tex 标签可能被归入 figdefs/tabdefs 的符号 token, 不能只依赖 symlabels 非空
@@ -721,10 +877,15 @@ def check_figures(doc: Doc, findings: list[dict]) -> dict:
                     "msg": f"\\label{{{lab}}} 定义了但从未被 \\ref/\\autoref 引用",
                     "excerpt": _excerpt(doc.lines[ln]),
                 })
-    total_defs = len(set(doc.figdefs)) + len(set(doc.tabdefs)) + len(set(doc.symlabels))
-    total_refs = len(set(doc.figrefs)) + len(set(doc.tabrefs)) + len(set(doc.symrefs))
+    total_defs = (len(set(doc.figdefs) | set(doc.figdefs_autonum))
+                  + len(set(doc.tabdefs) | set(doc.tabdefs_autonum))
+                  + len(set(doc.eqdefs))
+                  + len(set(doc.symlabels)))
+    total_refs = (len(set(doc.figrefs)) + len(set(doc.tabrefs))
+                  + len(set(doc.eqrefs)) + len(set(doc.symrefs)))
     return {"defs": total_defs, "refs": total_refs,
-            "error": e1 + e2 + sym_errs, "warn": w1 + w2 + sym_warns}
+            "error": e1 + e2 + e3 + c1 + c2 + c3 + sym_errs,
+            "warn": w1 + w2 + w3 + sym_warns}
 
 
 def _uniq(items: list[tuple]) -> list[tuple]:
@@ -738,12 +899,21 @@ def _uniq(items: list[tuple]) -> list[tuple]:
 
 
 def _chunk_roots(chunk: str) -> set[str]:
-    """从一段数学/符号文本提取符号根名: 希腊字母 + 单拉丁字母。"""
-    chunk = re.sub(r"\\text\{[^}]*\}", "", chunk)
+    """从一段数学/符号文本提取符号根名: 希腊字母 + 单拉丁字母。
+
+    D3 口径:
+      - \\text/\\mathrm/\\operatorname 花括内容 (单位、罗马体文字) 不算符号;
+      - 下标位置的字母 (r_i / r_{i+1} 的 i) 是复合符号 $r_i$ 的组成部分,
+        吸收进基名整体判定, 不再作为独立单字母根 —— 避免哑变量海量化误报;
+        上标 (指数) 内容可能含真实符号, 保持原行为。
+    """
+    chunk = re.sub(r"\\(?:text|mathrm|operatorname)\s*\{(?:[^{}]*)\}", "", chunk)
     roots = _greek_roots(chunk)
     chunk = _GREEK_CMD_RE.sub(" ", chunk)  # 移除 LaTeX 命令后再取拉丁单字母
     for ch in _GREEK_UNICODE:
         chunk = chunk.replace(ch, " ")
+    chunk = re.sub(r"_\{[^{}]*\}", " ", chunk)   # _{i+1} -> 下标表达式吸收
+    chunk = re.sub(r"_[A-Za-z]", "  ", chunk)    # _i     -> 单字符下标吸收
     for m in _SINGLE_LETTER_RE.finditer(chunk):
         roots.add(m.group(0))
     return roots
@@ -773,18 +943,15 @@ def check_symbols(doc: Doc, findings: list[dict]) -> dict:
     for i in range(n):
         if i in doc.excluded or i in sym_line_set:
             continue
-        raw = doc.lines[i]
+        # D3: 行内代码 span 不参与符号抽取 (代码变量 ≠ 论文符号)
+        raw = _BACKTICK_RE.sub(" ", doc.lines[i])
         found: dict[str, str] = {}
         chunks: list[str] = []
         for m in _DOLLAR_RE.finditer(raw):
             chunks.append(m.group(1))
-        for m in _BACKTICK_RE.finditer(raw):
-            t = m.group(1)
-            if not re.search(r"[\\/.]", t) and len(t) <= 12:
-                chunks.append(t)
-        # 裸希腊字母/命令 (未包 $ 也统计), 未定义才登记
+        # 裸希腊字母/命令 (未包 $ 也统计), 未定义才登记 (白名单豁免)
         for r in _greek_roots(raw):
-            if r not in defined:
+            if r not in defined and r not in SYMBOL_WHITELIST:
                 found.setdefault(r, "greek")
         for chunk in chunks:
             roots = _chunk_roots(chunk)
@@ -792,8 +959,8 @@ def check_symbols(doc: Doc, findings: list[dict]) -> dict:
             greek_in = bool(_greek_roots(chunk))
             is_short_pure = len(chunk) <= 8 and not re.search(r"[0-9=\s]", chunk)
             for r in roots:
-                if r in defined:
-                    continue
+                if r in defined or r in SYMBOL_WHITELIST:
+                    continue  # D3: 裸单字母白名单 (只豁免单字母形态)
                 if has_index or greek_in or is_short_pure:
                     found.setdefault(r, "latin")
         if found:
@@ -835,9 +1002,25 @@ def check_versions(workspace: Path, findings: list[dict]) -> dict:
 
 # ---------------------------------------------------------------- 审计入口
 
-def _body_files(root: Path) -> list[Path]:
+def _archive_base(workspace: Path, root: Path) -> Path:
+    """归档过滤基准目录: 扫描根在工作区内时用工作区, 否则退化为扫描根本身。
+
+    只用**基准相对**目录名匹配 SKIP_DIRS，避免工作区父目录名影响正文发现。
+    整条绝对路径的每一段做匹配时，工作区路径里只要有一段叫 tmp/results/state/code…
+    (CI 的 /tmp、Windows Temp、自建 temp 根), 工作区下**全部**正文都会被判为已归档,
+    collect_body_files 直接抛"未找到正文文件"——静默漏检全部正文。
+    """
+    try:
+        root.relative_to(workspace)
+    except ValueError:
+        return root
+    return workspace
+
+
+def _body_files(root: Path, base: Path) -> list[Path]:
+    """root 下全部 .md/.tex; 归档过滤按 base 相对目录名判定 (base 见 _archive_base)。"""
     return sorted(x for pat in ("*.md", "*.tex")
-                  for x in root.rglob(pat) if _not_archived(x))
+                  for x in root.rglob(pat) if _not_archived(x, base))
 
 
 def collect_body_files(workspace: Path, paper: str | None) -> list[Path]:
@@ -848,19 +1031,27 @@ def collect_body_files(workspace: Path, paper: str | None) -> list[Path]:
         p = p.resolve()
         if not p.exists():
             raise AuditIOError(f"--paper 文件不存在: {p}")
-        out = _body_files(p) if p.is_dir() else [p]
+        out = _body_files(p, _archive_base(workspace, p)) if p.is_dir() else [p]
     else:
         base = workspace / "paper_workspace"
         if not base.is_dir():
             raise AuditIOError(f"未找到正文目录: {base} (可用 --workspace 指定, 或 --paper 指定单文件)")
-        out = _body_files(base)
+        out = _body_files(base, _archive_base(workspace, base))
     if not out:
         raise AuditIOError("paper_workspace 下未找到 .md/.tex 正文文件")
     return out
 
 
-def _not_archived(path: Path) -> bool:
-    return not any(part.lower() in SKIP_DIRS for part in path.parts)
+def _not_archived(path: Path, base: Path) -> bool:
+    """path 是否不在归档目录内: 只看它**相对 base** 的目录段。
+
+    base 之外的路径 (如 --paper 指向工作区外部) 不做归档过滤, 保持可审计。
+    """
+    try:
+        rel = path.relative_to(base)
+    except ValueError:
+        return True
+    return not any(part.lower() in SKIP_DIRS for part in rel.parts)
 
 
 def run_audit(workspace: Path, paper: str | None) -> dict:
@@ -925,7 +1116,12 @@ def to_json(result: dict) -> dict:
     }
 
 
-def _print_report(result: dict) -> None:
+def _print_report(result: dict, report_path: Path | None = None) -> None:
+    """人读摘要: 统计 + 失败位置 (文件:行/摘录) + 详细报告路径。
+
+    每个检查最多逐条打印 PRINT_FINDINGS_CAP 处 (完整清单走 --json 或 --report),
+    保证默认输出是"能立刻定位的摘要"而不是整份长报告。
+    """
     print("=" * 62)
     print("论文一致性审计报告")
     print("=" * 62)
@@ -957,15 +1153,33 @@ def _print_report(result: dict) -> None:
     by_file: dict[str, list] = {}
     for f in result["findings"]:
         by_file.setdefault(f["file"], []).append(f)
+    printed: dict[int, int] = {}
+    hidden: dict[int, int] = {}
     for file, items in sorted(by_file.items()):
-        print(f"--- {file} ---")
+        rows = []
         for it in items:
+            no = it["check"]
+            if printed.get(no, 0) >= PRINT_FINDINGS_CAP:
+                hidden[no] = hidden.get(no, 0) + 1
+                continue
+            printed[no] = printed.get(no, 0) + 1
             loc = f"行 {it['line']}" if it["line"] is not None else ""
-            print(f"  {MARK[it['severity']]} [{CHECK_NAMES[it['check']]}] {loc}: {it['msg']}")
+            rows.append(f"  {MARK[it['severity']]} [{CHECK_NAMES[no]}] {loc}: {it['msg']}")
             if it.get("excerpt"):
-                print(f"      “{it['excerpt']}”")
+                rows.append(f"      “{it['excerpt']}”")
+        if rows:
+            print(f"--- {file} ---")
+            for row in rows:
+                print(row)
+    for no in sorted(hidden):
+        print(f"  … [{CHECK_NAMES[no]}] 另有 {hidden[no]} 处未逐条打印 "
+              "(完整清单见 --json / --report)")
     print("-" * 62)
     print(f"总计: ❌ {result['error']} 处 | ⚠️ {result['warn']} 处")
+    if report_path is not None:
+        print(f"详细报告: {report_path}")
+    else:
+        print("完整清单: --json (机器可读) 或 --report <path> (落盘 JSON)")
     if result["exit"]:
         print("存在 ❌ 级问题 (数字冲突/摘要结论打架/引用断链), 修复后重跑 (exit 1)")
     else:
@@ -981,6 +1195,8 @@ def main(argv: list[str] | None = None) -> int:
                         help="指定单个正文文件 (默认扫描 paper_workspace/ 下 .md/.tex; "
                              ".pdf 需 pypdf)")
     parser.add_argument("--json", action="store_true", help="输出机器可读 JSON")
+    parser.add_argument("--report", type=Path, default=None,
+                        help="完整报告落盘路径 (人读输出只给摘要与路径)")
     parser.add_argument("--self-test", action="store_true", help="内置合成样例自测")
     args = parser.parse_args(argv)
 
@@ -1001,10 +1217,16 @@ def main(argv: list[str] | None = None) -> int:
     except AuditIOError as exc:
         print(f"❌ {exc}")
         return 2
+    if args.report is not None:
+        args.report.parent.mkdir(parents=True, exist_ok=True)
+        args.report.write_text(
+            json.dumps(to_json(result), ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8")
     if args.json:
         print(json.dumps(to_json(result), ensure_ascii=False, indent=2))
     else:
-        _print_report(result)
+        _print_report(result, args.report.expanduser().resolve()
+                      if args.report is not None else None)
     return result["exit"]
 
 

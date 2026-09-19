@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-"""draw.io 可编辑流程图模板包 dispatcher（6 个 drawio 模板的统一入口）。
+"""draw.io 可编辑流程图模板包 dispatcher（7 个 drawio 模板的统一入口）。
 
 与 render_diagram_pack.py（matplotlib 示意图包）相互独立、互不影响,
-本脚本只分发 templates/figures/scripts/drawio/ 下的 6 个 drawio 模板,
+本脚本只分发 templates/figures/scripts/drawio/ 下的 7 个 drawio 模板,
 输出 .drawio（mxGraph XML）, draw.io 桌面版/网页版打开即编辑:
 
     roadmap     竖版层带技术路线图   (roadmap)
@@ -11,6 +11,7 @@
     stageflow   横向阶段流水线       (stageflow)
     swimlane    泳道流程图           (swimlane)
     mechanism   机理示意图           (mechanism)
+    ga3band     作战地图·三问题色带  (graphical_abstract_3band)
 
 用法:
     python render_drawio_pack.py <子命令> [模板参数...]
@@ -69,6 +70,12 @@ TEMPLATES: dict[str, tuple[str, str]] = {
         "机理示意图: 中心主体(grey 族) + 4-6 环绕要素(每要素一族), "
         "双向数据流 + 闭环反馈虚线",
     ),
+    "ga3band": (
+        "make_drawio_graphical_abstract.py",
+        "作战地图·三问题色带总览: 三横带各绑一枝 DIAGRAM_FAMILIES 色族, "
+        "content JSON 驱动内容框(问题/方法/关键结果/缩略图占位) + 带间因果箭头, "
+        "默认交付 F0_route.draft.drawio 草稿, --png 可选导出预览",
+    ),
 }
 
 ALIASES = {
@@ -98,6 +105,9 @@ ALIASES = {
     "泳道图": "swimlane",
     "机理": "mechanism",
     "机理图": "mechanism",
+    "作战地图": "ga3band",
+    "三带": "ga3band",
+    "总览图": "ga3band",
 }
 
 
@@ -136,13 +146,13 @@ def print_list() -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="渲染 draw.io 可编辑流程图模板包（6 个模板的统一入口）"
+        description="渲染 draw.io 可编辑流程图模板包（7 个模板的统一入口）"
     )
     parser.add_argument("--list", action="store_true", help="列出支持的模板清单")
     parser.add_argument(
         "template", nargs="?", default=None,
         help="模板 id / 别名（roadmap/framework/flow3col/stageflow/swimlane/"
-             "mechanism 或 路线图/框架/三栏流程/流水线/泳道/机理）",
+             "mechanism/ga3band 或 路线图/框架/三栏流程/流水线/泳道/机理/作战地图）",
     )
     # REMAINDER 捕获首个位置参数之后的全部内容（含 -- 开头的模板参数）,
     # 不用 argparse 子解析器: 子解析器会把转发参数误判为本脚本的未知项

@@ -5,7 +5,7 @@ duration_h: 2-3
 inputs: [stage.5.sub_problems.{Qi}.{code_path, key_metrics}, stage.4.{assumptions, symbols}, stage.3.selected_per_subproblem]
 outputs: [stage.6.{params_varied_jointly, method, deltas, robust_intervals, stability_verdict, failure_warning, L2_backtrack, figures}]
 loads_reference: [winning_patterns.md(灵敏度节), rubrics.md§Stage_6, anti_patterns.md§F]
-loads_template: [code_starter/simulation.py, sensitivity_table.md]
+loads_template: [templates/shared/code_starter/simulation.py, sensitivity_table.md]
 feedback: [L1, L2_cross_stage]
 next: stage_07_evaluation
 ---
@@ -76,6 +76,10 @@ next: stage_07_evaluation
 ```
 
 ### Step 4: 运行扰动求解 (1-2h)
+
+> **参数档的网格/离散充分性检查（v2.7.0，源于 2026 国赛 A 题实测算例）**：扰动档按参数空间组织时，必须同时对"离散充分性"设检查——凡使边界层/薄层厚度骤减的参数档（如表面传质/换热系数数量级放大、扩散系数数量级减小），原先收敛的网格对该档**不再收敛**。实测教训：这类档位靠单网格跑出的数值会被误判为"最大影响项"，专项网格检验（粗/细两档节点加密）后原判据量变化远超正常收敛残差，说明该档仍严重欠分辨，其数值不是可信的灵敏度结论。执行口径：对每个扰动档先做粗/细两档网格（或步长）下同一早期测点的关键量比对，差异远大于正常收敛残差即判"网格受限"——该档从灵敏度排序中剔除，并在报告中如实标注"未量化/未解决"，不得进入排序与结论。
+
+> **边界层骤变档的量化触发判据与最小检验口径（v3.1.0，补强上条）**：上条检查"什么时候必须做、做到什么程度算欠分辨"在此量化为可执行档——凡扰动档使边界层敏感量骤变（默认触发档：该档的边界层无量纲量或表面梯度量级相对基线档跳变 **>10×**），该档**必须**先做粗/细网格专项检验，通过后才可进入灵敏度排序；最小检验口径：同一时刻的边界敏感量（表面梯度/边界层特征量一类）在粗/细两档网格下的相对变化 **>20%** 即判该档欠分辨——从灵敏度排序中剔除，并在报告与论文中如实标注"网格受限、未量化"，不得以单网格数值参与排序或下结论。实测教训：此类档位会使表面边界层厚度骤减，原收敛网格对该档严重欠分辨，伪影一度被列为"最大影响项"，属典型反例。可运行模板：`templates/shared/code_starter/simulation.py` 第 6 节（`boundary_jump_ratio` 判触发 + `check_grid_sufficiency` 出判据，阈值常量 `BOUNDARY_JUMP_TRIGGER=10.0` / `GRID_UNDER_RESOLVED=0.20` 为默认档、可按题覆盖）。**10×/20% 是实测算例锚定的默认档，可按题覆盖并在 decision_log 登记，不是跨题普遍门槛**（量纲/量级与样例不同的题目自行标定触发比与容限）。
 
 ```python
 from scipy.stats.qmc import LatinHypercube

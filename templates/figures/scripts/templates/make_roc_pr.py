@@ -55,6 +55,7 @@ from figkit import (
     load_neutral,
     load_palette,
     panel_label,
+    restore_style_on_error,
     save_fig,
     ygrid,
 )
@@ -146,12 +147,15 @@ def _calibration(y_true: np.ndarray, score: np.ndarray, n_bins: int = 10):
 # ============================================================
 # 主绘图
 # ============================================================
+@restore_style_on_error
 def plot_roc_pr(
     y_true,
     scores: dict[str, np.ndarray],
     palette: str = "academic_blue",
     title: str | None = None,
     out_prefix: str | None = None,
+    panel_titles: tuple[str, str, str] = ("ROC 曲线", "PR 曲线", "校准曲线"),
+    axis_labels: dict[str, str] | None = None,
 ) -> list[str]:
     """绘制 ROC/PR/校准 1×3 面板并三格式导出, 返回写出路径列表。
 
@@ -162,6 +166,10 @@ def plot_roc_pr(
         title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
             保留参数仅为兼容旧调用, 不再渲染; 各面板仅保留短轴含义标签。
         out_prefix: 输出前缀(不带扩展名); None 时写系统临时目录。
+        panel_titles: 三面板短标题（3.0.1 参数化, 默认 ROC/PR/校准口径;
+            英文赛或术语体系不同时改写; 属短轴含义标签, 不违 1.4.1 图题纪律）。
+        axis_labels: 逐面板轴名覆盖 dict（3.0.1 参数化）, 键: roc_x/roc_y、
+            pr_x/pr_y、cal_x/cal_y; 缺省键保持默认中文轴名。
 
     Raises:
         ValueError: y_true/scores 为空、y_true 非一维、长度不齐、标签非 0/1、
@@ -187,17 +195,26 @@ def plot_roc_pr(
             raise ValueError(f"模型 '{name}' 分数含非有限值(NaN/inf), 无法阈值扫描")
         if np.any((s < 0.0) | (s > 1.0)):
             raise ValueError(f"模型 '{name}' 分数须在 [0,1] 区间(校准面板按概率解释)")
-    apply_style()
+    # 色板容量预校验: 提前到 apply_style() 之前（load_palette 不建图）
     colors = load_palette(palette)
     if len(scores) > len(colors):
         raise ValueError(
             f"模型数 {len(scores)} 超过色板 '{palette}' 的 {len(colors)} 个可用颜色"
         )
+    apply_style()
     ref_grey = load_neutral("arrow")
 
     fig, axes = plt.subplots(1, 3, figsize=FIGSIZE["wide"])
     fig.subplots_adjust(left=0.065, right=0.985, top=0.80, bottom=0.16, wspace=0.34)
     axes = list(axes)
+
+    # 面板轴名（3.0.1 参数化: axis_labels 逐键覆盖, 缺省键保持默认中文口径）
+    labels = {"roc_x": "假正例率（FPR）", "roc_y": "真正例率（TPR）",
+              "pr_x": "召回率（Recall）", "pr_y": "精确率（Precision）",
+              "cal_x": "预测概率均值", "cal_y": "实际正例频率"}
+    if axis_labels:
+        labels.update(axis_labels)
+    title_roc, title_pr, title_cal = panel_titles
 
     # ---- (a) ROC ----
     ax = axes[0]
@@ -211,9 +228,9 @@ def plot_roc_pr(
     ax.set_ylim(-0.02, 1.02)
     ax.set_xticks([0, 0.5, 1])
     ax.set_yticks([0, 0.5, 1])
-    ax.set_title("ROC 曲线")
-    ax.set_xlabel("假正例率（FPR）")
-    ax.set_ylabel("真正例率（TPR）")
+    ax.set_title(title_roc)
+    ax.set_xlabel(labels["roc_x"])
+    ax.set_ylabel(labels["roc_y"])
     ax.legend(loc="lower right", fontsize=9)
     ygrid(ax)
     despine(ax)
@@ -232,9 +249,9 @@ def plot_roc_pr(
     ax.set_ylim(-0.02, 1.02)
     ax.set_xticks([0, 0.5, 1])
     ax.set_yticks([0, 0.5, 1])
-    ax.set_title("PR 曲线")
-    ax.set_xlabel("召回率（Recall）")
-    ax.set_ylabel("精确率（Precision）")
+    ax.set_title(title_pr)
+    ax.set_xlabel(labels["pr_x"])
+    ax.set_ylabel(labels["pr_y"])
     ax.legend(loc="lower right", fontsize=9)
     ygrid(ax)
     despine(ax)
@@ -253,9 +270,9 @@ def plot_roc_pr(
     ax.set_ylim(-0.02, 1.02)
     ax.set_xticks([0, 0.5, 1])
     ax.set_yticks([0, 0.5, 1])
-    ax.set_title("校准曲线")
-    ax.set_xlabel("预测概率均值")
-    ax.set_ylabel("实际正例频率")
+    ax.set_title(title_cal)
+    ax.set_xlabel(labels["cal_x"])
+    ax.set_ylabel(labels["cal_y"])
     ax.legend(loc="lower right", fontsize=9)
     ygrid(ax)
     despine(ax)

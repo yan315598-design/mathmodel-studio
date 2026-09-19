@@ -52,6 +52,7 @@ from figkit import (
     apply_style,
     load_neutral,
     load_palette,
+    restore_style_on_error,
     save_fig,
     ygrid,
 )
@@ -98,6 +99,7 @@ def _check_finite(values, label: str, allow_none: bool = True) -> None:
             raise ValueError(f"{label} 含非有限数值或非数值: {v!r}")
 
 
+@restore_style_on_error
 def plot_prediction(
     actual: list[float],
     prediction: list,
@@ -109,6 +111,10 @@ def plot_prediction(
     pred_label: str = "预测值",
     quantity: str = "指标值",
     out_stem: str | None = None,
+    *,
+    t_label: str = "时间 / 期",
+    ci_label: str = "95% 置信区间",
+    panel_titles: tuple[str, str] = ("(a) 拟合", "(b) 残差"),
 ) -> tuple[Path, Path]:
     """绘制预测拟合图（上: 时间序列+置信带; 下: 残差）并保存 PNG+SVG+PDF 三格式,
 
@@ -121,6 +127,12 @@ def plot_prediction(
         actual_label/pred_label: 图例文案。
         quantity: 指标名（进 y 轴标签）。
         out_stem: 输出文件前缀; None 时写系统临时目录。
+        t_label: 时间轴名（仅限关键字; 3.0.1 参数化, 默认 "时间 / 期";
+            如 "时间 t (h)"）。ci_label: 置信带图例文案（仅限关键字;
+            3.0.1 参数化, 默认 "95% 置信区间"; 换置信水平或口径时传新文案）。
+        panel_titles: 上/下子图短标题（仅限关键字; 3.0.1 参数化, 默认
+            "(a) 拟合"/"(b) 残差"; 多面板短标签 ≤6 中文字符当量,
+            图名仍进 caption）。
 
     Raises:
         ValueError: 数据为空 / 长度不齐 / 含非有限值 / split 越界 /
@@ -153,6 +165,10 @@ def plot_prediction(
     _check_finite(list(t), "t", allow_none=False)
     if split is not None and not (0 < split < n):
         raise ValueError(f"split 分界索引需在 (0, {n}) 内, 实际: {split}")
+    # 预校验（必须在 apply_style() 之前）: prediction 全为 None 时下子图无残差可画。
+    # 校验留在这里, 失败路径既不碰全局 rcParams 也不白建一张图。
+    if not any(v is not None for v in prediction):
+        raise ValueError("prediction 全为 None: 无法计算残差, 请至少给出一段预测值")
 
     apply_style()
     colors = load_palette("cool_nature")
@@ -183,14 +199,14 @@ def plot_prediction(
         hi = np.ma.masked_invalid(
             np.array([np.nan if v is None else v for v in ci_hi], dtype=float))
         ax_top.fill_between(x, lo, hi, color=orange, alpha=0.18, linewidth=0,
-                            zorder=2, label="95% 置信区间")
+                            zorder=2, label=ci_label)
     # 预测曲线只取有限子集绘制, 避免 NaN 断点数据进入线段几何
     ax_top.plot(x[pred_mask], pred_raw[pred_mask], color=orange,
                 linewidth=1.7, linestyle="--", zorder=5, label=pred_label)
     if split is not None:
         ax_top.axvline(x[split], color=split_line, linestyle=":", linewidth=1.1,
                        zorder=3)
-    ax_top.set_title("(a) 拟合")  # 多面板短标签 ≤6 中文字符当量, 图名进 caption
+    ax_top.set_title(panel_titles[0])  # 多面板短标签 ≤6 中文字符当量, 图名进 caption
     ax_top.set_ylabel(quantity)
     ax_top.legend(loc="upper left", bbox_to_anchor=(1.005, 0.985),
                   frameon=True, fontsize=9)
@@ -198,14 +214,12 @@ def plot_prediction(
 
     # ---- 下子图: 残差散点（仅对预测非空段） ----
     res = act[pred_mask] - pred_raw[pred_mask]
-    if res.size == 0:
-        raise ValueError("prediction 全为 None: 无法计算残差, 请至少给出一段预测值")
     ax_bot.axhline(0.0, color=zero_line, linewidth=1.1, zorder=2)
     if split is not None:
         ax_bot.axvline(x[split], color=split_line, linestyle=":", linewidth=1.1,
                        zorder=1)
     ax_bot.scatter(x[pred_mask], res, s=17, color=blue, alpha=0.85, zorder=3)
-    ax_bot.set_title("(b) 残差")
+    ax_bot.set_title(panel_titles[1])
     base = quantity.split("（")[0].strip() or quantity
     ax_bot.set_ylabel(f"残差（{base}）" if "（" in quantity else f"残差 / {quantity}")
     # 残差全 0(完美预测)时保底 ±1e-6, 避免 set_ylim(0,0) 退化图退化
@@ -213,7 +227,7 @@ def plot_prediction(
     ax_bot.set_ylim(-rmax * 1.7, rmax * 1.7)
     ygrid(ax_bot)
 
-    ax_bot.set_xlabel("时间 / 期")
+    ax_bot.set_xlabel(t_label)
     # 共享 x: 上轴隐藏刻度文字, 只在下轴显示
     ax_top.tick_params(labelbottom=False)
     return _save(fig, out_stem, "make_prediction_fit")

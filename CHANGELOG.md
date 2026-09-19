@@ -4,6 +4,242 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)。
 
+<!--
+同步清单（v2.8.0 起的硬性模板，写新条目前先读）：
+每个条目末尾必须列"本变更必须同改的文件"，漏列 = 评审打回。典型三类：
+1. 必停点变更 → 同改 SKILL.md（必停点协议）+ scripts/check_gate.py
+   + references/stage_05_subproblem_loop.md + references/decision_ui_map.md
+   （条目 JSON 形状另同步 references/workspace_protocol.md §12）；
+2. 版本号变更 → 同改 SKILL.md（标题+版本段）+ CHANGELOG.md（本文件首条）
+   + README.md（徽章+开发日志表）+ .claude-plugin/plugin.json + .codex-plugin/plugin.json
+   （tests/test_version_sync.py 会拦漏改）；
+3. 图表模板数量/路由变更 → 同改 references/figure_skill_bridge.md（顶部总路由表）
+   + SKILL.md（图表任务加载行，只写指针不写死数量）+ templates/figures/gallery/README（计数）。
+其他易漏点：归档/移库文件 → grep 旧路径清零（tests/test_doc_links.py 会拦残留）；
+竞赛经验统计 → 同步该赛 empirical.json + empirical_notes.md + winning_patterns.md。
+-->
+
+## [3.1.0] 建模流程与导出修复（2026-09-19）
+
+- 精简入口和阶段文档，保留关键确认、数字回源和逐页验收。
+- 修复绘图兼容、数字回检、引用处理及 Word 导出问题。
+- 补齐文档处理依赖，更新安装说明和首页，完善分发过滤。
+
+回归验证：651 项通过，1 项可选依赖跳过，1 项真实联网测试排除。
+
+### 技术记录
+
+本轮在已有实现上修复与精简，保留六必停点、恢复、冻结/回源、用户输出链、图表与逐页视觉终验。
+
+- 入口与阶段页改为按任务/章节加载，权威正文去重迁移；实际规模与读取实验分开报告，不用静态折算或测试数量证明效率。
+- 修复旧绘图位置参数兼容、数值格式、甘特单位/小数、异常 rc/Figure 清理与目录检查中断；旋转文字矩形相交只警告，收敛档差标注不再冒充点值。
+- 数字回检以明确主张绑定优先，修复小差值冲突被全局同值覆盖、来源路径越界和极小数异号混淆；复用已有来源登记，区分值证据与仅登记路径。
+- Word 按政策保留正确正斜混排，逐节版心与保守编号处理、表格排版、秒级终稿独占输出、并发转换临时目录；共享 Markdown 文献发现、围栏/区段与编号口径。
+- 分发改为显式白名单、敏感目录排除、Junction 剪枝、日志路径脱敏、最终 staging 扫描/指纹及失败不混入既有候选。真实案例原件保留而默认排公开包；扫描不是完整去敏证明。
+
+**历史条目纠偏（以下旧记录保留为历史，不能作为当前实现契约）**：原 A4 的“40%矩形判真叠印”已撤销；A5 不再以统一5%差值带豁免明确冲突；字体不是无条件正体；C6 的10倍/20%仅示例默认可配置；D2 秒级独占仅验证终稿导出，审阅导出仍旧；C7 来源覆盖已补值证据/路径登记区分，但不是全自动语义溯源。原“26项”与分组编号并不一致，本次不沿用该总数作完成量。图表和摘要失效传播仍须流程回源，不自动改论文。
+
+**验证边界**：独立语义复核、隔离合成测试与真实渲染视觉验收分别记录。前向S3保留原失败及另存返工证据；候选式 claim 检查的通用对象语义仍有限。读取实验受共享上下文、在途变化与基线污染影响，不声称严格A/B或30%–50%读取降幅。缺依赖、未测、警告均不冒充通过。完整本地验收及恢复记录置于 maintenance 目录（默认不分发）。
+
+**本变更同改的文件**：`SKILL.md`、`README.md`、本条、阶段与权威协议、`scripts/` 相关检查/Word/分发模块、绘图模板及对应测试；规则迁移索引见 `docs/maintenance_notes.md`。两份 plugin 元数据版本同步为3.1.0。
+
+### 2026-09-18 原始记录：实战缺口机器拦截专项（历史）
+
+依据 2026 国赛 A 题《药材的烘干问题》全流程实战重跑（出图→写作→终审，含跨家族 bug-reviewer 复审与五席位评委 panel）+ 台账 S-01～S-15 + 用户呈现层反馈七项，把"开卷即见"的硬伤逐一变成机器可拦的检查。逐项依据与状态见工作区 `skill优化清单_v3.0.1.md`。
+
+**A 质检门禁（8 项）**
+- A1 `pdf_qa.py --artifact-scan`（默认开）: 文本层 7 类构建事故指纹（`##` 残留、管道表源码、HTML 残片、`\times`/`imes` 类 LaTeX 残骸、裸控制字符、引用断链占位）任一命中即 ❌。
+- A2 `export_final_docx.py` 前置 md 卫生 lint: 标题/题注前缺空行自动补（打印 diff 摘要）、TAB 与奇数 `$` 报错退出、>28 字符无断点长 token 警告（表格列断行点）。实测三起事故（整表以源码形态印出、`## 问题二` 印成正文、`9.1imes10-5`）全部拦在导出前。
+- A3 `scripts/docx_presentation_postprocess.py` 沉淀并接线: `export_final_docx --presentation`（默认开）在导出尾部自动跑呈现层后处理；`docx_to_pdf.py` 转换前检测漏跑并警告；幂等（第二遍 0 处理）。
+- A4 `figqa.py` 第七类 artist-bbox 遮挡: text×inset / text×legend / legend×text / 刻度标签互压按面积阈值报 ❌，legend×line 报 ⚠️（S-10 inset 整块盖住穿越点标注、色条刻度叠印 8.9px 都曾漏检）。**旋转刻度标签按占比判据**：|rotation|>1° 的标签其轴对齐 bbox 相邻必然相交（现场回归实测 125–1048px² 而字形不重叠），改按"重叠 > 较小框面积 40%"判真叠印，未旋转仍按绝对面积严判（S-20）。
+- A5 `docx_number_recheck.py` 缩写分级: ≥3 位有效数字的冻结项"仅见缩写"升为 stage 9 必查清单；A 级冲突加**相对差 ≥5%** 带（同前缀邻近值是显示精度差异、非冲突），新增 A-候选非阻断档与 A/B/C 三级报告；真阳性（0.7403/0.7 歧义）仍拦。
+- A6 `consistency_audit.py` 认 docx 链题注语法（`: 表 N` / `![图 N …]`）并做式编号闭环；对本次工作区 92 条误报归零。
+- A7 `figure_lint.py` 豁免通道: R9 对等值线数值标签（`QuadContourSet.labelTexts` 归属）与"纯数值+单位"串豁免——后者为**词法判定**：token 先剥离数值语法（含科学计数法 `1.2e-05`）与装饰（含单位幂 `m^2`），剩余须是单位词（白名单 + `kg/kg`/`m/s`/`W/(m·K)` 组合，micro sign U+00B5 与希腊 mu U+03BC 归一），故 `30 ℃`/`123456.789 Hz` 豁免而 `Model improves after 10 iterations` 仍计注释（S-11/S-18/S-19）；R4 增 `--grid-annotate` 声明位；`--strict` 改为只拦 error、warn 列清单，`--strict-warn` 保留旧语义。
+- A8 新增 `scripts/ref_order_audit.py`: GB/T 7714 首引顺序审计（首引序列须 1..N 递增、孤立文献、零引用主章），并入 stage 8/9 机检。
+
+**B 模板与资产（5 项）**
+- B1 25 件数据图模板版式决策参数化: 轴名/脚注文案/面板标题/参考线图例文案/图例位置统一暴露入参，默认值 = 原字面量（向后兼容）；`panel_label()` 返回 Text 对象。项目侧薄封装可退化为直接调用。
+- B2 `make_threshold_inversion` 修复项入库: inset 四角自适应避让标注/图例 + `star_symbol` / `star_value`（印冻结值防末位漂移）。
+- B3 `build_reference_docx.py` Normal/Body Text `space_after` 默认 0（中文首行缩进+零段距惯例），`--loose` 保留旧行为。
+- B4 图内字体正斜随全文政策: `figkit.apply_style(upright_math=True)` 与 mplstyle 注释开关（默认仍斜体 = golden 行为），设计卡第 ④ 要素登记政策。
+- B5 docx 链表格呈现五项（三线/自适应/居中/行禁拆/单元格零缩进零段距单倍行距）源头（reference.docx `Table` 样式）+ 后处理（Step C/D/E）双落地。
+
+**C 流程与协议（7 项）**
+- C1 D.1 图表菜单允许四问合并单轮拍板（`menu_form` 扩展字段入 workspace_protocol §12；仍逐问登记、必停点性质不变）。
+- C2 "识图先行"写进委派协议（golden 样张先由视觉通道转版式锚点描述再入 prompt；禁止只给路径让无视觉执行器自读）。
+- C3 视觉验收派发协议: `pdf_qa --page-map` 机器提取"页码→首行关键词/图表编号"映射表随 prompt 给出；验收对象一律带时间戳副本、禁止同名覆盖。
+- C4 stage 5 验证维度加"正文公式 = 生产代码离散形式"逐条对照（panel math_rigor 的 P1 发现，全链最贵返工）。
+- C5 冻结协议补强: `freeze_numbers` locator 试解析（解析不到给 warn）、`check_gate` 评分时效软检查。
+- C6 参数档网格充分性硬规则: 边界层敏感量跳变 >10× 的档必须先做粗/细网格检验，同一时刻关键量相对变化 >20% 判欠分辨、剔除出排序；可运行模板 `templates/shared/code_starter/simulation.py` 第 6 节。
+- C8 写作 AI 味模式库增补**版式层四类**（段落长度均匀/加粗层级失效/枚举骨架/结构套话）与可运行自查，stage 8 自查升为十四类。
+
+**D 脚本健壮性（3 项）**
+- D1 新增 `scripts/skill_paths.py` 作为根路径唯一真源: 按调用路径推导（`.codex`/`.zcode` 两份安装并存时报告当前使用的那份），`--list`/帮助文本运行时拼路径，启动打印 `[skill] root=…`；全仓库禁用写死用户目录绝对路径。
+- D2 导出时间戳精度到秒（`%H%M%S`），护栏只拦完全同名（原分钟级导致两次 `sleep 62`）。
+- D3 `consistency_audit` 符号脱节白名单（代码围栏与常用哑变量豁免，246 条误报归零）。
+
+**E 规范文档（5 项）**：E1 md 空行/字符卫生规范（`md_authoring_spec` §3/§3.1）、E2 公式编号 docx 链实现与自查（`cn_presentation_spec` §5.1）、E3 公式正斜二选一政策（§5.6）、E4 图注唯一来源协议（图表登记表"终稿图注"列 + stage 8 只许逐字复制）、E5 表格断行控制（并入 A2/B5）、E6 图与图注同页与页尾留白指引（§7.6 + 导出后处理 Step F `keepNext`）。
+
+**测试**：459 passed（本版起点 258）+ 新增 `test_presentation_postprocess` / `test_export_md_lint` / `test_pdf_qa_artifacts` / `test_figqa_artist_bbox` / `test_docx_number_recheck` / `test_consistency_audit_docx` / `test_ref_order_audit` / `test_freeze_locator` / `test_reference_docx_styles` / `test_template_params` / `test_skill_root_resolution` / `test_figkit_upright_math` / `test_grid_sufficiency_template` / `test_threshold_inversion_regression`；回归用例一律取本工作区事故现场（`_archive/` 旧稿与 `.bak` 中间态）。
+
+**本变更必须同改的文件**：`SKILL.md`（标题+版本段+图表能力速览）、`CHANGELOG.md`（本条）、`README.md`（徽章+开发日志）、`.claude-plugin/plugin.json`、`.codex-plugin/plugin.json`（版本五处，`test_version_sync.py` 拦漏改）；`references/cn_presentation_spec.md`（§5.1/§5.6/§6.1/§6.2/§7.6）、`references/md_authoring_spec.md`（§3/§3.1）、`references/workspace_protocol.md`（§7 终稿图注列、§12 menu_form）、`references/stage_04/05/06/08/09`、`references/figure_skill_bridge.md`、`references/parallel_dispatch.md`、`references/ai_flavor_removal.md`、`competitions/cumcm/phrase_bank.md`、`scripts/`（新增 `skill_paths.py`、`ref_order_audit.py`、`docx_presentation_postprocess.py` 等）、`templates/`（25 件模板 + mplstyle + code_starter）、`tests/`。
+
+## [3.0.0] 图表叙事专项：设计卡 + 作战地图 + 判据线纪律 + 示意图草稿通道 (2026-09-16)
+
+依据 2025 华为杯 21 篇优秀论文 598 张图页全量分析（A-F 六组精读，实测记录存于用户工作区 `_figcompare/` 与讨论稿，不入库）。
+
+**规范（图叙事章，`references/figure_skill_bridge.md` 新增）**
+- 两个分野总原则：数据图=代码生成+门禁；示意图=草稿+可编辑源文件（drawio>SVG>PNG）+人工精修回贴（`*.draft.drawio` 命名协议，stage 8 只收已精修版）。
+- 图叙事设计卡五要素（回答什么问题/图型/证据层/注释预算/评委一眼所见）：stage 5 出图前必填，登记真源.md 图表登记表"设计卡"列（`workspace_protocol.md` §7 同步加列）；D.1 图表菜单加第 3 问"叙事结构确认"（narrative 摘要字段，纯记录不入门禁）。
+- 作战地图强制件：每篇 1 张整页 graphical abstract（三问题色带+因果箭头+嵌真实结果），stage 2 登记必选、stage 8 生成，本身走草稿通道。
+- 判据线纪律（阈值/判据/基线必画进图）+ 配色语义表（`color_typology.md` 新增：判据=红虚线/基线=灰黑虚线/主模型=主色/对照=对色或灰；硬规则 10 收限为点/区域强调）。
+- 对照式构图优先（有对照关系默认同坐标对照面板）；量化标签（过程图带计数、柱顶标值、图例带 R²/N）；用途类型四类（答案图强制"可核验"三选二）；不学清单（不贴教材/AI 图、不刷低增量重复面板、图题编号引用逐条核对、禁纵轴截断）。
+- 出图委派协议三条扩五条（`parallel_dispatch.md` 挂接点 3.5：+设计卡五要素、+示意图只交草稿）。
+
+**模板与门禁**
+- 数据图模板 17→25 件：物理场 6 件（field-contour / profile-family / threshold-inversion / convergence-sequence / contrast-pair / route-on-field）+ 场景 2 件（answer-grid 结果交付网格 / before-after 前后对照），全部接入 render_modeling_pack 并过 figqa/figure_lint 双门。
+- drawio 模板 6→7 件：作战地图 `graphical_abstract_3band`（三问题色带 content JSON 驱动，默认交付 .draft.drawio）。
+- `figure_lint.py` 新增 R9 注释预算检查（数据图面板解释性文本 >2 条 warn，判据线图例与量化标签豁免，示意图经 --allow-box-labels/--schematic 豁免）。
+- gallery：8 件新模板基线 PNG + ga3band drawio 基线入库；新增 `golden/` 范式样张 7 张（4 张实战返工成品 + 3 张新模板样张，每张注明对应图叙事纪律）。
+
+**测试**：`tests/test_new_figure_templates.py`（8 模板 smoke + `_first_crossing` 边界 4 用例）、`tests/test_figure_lint_r9.py`（R9 回归 6 用例含极轴类别标签）、`tests/test_drawio_graphical_abstract.py`（JSON schema+门禁）。
+
+**复审修正（跨家族语义复审后）**：`make_field_contour` 非共享色标多面板改每面板独立 colorbar（原单条会静默误导）；`figure_lint` R9 加极轴类别标签豁免（`ax.name == "polar"` 且 r≥0.9·rmax，修雷达图误报）；`make_threshold_inversion` 补末档点恰压阈值的穿越定位与标注防溢出；cn_spec §7.2 注释预算措辞定版（量化标签不计）；配色语义表补"连续/发散色标端色不作语义定向"；清理 gallery 前缀散落文件。
+
+> 本变更同改文件：references/figure_skill_bridge.md + references/stage_05_subproblem_loop.md
+> + references/stage_02_analysis.md + references/stage_08_writing.md + references/cn_presentation_spec.md
+> + references/color_typology.md + references/parallel_dispatch.md + references/README.md
+> + references/workspace_protocol.md + templates/figures/scripts/(模板×8+两个 dispatcher)
+> + templates/figures/scripts/drawio/make_drawio_graphical_abstract.py + templates/figures/gallery/
+> + scripts/figure_lint.py + tests/×3 + 版本五处（SKILL.md/CHANGELOG/README/plugin.json×2）
+
+
+## [2.9.1] 写作期终稿链选择 (2026-09-16)
+
+- `decision_log` 新增正交字段 `final_chain`（`tex` 默认 | `docx`）：stage 8 样张先行时以编号菜单确定终稿链（`references/stage_08_writing.md` 新增"终稿链选择"节）；写作全程仍写 md 真源，选择只影响 stage 8 出口的渲染与终检路径。
+- `references/docx_final_channel.md`：入口条件 3 增补——`final_chain=docx` 与 `docx_channel=true` 等价，任一为切换声明；`references/stage_09_review.md` Step 2 补终稿链口径（final_chain=docx 时验收以 docx 版 PDF 为对象，tex 专属检查跳过、改跑 docx_number_recheck）。
+- 冻结完成前任何链下禁止人改 docx 的护栏不变。
+- 新增 `tests/test_final_chain_template.py`（模板字段默认值/枚举注释/schema 版本不变 4 用例）。
+
+> 本变更同改文件：templates/shared/decision_log.json + references/stage_08_writing.md
+> + references/docx_final_channel.md + references/stage_09_review.md
+> + tests/test_final_chain_template.py + 版本五处（SKILL.md/CHANGELOG/README/plugin.json×2）
+
+
+## [2.9.0] docx 终稿通道：冻结后 Word 终改 + 数字回检门禁 (2026-09-16)
+
+> 依据 `讨论稿_skill改进_20260915.md` §4 的 5 个缺口（终改只能在 LaTeX 源里做、
+> 只会 Word 的用户被排除在终稿环节外、docx 审阅件无法升为终稿介质等，已端到端实测定位）。
+> 定位：md 真源 → docx 终稿（人改呈现层）→ PDF → 终检；审阅件模式（export_docx.py）默认行为不变。
+
+**新增脚本 (scripts/)**
+- `export_final_docx.py`：md → docx 终稿。缺省自动发现升级（`NN_*.md` 数字前缀系列自然排序，回退 main.md/sections 约定）；pandoc 之前做图/表编号注入（图 alt 加"图 N "、表 `: 题注` 加"表 N "，按文档出现顺序、幂等，无题注管道表收警告不打号——与 LaTeX 链口径一致，实测对账图 10/表 7/文献 20 三项齐平）；`\tag{N}` 归一 `\qquad (N)`（同 export_docx）；参考文献 `\bibitem` 行转 `[N] ` 列表、参考文献/附录章标题合成并豁免编号（pandoc `{-}`）；pandoc `--number-sections --shift-heading-level-by=-1`；pandoc 之后 python-docx 插标题块（黑体三号居中标题 + 题号/队号行 + "摘　要"标题段）并在正文第一章前分页；默认挂 `templates/docx/reference.docx` 样式基准。
+- `docx_to_pdf.py`：Word COM 主路径（pywin32 只读打开 → SaveAs FileFormat=17 → try/finally Quit 防进程残留）→ PowerShell COM 单行兜底 → soffice 无头兜底；pymupdf 打印页数。
+- `docx_number_recheck.py`：终稿数字回检。硬门禁=冻结表每条数字（或 display 字段）必须在 docx 全文出现（规范化：千分位/负号/上标；科学记数法等价匹配复用 claim_consistency 的 `_sci_traced` 思路，实测 docx 的 `$2.30\times10^{-13}$` OMML 展平为 "2.30imes10-13" 可命中 `2.30e-13`）；原值未见但存在非零缩写形态（如 -4.8822 摘要写 4.88）走 warn 不 FAIL；软检查=≥4 位有效数字的结果样新数字清单（纯整数/年份/display 公式常数豁免）。文本提取按文档序并入 OMML m:t 并在公式块间补分隔，防相邻公式展平粘连把指数串位。缺失即 exit 1。
+
+**新增模板与协议**
+- `templates/docx/build_reference_docx.py` + 生成产物 `templates/docx/reference.docx`（脚本一并入库可再生成）：pandoc 默认 reference.docx 为底，A4 四边 2.5cm、页脚居中 PAGE 域、宋体小四 + Times/1.3 行距/首行缩进 2 字符/两端对齐、黑体黑色 H1-3（16/14/12pt，H1 居中）、题注宋体 9pt 居中。
+- `references/docx_final_channel.md`：通道唯一权威源（入口条件三条/人改白名单与禁区/三步终检/回退条款/与审阅件模式关系/何时不该用/故障兜底）。
+
+**既有文档挂接（各一指针，不重述规则）**
+- `SKILL.md`：实战入口路由表加"想用 Word 终改/出 docx 终稿"行；stage 8 加载行末尾加 docx 通道指针。
+- `references/workspace_protocol.md` §3.1：加"终稿通道例外"段（登记 docx_channel=true 后 docx 升为终稿介质，纪律=数字回检门禁）。
+- `references/cn_presentation_spec.md` §10：加"终稿链二选一（tex/docx），20 条对 docx 版 PDF 同样适用"。
+- `references/submission_checklists.md`：通用终检表表下注加 docx 通道检查项（不占行号，防引用断裂）。
+- `references/README.md`：R 表登记 R13（docx 终稿通道 → docx_final_channel.md）。
+
+**测试**
+- 新增 `tests/test_export_final_docx.py`（编号注入文档序号语义/混合编号占号/编号冲突报错/幂等/无题注警告/```与~~~变长围栏免疫/标题合成/摘要标题豁免/dry-run 无 pandoc 可跑/真链路导出验标题块与题注样式，pandoc 或 python-docx 缺失时 skip）、`tests/test_docx_number_recheck.py`（缺失 exit 1/在则 exit 0/带符号与中文边界 token/缩写完整 token 匹配/e 记法与 ×10 形态分列/下溢 log10 域/表格数字/纯 JSON 输出/退出码 2 口径）与 `tests/test_docx_to_pdf.py`（假转换器单测：静默失败不得把旧 PDF 当成功、失败降级下一条、临时目录原子替换与清理、退出码 1/2 分流）。
+
+**复审修正（bug-reviewer 返工 6×P1 + 4×P2，含最小反例回归）**
+- P1-1 编号注入改"文档序号"语义：已有编号项同样占号，与序号不一致抛 NumberingConflict（不静默重号）；P2-7 围栏状态机支持 ~~~ 与变长反引号，编号与标题预处理共用。
+- P1-2/P1-3/P1-4 数字回检 token 层重写：带符号完整 token（-4.8 命中、-2.30×10⁻¹³ 不得匹配 2.30e-13）；中文紧邻不算词边界、拉丁标识符紧邻仍排除；正文采集 e/E 记法统一进科学记数等价；等价比较改 (带符号尾数,指数) 对——常规域相对比较不设绝对容差下限，非零下溢/上溢走 log10 域，符号不同即不等。
+- P1-5 缩写回退改完整数值 token + 半末位区间判定（兼容 half-up/half-even），子串命中不再放行（104.88 ≠ 4.8822 的缩写）。
+- P1-6/P2-9 docx_to_pdf：各转换路径先输出到目标旁一次性空临时目录，确认新产物有效后 os.replace 原子落位（旧 PDF 不可能被当新转换成功）；假成功/无产物降级下一条；转换器存在但全失败=exit 1、全部不可用=exit 2。
+- P2-8 md 自带 "## 摘要" 标题：豁免编号；正文分页跳过摘要标题、落在第一个正文章标题；P2-10 上述全部固化为回归用例。
+
+**本变更必须同改的文件**：`scripts/export_final_docx.py`、`scripts/docx_to_pdf.py`、`scripts/docx_number_recheck.py`、`templates/docx/build_reference_docx.py`、`templates/docx/reference.docx`、`references/docx_final_channel.md`、`references/README.md`、`references/workspace_protocol.md`、`references/cn_presentation_spec.md`、`references/submission_checklists.md`、`SKILL.md`（路由表+stage 8 行+版本段）、`tests/test_export_final_docx.py`、`tests/test_docx_number_recheck.py`、`tests/test_docx_to_pdf.py`、`CHANGELOG.md`（本条）、`README.md`（徽章+开发日志）、`.claude-plugin/plugin.json`、`.codex-plugin/plugin.json`。
+
+## [2.8.0] 瘦身专项：指针化 + 归档/移库 + runtime 归档 + 治理机制 (2026-09-15)
+
+> 含先行落地的 Phase 0（冲突清零）。依据三方审计：deepseek-v4-flash 硬数据（111 处版本号、段落级重复率实测）、GLM-5.3 规则归属地图（18 主题）、GPT-5.6 对抗复审（推翻 5 项"看着安全实则危险"的删除提案）。病灶定性：同一规则主题被多文件各自立法后漂移成冲突——对策是"每主题唯一权威源 + 其余指针"，不是删文字。
+
+**Phase 0 冲突清零（先行落地，本条一并收录）**
+- 公式编号统一"默认全局连续"：`cn_presentation_spec.md` §5.1 收窄（章节式需 `\numberwithin`+登记），stage_08 示例改全局编号。
+- 图题格式定版"图 N 说明"（无冒号）：cn_spec §7.1 与 `md_authoring_spec.md` §3 对齐。
+- 摘要字数改"按 empirical 分位提示，不作硬门槛"：abstract_template / paper_skeleton / stage_08 / anti_patterns / rubrics / feedback_layer1 六处同改。
+- 删除 `competitions/cumcm/distilled_naming.md`（修饰词命名与证据纪律正面冲突，三方一致"删优于并"）。
+- 版本元数据同步 2.7.0（plugin.json×2 + README 徽章）。
+- gallery/README 计数修正。
+- SKILL.md stage 8 加载表摘除已判旧层的 distilled_structures/distilled_formats（"判而不摘"根因），残值迁移：formats §6 衔接句→stage_08、§5 中英混排空格→cn_spec §2.7、structures 章节模板卡→phrase_bank §13。
+- 45 条死链逐条修复（paper_skeleton 前缀错误、figure_skill_bridge 8 条、design_tokens 路径等 12 文件）。
+- ingest_papers/build_huashubei_cases 的正面引用改"历史流程已退役"口径。
+- distilled_formats §1/§2 加废止头注（归档前过渡保护）。
+
+**指针化（8 组，重复内容改一行指针，消除约 560 行双份维护）**
+- figure_skill_bridge 两处图内注释预算/图宽重述 → 指针 cn_spec §7.2/§7.3（保留工具侧门禁说明）。
+- stage_08 图名/caption 重述 → 指针 cn_spec §7；Phase 0 漏网的冒号式图题示例"图 X：…"改"图 X 说明"无冒号式。
+- design_tokens 删除 NEUTRALS 十行令牌副本 → 指针 color_typology §2.2；两文件头部互写管辖边界（色值=color_typology+palettes.py，字阶/版式/间距=design_tokens）。
+- SKILL.md 三段图表路由长重述（能力速览/Codex 入口图表行/加载协议三行）各压至 1-2 行；模板数量口径只在 figure_skill_bridge 与各 `--list` 维护，SKILL.md 不再写死数量。
+- stage_05 的 checkpoints 条目 JSON 4 份副本并一：schema 单点成文于 `workspace_protocol.md` 新增 §12（SKILL.md 必停点协议节的登记语义保留不动，agent 可达性优先），stage_05 四处改指针。
+- AGENTS.md 启动节（约 58 行）改"强制读取 SKILL.md Quick Start"指针；保留 harness 差异表与 cwd/skill 路径协议。
+- codex_practical_menu 常用说法路由表加"与 SKILL.md 实战入口路由表同源"注记（文件保留，懒加载设计）。
+- 页数口径 5 处重述（SKILL.md stage 8 行 / paper_skeleton 头注 / stage_09 三处）压成"指针 + 22-25 页（正文+参考文献，附录不计）"一句，权威源 cn_spec §1.6。
+
+**归档与移库（git mv 移动不删除，保持证据链）**
+- `docs/legacy/`：cumcm 旧写作辅助三件（distilled_phrases/distilled_structures/distilled_formats，残值已迁）、references/papers/README（改 `docs/legacy/papers_README.md`）、docs/architecture.md（设计理由——懒加载/证据隔离等——先摘入 workspace_protocol 新增 §13）。
+- `scripts/legacy/`：ingest_papers.py、build_huashubei_cases.py 移入并加 DEPRECATED 头注（已退役、不得再生成统计真值、保留复核用）；重建配方（profile 三类/18 条任务链/证据分级与 S1-S4 边界）写入 scripts/README"历史重建配方"节；build_huashubei_cases 的 SKILL_ROOT 改 parents[2] 保住手动运行能力。
+- `maintenance/`（按赛分子目录，不跨赛合并同名文件）：huaweibei star_papers_deep.md（1975 行）/ all_cases_manual_audit.md（1235 行）、cumcm case_library.md（278 行）/ all_cases_manual_audit.md（404 行）；同步改 evals/holdout_protocol.md 留出泄漏源路径（防评测污染）、两赛 README 与 writing_voice/writing_playbook 引用、distill_cumcm_cases.py 的 case_library 输出路径。
+- `docs/legacy/runtime/`：实验性薄执行器整目录归档（stage 3-8 未实现）；SKILL.md"多 Runtime 入口"节压缩为归档口径（保留"物理拦截需插件 hook"语义）；全库 runtime/mathmodel_agent 引用同步（score_artifact.py 注释改归档路径）；归档 README 加归档横幅。
+- 移库后全库 grep 旧路径清零（CHANGELOG 历史叙述豁免）。
+
+**治理机制（防"skills 打架"疫苗）**
+- 新增 `references/README.md`：一规则一家条款 + R1-R12 规则主题→唯一权威源对照表 + 判层必摘条款（判旧层必须同 PR 摘加载表与正面引用）。
+- 新增 `tests/test_version_sync.py`：断言发版五处版本号一致（SKILL.md 版本段/CHANGELOG 首条/README 徽章/plugin.json×2），已做改坏变红验证。
+- 新增 `tests/test_doc_links.py`：全库 .md 相对路径死链检查（收编 Phase 0 临时脚本；排除 docs/legacy、vendor、maintenance、CHANGELOG 历史叙述，豁免规则在文件头注释写清），已做改坏变红验证；顺手抓出并修复 5 处 ingest_papers 旧路径残留。
+- CHANGELOG 顶部加"同步清单"模板注释：每条目末尾必须列"本变更必须同改的文件"。
+
+**明确不做**（三方裁决）：不删 mechanism_distillation（build_stage_pack 携带其输出）；不动 huaweibei/source_manifest.json（distill 脚本硬读校验）；不把必停点登记语义搬出 SKILL.md；不删 huaweibei distilled_structures 摘要节（有依赖方）；不合并 codex_practical_menu（懒加载+harness 适配）；feedback L1-4 合并与 stage_05 重组留二期；竞赛间同名文件不跨赛合并。
+
+**回归**：`python -m pytest tests/ -q` 170 passed + 4 subtests（新增 2 个治理测试；runtime/tests 随目录移出 tests/ 发现面，不受影响）。
+
+**本变更必须同改的文件**（同步清单）：版本号五处（SKILL.md 标题+版本段、CHANGELOG 本条、README.md 徽章+开发日志、.claude-plugin/plugin.json、.codex-plugin/plugin.json）；归档移库引用面（AGENTS.md、SKILL.md、references/{figure_skill_bridge, stage_05_subproblem_loop, stage_08_writing, stage_09_review, workspace_protocol, codex_practical_menu, design_tokens, color_typology, cn_presentation_spec}、competitions/{cumcm,huaweibei,diangong,mcm} 下 README/empirical_notes/writing_voice/writing_playbook/phrase_bank/paper_skeleton、evals/holdout_protocol.md、scripts/README.md、scripts/distill_cumcm_cases.py、scripts/score_artifact.py）；治理新文件（references/README.md、tests/test_version_sync.py、tests/test_doc_links.py）。
+
+
+## [2.7.0] 呈现质量专项：呈现规范 + 编译链修复 + 页数口径统一 + 出图纪律 + 审计脚本误报修复 (2026-09-15)
+
+源自 2026 国赛 A 题《药材的烘干问题》全程实测（压力测试报告 T-01~T-09、自我纠错台账 S-01~S-08、用户格式反馈 10 条、与 2025 优秀论文 A196 的 64 页对照）。
+
+**新增**
+- `references/cn_presentation_spec.md`：中文竞赛论文呈现规范（cumcm/huaweibei/huashubei/diangong/apmcm 通用），stage 8/9 呈现层唯一权威源。十章：版面硬规范（页码页脚居中/禁用页眉/摘要独占页/行距≥1.25 禁止压缩凑页数/页数口径统一）、全角标点体系（含 grep 自查表）、摘要呈现（"针对问题N："导语段、关键结果加粗 6-12 处、"只读加粗复述答案"盲测）、标题体系（两种合法风格选定一致）、公式（居中+编号、超版心 80% 必拆、Overfull >5pt 清零）、表格（三线表/单元格居中/所有表必须编号且被引用）、图与图题（图题 ≤2 行、图内注释每面板 ≤2 条、图宽与物理高度下限）、正文写作 voice（重点前置：段首结论、每段 ≤6 行、结果段三步、假设 ≤8 条每条 ≤2 行）、验收门禁、终审 20 条清单。
+- Stage 8"样张先行"步骤（`stage_08_writing.md`）：全量写作前先产 1 页样张（摘要+一节正文）给用户过目风格；退出条件新增呈现规范 20 条自查与样张确认两条。
+- Stage 9"视觉基准对照协议"（`stage_09_review.md` Step 2）：用户提供优秀论文 PDF 作锚点，逐页对照摘要可扫读性/加粗密度/图占比/图题长度/版面留白/标点一致性。
+- Stage 5 风格试产比选（`stage_05_subproblem_loop.md` D.1）：首次出图前产 2 套风格样张用户拍板；C 节新增收敛性验证时程纪律（S-01：收敛扫描必须打到判据量成熟时程，不得跟着题面输出窗口走）。
+- Stage 6 参数档网格充分性检查（`stage_06_robustness.md` Step 4，S-05）：使边界层骤减的参数档必须单独做网格收敛检查，未通过从灵敏度排序剔除并如实标注。
+- 出图委派协议三条（`parallel_dispatch.md` 挂接点 3.5，T-05/S-08）：改动必重跑 figqa --strict 并贴原始输出；交付前逐张 Read 自检五项清单；figqa 通过=必要非充分必须声明。
+- `figure_skill_bridge.md` 图内注释预算与图宽/物理尺寸规则。
+- `scripts/renumber_equations.py`：公式编号增删后按出现顺序重排定义 + 打印引用清单供人工核对（`--root` 接口）。
+
+**修复**
+- pandoc 3.x 编译链（T-01，开箱即坏）：6 套 `templates/latex/*/main.tex` 与 `scripts/render_paper.py` 幂等注入 `\providecommand{\pandocbounded}[1]{#1}` + `array` + `calc`；负向对照实测剥掉三件套编译即失败，修复承重。
+- 页数口径三处统一（T-04/S-06）：`submission_checklists.md` cumcm 节（无硬上限按当年通知不作硬阻断）、`paper_skeleton.md`（22-25 页=正文+参考文献、附录不计）、stage_09 已有口径留指针；明令禁止以缩小行距/字号压缩版面凑页数。
+- `consistency_audit.py`（T-06/S-07）：图表引用闭环支持 LaTeX 自动编号——`\label{fig:N}/\label{tab:N}` 数字部分计入定义集；longtable 环境纳入 caption 计数序（此前 pandoc 表格全部漏定义）。
+- `pdf_qa.py`（T-07）：重复题注检查修复中文换行误报——行首命中后做题注形态判定（分隔符/接续词区分），同编号仅后续文本完全相同才算重复。
+- `figure_lint.py`（T-08）：R7 顶/右 spine 警告在存在 twinx 右轴时豁免（top 仍报）；R4 小热力图 colorbar 警告加触发条件矩阵规模 ≤16×16。
+- `claim_consistency_check.py`（T-09）：科学记数法等价匹配（e-13/×10⁻¹³/\times10^{-13} 同值）；只出现在 display-math 内的公式常数豁免；豁免与等价降级 info。
+- `md_authoring_spec.md` 避免清单补三条 pandoc 陷阱（T-02）：caption 必须紧贴表格否则丢表号；无题注 longtable 也占 table 计数器；手写 `\qquad (N)` 编号增删后必须全文重排。
+
+**摘要模板**
+- `competitions/cumcm/abstract_template.md`：段 3 改"针对问题N："导语式；新增"呈现要求"小节（关键结果加粗/标点全角/关键词格式）；自检清单 +3 项；完整示例整体改写（导语分段、关键数字加粗、全角标点）。
+
+**补完（同日二次，对照 2025 优秀论文 7 篇全量分析后）**
+- 图题格式定版为"图 N 说明"（无冒号，与 `md_authoring_spec.md` §3 一致，7 篇中 4 篇同式），`cn_presentation_spec.md` §7.1 定稿；公式编号定版"默认全局连续"（7 篇中 6 篇如此），同文件 §5.1 收窄。
+- 版本元数据同步：两个 plugin.json 与 README 徽章/开发日志 → 2.7.0。
+- `paper_skeleton.md`：新增"9. AI 使用说明"占位节（7/7 篇优秀论文均含 AI 披露，两式可选）与各问"5.x.4 模型总结"收束段占位（学自 B060/C023）；`stage_08_writing.md` §5 强制 checklist 加收束段一项；`submission_checklists.md` cumcm 节加 AI 披露检查行；外部实测引用统一注明"存于用户工作区不入库"。
+
+**回归**：tests/ 全量 169 passed + 4 subtests（1 个 OpenAlex 联网用例按环境跳过）；四脚本各附修复回归用例；6 套模板各自引擎编译通过；render_paper 全链三编零 Undefined control sequence、零 Overfull。
+**审查**：跨家族语义复审发现 5 项 P1 已全部修复并附探针证据——`_sci_traced` 超大指数 OverflowError 崩溃与 1e-300 容差下限吞真矛盾（改 log10 域回退 + 真相对容差）；R7 twinx 豁免从全图作用域细化到 axes 级（复用 `_twinned_with` grouper，混排图普通子图不再误豁免）；label 派生自动编号定义只进闭环不进"从未引用"告警（含 ":" 符号 token 同样跳过，纯 \label+\ref 文档零噪声）；stage_09 资格门页码口径与 cn_presentation_spec §1.2 对齐。另加代码围栏内 `$$` 不翻转 display-math 状态机保护。
+
 
 ## [2.6.0] 选型告知前移 + 文献检索默认触发 + 加载引用修通 (2026-09-11)
 
@@ -27,7 +263,7 @@
   - SKILL.md 加载协议由 8 个版本历史块重组为"通用与跨阶段 / 按 stage 加载表 / 竞赛专项"三段式（76→61 行，加载指令路径 token 差集为空；删除的仅为版本叙事与过期的"候选版新增 (未安装)"标签，其内容已随 2.4.0 转正）。
   - 元数据统一 v2.5.0：SKILL.md 标题（原漂移为 v2.3.0）、README badge（原 v2.2.0）与开发日志表补 2.3.0-2.5.0 三行、knowledge_workflow.md H1 去 0.7.3 前缀。
   - 陈旧引用修复：SKILL.md 路由表 scibox-diagram 补"分发版自动降级"注记；references/papers/README.md 两处 winning_patterns 路径改指 competitions/<comp>/。
-  - 删除运行残留：技能内 `.mimosa/`×2、`outputs/figures/_smoke_test.*`、`__pycache__`/`.pytest_cache`、Windows 保留名误建文件 NUL（内容经核对为 mechanism_reviews.json 子集，备份于 analysis/reorg_audit/salvage/）、`tests/test_prompts.json`（14 条行为提示词从未被任何测试加载，同目录备份）。
+  - 删除运行残留：技能内 `.mimosa/`×2、`outputs/figures/_smoke_test.*`、`__pycache__`/`.pytest_cache`、Windows 保留名误建文件 NUL（内容经核对为 mechanism_reviews.json 子集，备份于 analysis/reorg_audit/salvage/）、tests 目录残留的 test_prompts.json（14 条行为提示词从未被任何测试加载，同目录备份，该文件已随本条删除）。
   - `package_dist.py` 排除规则补 `.mimosa/` 与 `outputs/`（可再生产物不进分发包），test_evals 同步断言。
 - 外源文献检索层：`scripts/literature_scout.py` + 协议文档 `references/literature_scout.md` + 16 测试（OpenAlex 主检索 + Crossref 429/503 自动降级 + arXiv 预印本补充，stage 1/3/5 挂点，方法卡 literature-card-1.0）。审查后修复：journal 字段取期刊名（display_name）而非出版商、payload 增加 total_results 命中量级、SSRF 白名单、缓存降级回填、自包含声明加联网例外、限流口径更正为"匿名约 100 次/天"。
 - 回归：pytest 201 passed + 4 subtests（含 literature_scout 16 测试）；rubric 回归 6/6；quota_gaming_wide_scan 扫描面 10→15 文件（纳入 playbook 层）零命中。
@@ -82,7 +318,7 @@
 ### 变更
 
 - `templates/shared/decision_log.json`: schema 3.0 → 3.1——新增顶层 `checkpoints`（默认 `{}`，含 `_checkpoints_doc`）与 `interaction`（默认 detailed，含 `_interaction_doc`）
-- **全库活文档旧版本号统一**: 活文档（SKILL.md / references / templates / competitions / docs / runtime / AGENTS.md 等 60+ 文件）中 v7.x 旧线编号按 CHANGELOG 映射表统一转新编号线（v7.10.0→1.4.0、v7.9.x→1.3.x、v7.8.0→1.2.0、v7.7.x→1.1.0、v7.0-7.5→0.7.0-0.7.5、V6→0.6.0），共 285+ 处；`references/knowledge_workflow_v73.md` 更名 `knowledge_workflow.md`（4 处引用同步）；CHANGELOG 历史条目与映射表按"原文照抄"政策保留旧编号；`dist/` 发布快照冻结不动
+- **全库活文档旧版本号统一**: 活文档（SKILL.md / references / templates / competitions / docs / runtime / AGENTS.md 等 60+ 文件）中 v7.x 旧线编号按 CHANGELOG 映射表统一转新编号线（v7.10.0→1.4.0、v7.9.x→1.3.x、v7.8.0→1.2.0、v7.7.x→1.1.0、v7.0-7.5→0.7.0-0.7.5、V6→0.6.0），共 285+ 处；`references/knowledge_workflow.md` 由旧名 knowledge_workflow_v73.md 更名而来（4 处引用同步）；CHANGELOG 历史条目与映射表按"原文照抄"政策保留旧编号；`dist/` 发布快照冻结不动
 - SKILL.md: 版本头 v2.3.0；收敛准则 / 状态持久化两节加 check_gate 门禁引用；反例黑名单新增"必停点自问自答/跳过不登记（2025F 实测病根）"一行；加载协议加 v2.3.0 按需加载条目（skill_issues + check_gate）
 - stage_00（启动 5 问 + 目录初始化）、stage_02（审题呈现确认）、stage_03（选择卡拍板）各补必停点登记话术与 check_gate 放行引用，不重写既有流程
 
@@ -118,9 +354,9 @@
 
 把 scibox-diagram / scibox-figure / diagram-design 三个上游 skill 的**原样副本**内嵌进 mathmodel-studio（`templates/figures/vendor/`），从"蒸馏复刻"升级为"自写体系 + 原版引擎"双轨：skill 自包含，不再依赖兄弟目录安装。
 
-- **新增**：`templates/figures/vendor/{scibox-diagram, scibox-figure, diagram-design}/` 三个上游原样副本（上游更新时整目录替换，本地不改写）+ `vendor/VENDOR.md` 出处/许可证/使用纪律说明。scibox-diagram：论文示意图 drawio 4 模板（五带路线图/三栏框架/三栏阶段流程/横版任务流水线，content JSON 驱动，单模板 99+ 图元的高密度信息架构）+ 从零手写与高保真复刻纪律 + check_layout.py 体检 + 100 个 Tabler 图标；scibox-figure：11 件科研绘图复刻模板（cv-roc-ci / paired-raincloud / tpe-surface / marginal-grid 等本 skill 未覆盖图型）；diagram-design v2.6：39 类编辑级 HTML/SVG 图表（答辩/展示场景，LICENSE.upstream 已随附）
+- **新增**：`templates/figures/vendor/{scibox-diagram, scibox-figure, diagram-design}/` 三个上游原样副本（上游更新时整目录替换，本地不改写）+ `templates/figures/vendor/VENDOR.md` 出处/许可证/使用纪律说明。scibox-diagram：论文示意图 drawio 4 模板（五带路线图/三栏框架/三栏阶段流程/横版任务流水线，content JSON 驱动，单模板 99+ 图元的高密度信息架构）+ 从零手写与高保真复刻纪律 + check_layout.py 体检 + 100 个 Tabler 图标；scibox-figure：11 件科研绘图复刻模板（cv-roc-ci / paired-raincloud / tpe-surface / marginal-grid 等本 skill 未覆盖图型）；diagram-design v2.6：39 类编辑级 HTML/SVG 图表（答辩/展示场景，LICENSE.upstream 已随附）
 - **变更**：`references/figure_skill_bridge.md` 顶部新增图表能力总路由表——论文示意图高密度交付默认走 vendor scibox-diagram；自写 drawio 6 模板保留为轻量快速路径；数据图仍以自写 17 件为默认（统一色板 + figqa/figure_lint 硬门），缺图型转 scibox-figure；答辩/网页/海报走 diagram-design；照图复刻走 scibox-diagram replication 路径
-- **许可证注意**：sci-box 上游仓库未附正式 LICENSE 文件（README 宣称开源，Tabler 图标 MIT 见 ATTRIBUTION.md）；再分发 mathmodel-studio 前须确认上游补证或将 scibox-* 移出分发包，详见 `vendor/VENDOR.md` §5
+- **许可证注意**：sci-box 上游仓库未附正式 LICENSE 文件（README 宣称开源，Tabler 图标 MIT 见 ATTRIBUTION.md）；再分发 mathmodel-studio 前须确认上游补证或将 scibox-* 移出分发包，详见 `templates/figures/vendor/VENDOR.md` §5
 - **验证**：vendored scibox-diagram framework_3col 从 vendor 路径生成 131 图元 .drawio 且其 check_layout FAIL 0 / WARN 0；vendored scibox-figure taylor-diagram 三格式渲染通过（默认输出写其自身 绘图复刻/outputs/，路由文档已注明产物须移出 vendor）；自写体系自测无回归
 - 自写体系（v7.8 色族 / v7.9 版式令牌与门禁 / v7.9.1 字重层级与两段式卡）全部保留：自写管 LaTeX 正文三格式出图与竞赛工作流，vendor 管高密度 drawio 与展示级 HTML
 

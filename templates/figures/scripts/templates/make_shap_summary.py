@@ -52,7 +52,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-# figkit 位于本脚本上级目录 (scripts/), 注册后方可 from figkit import ...
+# figkit 位于本脚本上级目录 (scripts/), 注册后方可 from figkit import ..., restore_style_on_error
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from figkit import apply_style, load_neutral, load_palette, save_fig
 
@@ -75,6 +75,7 @@ def _demo_shap(n_samples: int = 200, n_features: int = 20, seed: int = 20240901)
     return shap_values, features, names
 
 
+@restore_style_on_error
 def plot_shap_summary(
     shap_values: np.ndarray,
     features: np.ndarray,
@@ -83,6 +84,7 @@ def plot_shap_summary(
     palette: str = "academic_blue",
     title: str | None = None,
     out_prefix: str | None = None,
+    note: str = "SHAP > 0 表示推高预测",
 ) -> list[str]:
     """调用 shap.summary_plot 绘制摘要图并三格式导出, 返回写出路径列表。
 
@@ -96,6 +98,8 @@ def plot_shap_summary(
         title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
             保留参数仅为兼容旧调用, 不再渲染。
         out_prefix: 输出前缀(不带扩展名); None 时写系统临时目录。
+        note: 左下角方向性脚注（3.0.1 参数化, 默认"SHAP > 0 表示推高预测";
+            解释口径不同时改写, 传空串可关闭）。
 
     Raises:
         ValueError: mode 非法 / 矩阵形状或特征名数不齐。
@@ -128,8 +132,8 @@ def plot_shap_summary(
             shap.summary_plot(shap_values, features=features, plot_type="bar", **common)
         fig = plt.gcf()
     # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
-    fig.text(0.01, 0.01, "SHAP > 0 表示推高预测", fontsize=8,
-             color=load_neutral("faint"))
+    if note:
+        fig.text(0.01, 0.01, note, fontsize=8, color=load_neutral("faint"))
     if out_prefix is None:
         out_prefix = str(Path(tempfile.gettempdir()) / "mathmodel-figs"
                          / f"make_shap_summary_{mode}")

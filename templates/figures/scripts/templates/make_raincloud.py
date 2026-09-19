@@ -54,6 +54,7 @@ from figkit import (
     despine,
     load_neutral,
     load_palette,
+    restore_style_on_error,
     save_fig,
 )
 
@@ -92,6 +93,7 @@ def gaussian_kde(values: np.ndarray, grid: np.ndarray) -> np.ndarray:
     return dens
 
 
+@restore_style_on_error
 def plot_raincloud(
     groups: list[tuple[str, np.ndarray]],
     palette: str = "academic_blue",
@@ -123,12 +125,14 @@ def plot_raincloud(
             raise ValueError(f"组 '{name}' 样本数 {values.size} < 8, 无法估 KDE")
         if not np.all(np.isfinite(values)):
             raise ValueError(f"组 '{name}' 含非有限数值(NaN/inf)")
-    apply_style()
+    # 色板容量预校验: 提前到 apply_style() 之前（load_palette 不建图, 失败路径
+    # 因此不碰全局 rcParams, 也不留下半张图）
     colors = load_palette(palette)
     if len(groups) > len(colors):
         raise ValueError(
             f"组数 {len(groups)} 超过色板 '{palette}' 的 {len(colors)} 个可用颜色"
         )
+    apply_style()
     rng = np.random.default_rng(seed)
 
     fig, ax = plt.subplots(figsize=FIGSIZE["wide"])

@@ -52,6 +52,7 @@ from figkit import (
     apply_style,
     load_neutral,
     load_palette,
+    restore_style_on_error,
     save_fig,
 )
 
@@ -110,6 +111,7 @@ def _arc_r(sigma_obs: float, d: float, theta: np.ndarray) -> np.ndarray:
     return sigma_obs * np.cos(theta) + np.sqrt(np.maximum(radicand, 0.0))
 
 
+@restore_style_on_error
 def plot_taylor(
     obs_sigma: float,
     models: list[tuple[str, float, float]],
@@ -117,6 +119,7 @@ def plot_taylor(
     rmse_levels: tuple[float, ...] = RMSE_LEVELS,
     title: str | None = None,
     out_prefix: str | None = None,
+    note: str = "径向 = 标准差 σ　角度 = arccos(相关系数 r)",
 ) -> list[str]:
     """绘制泰勒图并三格式导出, 返回写出路径列表。
 
@@ -128,6 +131,8 @@ def plot_taylor(
         title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
             保留参数仅为兼容旧调用, 不再渲染。
         out_prefix: 输出前缀(不带扩展名); None 时写系统临时目录。
+        note: 右下角几何说明文案（3.0.1 参数化, 默认径向/角度口径;
+            传空串可关闭）。
 
     Raises:
         ValueError: obs_sigma ≤ 0 / models 为空 / σ_m ≤ 0 / r 超出 [−1, 1] /
@@ -142,12 +147,13 @@ def plot_taylor(
             raise ValueError(f"模型 '{name}' 标准差须为正, 实际: {sigma}")
         if not -1.0 <= r <= 1.0:
             raise ValueError(f"模型 '{name}' 相关系数须在 [-1, 1], 实际: {r}")
-    apply_style()
+    # 色板容量预校验: 提前到 apply_style() 之前（load_palette 不建图）
     colors = load_palette(palette)
     if len(models) + 1 > len(colors):
         raise ValueError(
             f"模型数+观测 {len(models) + 1} 超过色板 '{palette}' 的 {len(colors)} 个可用颜色"
         )
+    apply_style()
     ink = load_neutral("ink")
     # RMSE 等值线用色板中的绿(第 5 色), 对应令牌"绿=达标/参考"语义
     arc_green = colors[4]
@@ -199,9 +205,10 @@ def plot_taylor(
                 markeredgewidth=1.2, zorder=6, label=f"{name}（R²={r * r:.2f}）")
 
     # 右下角几何说明(半圆盘只占 axes 上半, 右下角为空白)
-    ax.text(0.99, 0.02, "径向 = 标准差 σ　角度 = arccos(相关系数 r)",
-            transform=ax.transAxes, ha="right", va="bottom", fontsize=8,
-            color=load_neutral("secondary"))
+    if note:
+        ax.text(0.99, 0.02, note,
+                transform=ax.transAxes, ha="right", va="bottom", fontsize=8,
+                color=load_neutral("secondary"))
 
     # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.02), ncol=2,

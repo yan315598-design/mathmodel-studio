@@ -16,6 +16,8 @@
   "mode": "standard",
   "interaction": "detailed",
   "_interaction_doc": "交互密度: detailed (默认) | auto。detailed = 必停点之外的关键自由参数 (假设取舍/图表风格细节/章节侧重) 也要问; auto = 用户明确说'自动模式/少问点/你自己定'时开启, 只减少必停点之外的细节提问密度, 六个必停点永远要问。与 mode (fast/standard/championship, token 档位) 正交, 不得混用。",
+  "final_chain": "tex",
+  "_final_chain_doc": "终稿链 (v2.9.1): tex (默认, md→LaTeX→PDF) | docx (md→docx 终稿通道, 冻结后人在 Word 改呈现层)。stage 8 样张先行时经编号菜单确定; docx 选择本身即 docx 通道的切换声明, 无需另记 docx_channel。写作期全程仍写 md 真源, 选择只影响 stage 8 出口的渲染与终检路径; 冻结完成前任何链下都禁止人改 docx。",
   "started_at": null,
   "current_stage": 0,
   "budget": {

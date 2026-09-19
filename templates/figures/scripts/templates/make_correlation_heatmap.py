@@ -51,6 +51,7 @@ from figkit import (
     apply_style,
     get_cmap,
     load_neutral,
+    restore_style_on_error,
     save_fig,
 )
 
@@ -85,6 +86,7 @@ def _luminance(hex_color: str) -> float:
     return 0.299 * r + 0.587 * g + 0.114 * b
 
 
+@restore_style_on_error
 def plot_heatmap(
     matrix,
     row_names: list[str] | None = None,
@@ -95,6 +97,7 @@ def plot_heatmap(
     annotate: bool = True,
     digits: int = 2,
     out_stem: str | None = None,
+    significance_note: str = "显著性: ** p<0.01,  * p<0.05",
 ) -> tuple[Path, Path]:
     """绘制发散色热力图并保存 PNG+SVG+PDF 三格式, 返回前两个输出路径。
 
@@ -108,6 +111,8 @@ def plot_heatmap(
         annotate: 是否在格内标注数值。
         digits: 数值小数位。
         out_stem: 输出文件前缀; None 时写系统临时目录。
+        significance_note: 显著性脚注文案（3.0.1 参数化; 仅在提供 pvalues
+            时渲染, 默认按 ** p<0.01 / * p<0.05 三级标注口径）。
 
     Raises:
         ValueError: 矩阵为空/非矩形/含非有限值; 名称长度不齐; pvalues 形状或
@@ -203,7 +208,7 @@ def plot_heatmap(
 
     # 显著性脚注: 只在提供 pvalues 时出现; 放画布左下角避开轴区
     if pvalues is not None:
-        fig.text(0.13, 0.025, "显著性: ** p<0.01,  * p<0.05", fontsize=8.5,
+        fig.text(0.13, 0.025, significance_note, fontsize=8.5,
                  color=load_neutral("secondary"))
     return _save(fig, out_stem, "make_correlation_heatmap")
 

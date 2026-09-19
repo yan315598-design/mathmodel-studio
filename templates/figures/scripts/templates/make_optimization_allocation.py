@@ -46,6 +46,7 @@ from figkit import (
     apply_style,
     load_neutral,
     load_palette,
+    restore_style_on_error,
     save_fig,
     ygrid,
 )
@@ -77,6 +78,7 @@ def _check_finite(values, label: str) -> None:
             raise ValueError(f"{label} 含非有限数值或非数值: {v!r}")
 
 
+@restore_style_on_error
 def plot_stacked(allocation: dict[str, list[float]], out_stem: str | None = None,
                  unit: str = "吨") -> tuple[Path, Path]:
     """堆叠条模式: x=决策单元, 分段=资源类别, 顶部标总量。
@@ -124,13 +126,33 @@ def plot_stacked(allocation: dict[str, list[float]], out_stem: str | None = None
     return _save(fig, out_stem, "make_optimization_allocation_stacked")
 
 
+@restore_style_on_error
 def plot_gantt(tasks: list[tuple[str, float, float, str]],
-               out_stem: str | None = None) -> tuple[Path, Path]:
+               out_stem: str | None = None,
+               xlabel: str | None = None,
+               *,
+               unit: str = "天",
+               duration_fmt: str = "g") -> tuple[Path, Path]:
     """甘特模式: y=任务, x=时间, 颜色=资源类别（broken_barh）。
+
+    Args:
+        tasks: (任务名, 起, 时长, 资源类别) 列表。
+        out_stem: 输出文件前缀; None 时写系统临时目录。
+        xlabel: x 轴名; None 时按单位拼 f"执行时间（{unit}）"。
+        unit: 时间单位名（仅限关键字, 默认 "天"）。**x 轴名与条端时长标签
+            共用同一个单位**——轴写"执行时间（小时）"而条端写"3 天"是同一张图
+            两套单位（3.0.1 参数化前的硬编码残留）, 改单位要一起改; 需要与
+            单位无关的自由轴名时显式传 xlabel。
+        duration_fmt: 条端时长标签的格式规格（仅限关键字, 默认 "g"）。
+            **默认不取整**: 老的 `.0f` 会把 1.5 印成 "2"（静默向上取整, 读数与
+            条长不符——判读纪律里这是硬伤）; "g" 按有效位给出 1.5/2/0.25, 只有
+            真整数才显示整数。需要固定小数位/强制取整时显式传 ".1f"/".0f"
+            （取整行为仍在, 只是必须由调用方显式声明）。非法规格在建图前抛
+            ValueError, 不留 Figure/rcParams 副作用。
 
     Raises:
         ValueError: tasks 为空 / 行不是四元组 / 任务名为空 / 起始或持续
-            时间非有限数值 / 持续时间为负。
+            时间非有限数值 / 持续时间为负 / duration_fmt 非法。
     """
     if not tasks:
         raise ValueError("tasks 不能为空: 至少提供一条 (任务, 起始天, 持续天数, 资源类别) 记录")
@@ -143,6 +165,16 @@ def plot_gantt(tasks: list[tuple[str, float, float, str]],
         _check_finite((start, duration), f"任务 {name!r} 的起始/持续时间")
         if duration < 0:
             raise ValueError(f"任务 {name!r} 持续时间为负: {duration}")
+
+    # 条端时长文案预格式化（建图前）: 非法规格在这里就抛, 且占位符收**数值**
+    # duration（不是预格式化字符串）。
+    try:
+        duration_texts = [f"{t[2]:{duration_fmt}}" for t in tasks]
+    except Exception as exc:  # noqa: BLE001 - 统一转成带指引的 ValueError
+        raise ValueError(
+            f"duration_fmt 无法格式化时长: {duration_fmt!r} ({exc!r}); "
+            f"请用 Python format spec, 如 \"g\"/\".1f\"/\".0f\""
+        ) from exc
 
     apply_style()
     colors = load_palette("academic_blue")
@@ -158,10 +190,10 @@ def plot_gantt(tasks: list[tuple[str, float, float, str]],
         # broken_barh 的 y 以条底为基准, 统一减 0.3 使条带以任务刻度为中心
         ax.broken_barh([(start, duration)], (yi - 0.3, 0.6),
                        facecolors=cat_color[cat], edgecolor="white")
-        ax.text(start + duration + 0.15, yi, f"{duration:.0f} 天",
+        ax.text(start + duration + 0.15, yi, f"{duration_texts[yi]} {unit}",
                 va="center", ha="left", fontsize=9)
     ax.set_yticks(range(len(names)), names)
-    ax.set_xlabel("执行时间（天）")
+    ax.set_xlabel(f"执行时间（{unit}）" if xlabel is None else xlabel)
     ax.set_xlim(0, max(s + d for _, s, d, _ in tasks) + 3)
     # 甘特图为读数导向图: 按令牌保留 x 向网格读时间, 关闭 y 向（任务行自有条带分隔）
     ax.xaxis.grid(True, color=load_neutral("grid"), alpha=0.45, linewidth=0.7)

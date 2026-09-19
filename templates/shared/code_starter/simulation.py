@@ -6,6 +6,8 @@
 如实际使用 LHS，名称如实写 "拉丁超立方蒙特卡罗稳健性仿真"
 """
 
+import math
+
 import numpy as np
 import pandas as pd
 from scipy.stats import qmc
@@ -13,9 +15,16 @@ from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-np.random.seed(42)
-Path("results").mkdir(exist_ok=True)
-Path("figures").mkdir(exist_ok=True)
+
+def _demo_bootstrap() -> None:
+    """示例模式的副作用（固定种子 + 建目录）只在 `__main__` 分支执行。
+
+    审查教训: 这三行原先在模块顶层, 任何 `import simulation`（如测试收集）都会
+    重置全局 RNG 并在 CWD 建目录, 静默污染同进程的其它测试。
+    """
+    np.random.seed(42)
+    Path("results").mkdir(exist_ok=True)
+    Path("figures").mkdir(exist_ok=True)
 
 
 # ============================================================
@@ -208,9 +217,144 @@ def plot_tornado(sobol_result, output_label="目标函数"):
 
 
 # ============================================================
+# 6. 网格/离散充分性检查 (v3.1.0, stage 6 硬规则; 源于 2026 国赛 A 题实测算例)
+# ============================================================
+# 规则 (references/stage_06_robustness.md "参数档的网格/离散充分性检查"):
+#   触发: 扰动档使边界层敏感量相对基线档跳变 > BOUNDARY_JUMP_TRIGGER (默认 10×, 可按题覆盖)
+#   判据: 同一时刻的边界敏感量在粗/细两档网格下的相对变化 > 20% → 该档欠分辨
+#   处置: 该档从灵敏度排序中剔除, 报告与论文如实标注"网格受限、未量化"
+# v3.1.1: 10×/20% 是规范锚定的**默认档**, 可按题覆盖 (grid_check_required 的
+# trigger / check_grid_sufficiency 的 under_resolved_tol); 两档对比只声明
+# "这两档的证据", 不构成网格无关性或参数充分性的普遍证明。
+BOUNDARY_JUMP_TRIGGER = 10.0     # 边界层敏感量跳变倍数阈值 (默认档, 可覆盖)
+GRID_UNDER_RESOLVED = 0.20       # 粗/细网格关键量相对变化阈值 (默认档, 可覆盖)
+
+
+def boundary_jump_ratio(value_pert: float, value_base: float) -> float:
+    """扰动档相对基线档的边界层敏感量跳变倍数 (判是否触发网格专项检验)。
+
+    例 (合成值): 基线 12.0 → 扰动档 3000.0 时返回 250.0 (> 10 触发)。
+    比值尺度无关, 小量级同样适用。
+    """
+    if value_base == 0:
+        return float("inf") if value_pert != 0 else 1.0
+    return abs(value_pert / value_base)
+
+
+def grid_check_required(value_pert: float, value_base: float,
+                        trigger: float = BOUNDARY_JUMP_TRIGGER) -> bool:
+    """扰动档是否触发粗/细网格专项检验 (跳变倍数 > trigger)。
+
+    trigger 默认 10× 只是规范默认档, 可按题覆盖 (不强加): 量纲/量级与样例不同的
+    题按自身收敛历史设定。跳变比非有限 (NaN/inf) 时 fail-closed 返回 True ——
+    无法判定"没有跳变"就必须做专项检验, 不允许静默放过。
+    """
+    if isinstance(trigger, bool) or not isinstance(trigger, (int, float)) \
+            or not math.isfinite(trigger) or trigger <= 0:
+        raise ValueError(f"跳变触发倍数 trigger 必须为正的有限数, 收到 {trigger!r}")
+    ratio = boundary_jump_ratio(value_pert, value_base)
+    if not math.isfinite(ratio):
+        print(f"[网格充分性] 跳变比非有限 ({ratio}) → fail-closed: 触发粗/细网格专项检验")
+        return True
+    return ratio > trigger
+
+
+def _validated_grids(grids) -> tuple:
+    """校验粗/细两档网格必须是**真加密**: 两个不同的正有限数且 coarse < fine。
+
+    相同档 (没有加密)、倒序档 (相对变化的分母写反)、非正/非有限/非数值档都会
+    静默产出无意义结论 —— 一律 ValueError 拒收, 不让"看起来通过"的结论流出。
+    """
+    try:
+        n_coarse, n_fine = grids
+    except (TypeError, ValueError):
+        raise ValueError(f"grids 必须是 (粗档, 细档) 二元组, 收到 {grids!r}")
+    for name, n in (("粗档", n_coarse), ("细档", n_fine)):
+        if isinstance(n, bool) or not isinstance(n, (int, float)):
+            raise ValueError(f"{name}网格 {n!r} 不是数值")
+        if not math.isfinite(n) or n <= 0:
+            raise ValueError(f"{name}网格 {n!r} 不是正的有限数")
+    if float(n_coarse) == float(n_fine):
+        raise ValueError(f"粗/细网格相同 ({n_coarse!r}) —— 没有加密, 无从判定分辨率")
+    if float(n_coarse) > float(n_fine):
+        raise ValueError(f"网格倒序 (粗 {n_coarse!r} > 细 {n_fine!r}) —— "
+                         "相对变化的分母会写反, 须按 (粗档, 细档) 传入")
+    return n_coarse, n_fine
+
+
+def check_grid_sufficiency(solve_at_grid, probe, grids, label="边界敏感量",
+                           under_resolved_tol: float | None = None):
+    """粗/细网格专项检验: 同一时刻的关键量在两种离散下的相对变化。
+
+    Args:
+        solve_at_grid: callable(n) -> 解对象; n 为网格节点数(或 1/步长)档位。
+        probe: callable(solution) -> float; 取"同一时刻的边界敏感量"
+            (二维场题取场内极值, 一维题取表面值), 时刻固定在早期/峰值时刻,
+            两档必须取同一时刻同一物理位置。
+        grids: (粗档 n, 细档 n) 二元组, 如 (64, 256); 必须 coarse < fine
+            (相同/倒序/非正/NaN 一律 ValueError, 见 _validated_grids)。
+        label: 报告用的量名。
+        under_resolved_tol: 欠分辨判据的相对变化容限, None 取规范默认档
+            GRID_UNDER_RESOLVED (20%); 可按题覆盖, 必须是正的有限数。
+    Returns:
+        dict: {"coarse"/"fine"/"values", "rel_change", "under_resolved",
+            "finite", "tolerance", "scope_note", "note"}。相对变化以**细网格**为
+        分母（参考误差定义）; under_resolved=True 即该档欠分辨, 不得进入灵敏度排序。
+        两档值非有限(NaN/inf)时 fail-closed: under_resolved=True + finite=False
+        ——未收敛的信号绝不能当"网格充分"放行（审查实测 NaN 曾被判通过）。
+        scope_note 固定声明证据范围: 只有受检两档的对比证据, 不构成普遍充分性证明。
+    """
+    n_coarse, n_fine = _validated_grids(grids)
+    tol = GRID_UNDER_RESOLVED if under_resolved_tol is None else under_resolved_tol
+    if isinstance(tol, bool) or not isinstance(tol, (int, float)) \
+            or not math.isfinite(tol) or tol <= 0:
+        raise ValueError(f"under_resolved_tol 必须为正的有限数, 收到 {under_resolved_tol!r}")
+    scope_note = (f"只声明受检两档网格 {n_coarse}/{n_fine} 的对比证据 (容限 {tol:.0%}); "
+                  "不构成网格无关性或参数充分性的普遍证明, 阈值可按题覆盖")
+    v_coarse = float(probe(solve_at_grid(n_coarse)))
+    v_fine = float(probe(solve_at_grid(n_fine)))
+    finite = math.isfinite(v_coarse) and math.isfinite(v_fine)
+    if not finite:
+        print(f"[网格充分性] {label}: {n_coarse} 档 {v_coarse} vs {n_fine} 档 {v_fine} "
+              f"→ 非有限值, 无法判定")
+        print("  ⚠ fail-closed: 视为欠分辨（该档剔除出排序, 并检查求解是否发散）")
+        return {"coarse": n_coarse, "fine": n_fine,
+                "values": {n_coarse: v_coarse, n_fine: v_fine},
+                "rel_change": float("nan"), "under_resolved": True,
+                "finite": False, "tolerance": tol, "scope_note": scope_note,
+                "note": "非有限值, fail-closed 判欠分辨"}
+    if v_fine != 0:
+        rel_change = abs(v_coarse - v_fine) / abs(v_fine)
+    else:
+        # 细网格关键量为 0: 相对误差无定义, 只要粗档非 0 即视为不一致
+        rel_change = 0.0 if v_coarse == 0 else float("inf")
+    under = rel_change > tol
+    report = {
+        "coarse": n_coarse, "fine": n_fine,
+        "values": {n_coarse: v_coarse, n_fine: v_fine},
+        "rel_change": rel_change,
+        "under_resolved": under,
+        "finite": True,
+        "tolerance": tol,
+        "scope_note": scope_note,
+        "note": "相对变化以细网格为分母",
+    }
+    print(f"[网格充分性] {label}: {n_coarse} 档 {v_coarse:.6g} vs "
+          f"{n_fine} 档 {v_fine:.6g} → 相对细网格变化 {rel_change * 100:.2f}%")
+    if under:
+        print(f"  ⚠ 判欠分辨 (> {tol:.0%}): 该档从灵敏度排序中剔除, "
+              f"报告与论文标注'网格受限、未量化'")
+    else:
+        print("  ✓ 网格充分: 该档数值可参与灵敏度排序")
+    print(f"  · 证据范围: {scope_note}")
+    return report
+
+
+# ============================================================
 # 主流程示例 (对应论文 §5.x + §6)
 # ============================================================
 if __name__ == "__main__":
+    _demo_bootstrap()
     # SEIR 仿真示例
     result = simulate_seir(N=10000, I0=10, beta=0.3, sigma=0.2, gamma=0.1, kappa=0.05)
     print(f"峰值感染数: {result['peak_I']:.0f}")

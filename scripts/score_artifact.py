@@ -762,7 +762,7 @@ def update_decision_log(stage_id: int, critique: dict, decision_log_path: Path,
         log["iterations"] = {}
     log["iterations"][stage_key] = critique["iteration"] + 1
 
-    # 原子写盘 (与 runtime/state.py 同款协议): 临时文件 + os.replace,
+    # 原子写盘 (与已归档的 docs/legacy/runtime/mathmodel_agent/state.py 同款协议): 临时文件 + os.replace,
     # 避免写入中断留下截断 JSON, 导致后续读取方 state 不可恢复
     fd, tmp_path = tempfile.mkstemp(dir=str(decision_log_path.parent),
                                     prefix=".decision_log.", suffix=".tmp")

@@ -143,7 +143,7 @@ L1 critic 评数量指标时，先读取 `config/rating_contract.json`，再与 
 
 **注入格式**:
 ```
-abstract_chars: value=720, p50=992, IQR=[748, 1146] (by topic A), status=低于 p25
+abstract_chars: value=720, p50=898, IQR=[805, 1009] (by topic A), status=低于 p25
 ```
 
 种子版本 (mcm / diangong empirical.source.status="seed_v0.1") 自动追加 `[seed: 阈值未实测分位]` 标记, critic 见此应**弱化数值评判, 强化模式匹配**。

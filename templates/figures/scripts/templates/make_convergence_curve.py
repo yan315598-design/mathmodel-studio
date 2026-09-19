@@ -49,8 +49,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from figkit import (
     apply_style,
+    format_label,
     load_neutral,
     load_palette,
+    restore_style_on_error,
     save_fig,
     ygrid,
 )
@@ -99,6 +101,7 @@ def _text_px_width(text: str, font_px: float) -> float:
     return width + 4.0
 
 
+@restore_style_on_error
 def plot_convergence(
     histories: dict[str, list[float]],
     best_value: float,
@@ -106,6 +109,10 @@ def plot_convergence(
     ylog: bool = False,
     title: str | None = None,
     out_stem: str | None = None,
+    *,
+    xlabel: str = "迭代次数",
+    ylabel: str = "目标函数值",
+    best_label: str | None = None,
 ) -> tuple[Path, Path]:
     """绘制算法收敛曲线对比图并保存 PNG+SVG+PDF 三格式, 返回前两个输出路径。
 
@@ -117,11 +124,17 @@ def plot_convergence(
         title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
             保留参数仅为兼容旧调用, 不再渲染。
         out_stem: 输出文件前缀; None 时写系统临时目录。
+        xlabel/ylabel: 轴名（仅限关键字; 3.0.1 参数化, 默认
+            "迭代次数"/"目标函数值"）。
+        best_label: 最优参考线图例文案（仅限关键字; 3.0.1 参数化; None 保持
+            默认 f"全局最优线（{best_value:.6g}）", 传入 str 可用 {value}
+            占位符引用最优值（占位符收**数值**, 可写 "{value:.4g}" 等格式
+            规格）, 无占位符则原样使用）。
 
     Raises:
         ValueError: histories 为空 / 序列长度不足 2 / 含非有限值 /
             best_value 非有限 / converged 指向未知算法或越界 /
-            ylog 下存在非正值。
+            ylog 下存在非正值 / best_label 模板畸形。
     """
     if not histories:
         raise ValueError("histories 不能为空: 至少提供一种算法的收敛序列")
@@ -156,6 +169,13 @@ def plot_convergence(
                 )
             marks.append((int(gen), name))
         marks.sort(key=lambda m: m[0])
+
+    # 参考线文案预填充（建图前完成）: 畸形模板（"{"、"{missing}"）必须在这里
+    # 就抛 ValueError——放到 ax.plot 里抛会留下未关闭的 Figure（进全局管理器）
+    # 且 apply_style() 已改过全局 rcParams。占位符收**数值** best_value,
+    # 模板可写 "{value:.4g}" 等格式规格（先 f-string 再填值会报 Unknown format code）。
+    best_text = (format_label(best_label, "best_label", value=best_value)
+                 if best_label is not None else f"全局最优线（{best_value:.6g}）")
 
     apply_style()
     import numpy as np
@@ -224,15 +244,14 @@ def plot_convergence(
                         ha="center", va="bottom", fontsize=8.5,
                         color=load_neutral("secondary"), zorder=8)
 
-    # 最优参考线（参考线灰虚线, 进图例说明精确值）
+    # 最优参考线（参考线灰虚线, 进图例说明精确值; 文案已在建图前预填充）
     ax.plot([1, max_len], [best_value, best_value], color=ref_grey, linestyle="--",
-            linewidth=1.3, zorder=3,
-            label=f"全局最优线（{best_value:.6g}）")
+            linewidth=1.3, zorder=3, label=best_text)
 
     if ylog:
         ax.set_yscale("log")
-    ax.set_xlabel("迭代次数")
-    ax.set_ylabel("目标函数值")
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
     # 1.4.1 图题纪律: 图名与结论写进论文 caption, 不烘焙进图内
     ax.legend(loc="upper left", bbox_to_anchor=(1.01, 0.99), frameon=True,
               fontsize=9)

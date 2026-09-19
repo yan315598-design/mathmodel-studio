@@ -64,6 +64,7 @@ from figkit import (
     elbow_arrow,
     load_diagram_families,
     load_diagram_page,
+    restore_style_on_error,
     save_fig,
     use_diagram_font,
     wrap_text_balanced,
@@ -105,6 +106,7 @@ def _card_height(text: str, w: float, fs: float, fs_min: float) -> tuple[list[st
     return lines, fs, h
 
 
+@restore_style_on_error
 def plot_flowchart(stages: list[tuple[str, list[str]]],
                    out_stem: str | None = None,
                    title: str = "技术路线图") -> tuple[Path, Path]:

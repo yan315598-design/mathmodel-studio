@@ -62,6 +62,7 @@ from figkit import (
     load_diagram_families,
     load_diagram_page,
     load_neutral,
+    restore_style_on_error,
     save_fig,
     use_diagram_font,
     wrap_text_balanced,
@@ -107,6 +108,7 @@ def _fit_to_box(text: str, max_w: float, fs: float, fs_min: float,
     return lines, fs
 
 
+@restore_style_on_error
 def plot_stageflow(stages: list[tuple[str, str]],
                    highlight: int | None = None,
                    out_stem: str | None = None,

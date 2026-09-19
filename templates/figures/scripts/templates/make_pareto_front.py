@@ -51,6 +51,7 @@ from figkit import (
     apply_style,
     load_neutral,
     load_palette,
+    restore_style_on_error,
     save_fig,
     ygrid,
 )
@@ -107,12 +108,15 @@ def _nondominated(f1, f2, minimize, eps: float = 1e-12):
     return np.asarray(keep, dtype=int)
 
 
+@restore_style_on_error
 def plot_pareto(
     points,
     obj_names: tuple[str, str] | None = None,
     minimize: tuple[bool, bool] = (True, True),
     title: str | None = None,
     out_stem: str | None = None,
+    ideal_label: str = "理想点",
+    knee_label: str = "折中点",
 ) -> tuple[Path, Path]:
     """绘制帕累托前沿图并保存 PNG+SVG+PDF 三格式, 返回前两个输出路径。
 
@@ -123,6 +127,8 @@ def plot_pareto(
         title: 已弃用（1.4.1 图题纪律: 图名放论文 caption, 不入图内）;
             保留参数仅为兼容旧调用, 不再渲染。
         out_stem: 输出文件前缀; None 时写系统临时目录。
+        ideal_label/knee_label: 顶部标尺命名文案（3.0.1 参数化, 默认
+            "理想点"/"折中点"; 同时作为图例项文案。传空串关闭该标注与其图例项）。
 
     Raises:
         ValueError: points 为空/不足 2 个/行非二元组/含非有限数值/
@@ -182,12 +188,13 @@ def plot_pareto(
     ax.plot([xmin - x_pad, ideal[0]], [ideal[1], ideal[1]], color=orange,
             linestyle="--", linewidth=1.1, alpha=0.8, zorder=3)
     ax.scatter([ideal[0]], [ideal[1]], marker="*", s=190, color=orange,
-               edgecolor="white", linewidth=0.6, zorder=7, label="理想点")
+               edgecolor="white", linewidth=0.6, zorder=7,
+               label=ideal_label or None)
 
     # 折中点: 菱形高亮 + 到理想点连线
     ax.scatter([f1[knee_idx]], [f2[knee_idx]], marker="D", s=52,
                facecolor=red, edgecolor="white", linewidth=1.0, zorder=7,
-               label="折中点")
+               label=knee_label or None)
     ax.plot([ideal[0], f1[knee_idx]], [ideal[1], f2[knee_idx]],
             color=red, linestyle=":", linewidth=1.1, alpha=0.85, zorder=6)
 
@@ -195,10 +202,12 @@ def plot_pareto(
     ax.set_xlim(xmin - x_pad, xmax + x_pad)
     ax.set_ylim(ymin - y_pad, ymax + y_pad * 2.6)
     top = ymax + y_pad * 2.6
-    ax.text(ideal[0], top, "理想点", ha="left", va="top", fontsize=9,
-            color=orange, zorder=8)
-    ax.text(f1[knee_idx], top, "折中点", ha="center", va="top", fontsize=9,
-            color=red, zorder=8)
+    if ideal_label:
+        ax.text(ideal[0], top, ideal_label, ha="left", va="top", fontsize=9,
+                color=orange, zorder=8)
+    if knee_label:
+        ax.text(f1[knee_idx], top, knee_label, ha="center", va="top", fontsize=9,
+                color=red, zorder=8)
 
     ax.set_xlabel(xname)
     ax.set_ylabel(yname)

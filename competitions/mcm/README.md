@@ -52,4 +52,4 @@ Mathematical / Interdisciplinary Contest in Modeling (COMAP)。
 - 已发表的 MCM 备赛教材普遍共识 (e.g. *MCM Tutorial* by Frank Giordano)
 
 **用户使用本目录时, 应被告知"内容为 v0.1 种子版本, 准确性低于 cumcm/"。**
-后续若有团队提交 30+ 篇 Outstanding 论文, 可用 `scripts/ingest_papers.py` 重新烘焙覆盖。
+后续若有团队提交 30+ 篇 Outstanding 论文, 不再用 `scripts/legacy/ingest_papers.py` 重新烘焙——历史流程已退役（产物仅保留复核用，不得再生成统计真值；脚本已移入 scripts/legacy/（v2.8.0））。

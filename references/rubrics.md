@@ -25,7 +25,7 @@
 
 | 维度 | 权重 | 关键检查项 |
 |------|-----|----------|
-| **摘要质量** | 30% | 结构覆盖题问 / 量化结果 / 创新表述 / 字数 IQR [748, 1146] |
+| **摘要质量** | 30% | 结构覆盖题问 / 量化结果 / 创新表述 / 字数按 empirical 分位提示（约 805-1009 字，不作硬阈值） |
 | **模型建立** | 25% | 与问题契合 / 假设有支撑 / 数学严谨 / 名称与机制一致 |
 | **求解与结果** | 20% | 算法合理 / 代码可复现 / 结果可视化 / 物理意义 |
 | **写作呈现** | 15% | 章节完整 / 公式编号规范 / 图表清晰 / 语言流畅 |
@@ -154,10 +154,30 @@ championship 模式额外: red-team "假装最严苛评委,本模型选择被 re
 | 维度 | 满分行为 |
 |------|---------|
 | 1. 模型与问题契合 | 目标函数 / 决策变量 / 约束 与题面一一对应 |
-| 2. 数学严谨性 | 推导无跳跃,符号一致,边界条件齐全 |
+| 2. 数学严谨性 | 推导无跳跃,符号一致,边界条件齐全；**公式-代码一致性硬检查 (per-Qi L1 必填证据, v3.1.0)**: 正文每条控制方程与其在求解代码中的离散对象逐条对照——公式形式（守恒/非守恒）、系数位置（导数内/外）、边界项系数链，与代码实际组装的通量一致 (对照表模板与三条判定口径见 `references/modeling_evidence_protocol.md` Stage 5 节) |
 | 3. 求解正确性 | 代码可运行,结果数量级合理,通过 sanity check |
-| 4. 结果可视化 | 图表支撑本问主张且绑定上游数据，数量由论证需要决定 (不设每问下限；0/1 图走 D.1 例外登记) |
+| 4. 结果可视化 | 图表支撑本问主张且绑定上游数据，数量由论证需要决定 (不设每问下限；0/1 图按 `references/figure_skill_bridge.md` 出图决策菜单做例外登记) |
 | 5. 物理意义讨论 | 数值 → 现实含义 (≥1 段文字) |
+
+公式-代码一致性硬检查的由来 (v3.1.0): 历史实测算例在终审 panel 才发现正文控制方程写非守恒形式 (变系数提到散度算子外)，生产代码却离散守恒型通量 (界面调和平均)——变系数下两者差一个系数梯度项，正文与代码不是同一个方程，是全链最贵的返工。故 per-Qi L1 的 `2_math_rigor` evidence 必须指向该对照表 (`results/Q{i}_formula_code_map.md`)，缺表按 evidence 不足处理。
+
+#### per-Qi 聚合与差异化降级 (v3.0)
+
+老逻辑下 Q1 mean 8.5 / Q2 mean 7.2 / Q3 mean 8.8 时整体 mean 8.2、min 7.2，**技术上 pass 但弱问被掩盖**。聚合规则：
+
+```python
+# 加载 decision_log.stages.5.qi_weights (默认 [1.0]*qi_count)
+weighted_mean = Σ(qi.mean × weight) / Σ(weight)
+weighted_min  = min(qi.min for qi in qi_results)
+# 单 Qi 状态独立判定:
+#   qi.min >= 7 且 qi.mean >= 8 → "pass"
+#   qi.min >= 7（mean < 8）     → "mark_for_review"   # 该问单独弱, 仍可接受
+#   否则                        → "refine"            # 该问需重做
+```
+
+verdict 映射（阈值表见下文"阈值汇总"）：全 pass 且加权阈值满足 → `pass`/`pass_early`；任 Qi `mark_for_review` → `pass_with_review`（记 `review_qis`，L2 必读）；任 Qi `refine` → `refine_partial`（只重跑该 Qi 的 A-G 步，不动其他问，省 ~60% 时间；iter cap 3 仍生效，三次仍 refine 则 `carryover`）。
+
+调用与落盘：所有 Qi 跑完 per-Qi critic 后跑 `python scripts/score_artifact.py --mode aggregate_qi --qi-results state/qi_results.json`（schema `{qi_results: [{qi, min, mean, scores}], qi_weights: [...]}`）→ 脚本只打印聚合结果、**不写回** `decision_log.scores["5"]`，agent 须把 `qi_status` / `review_qis` / `refine_qis` 写回 `decision_log.stages["5"]`；gate 5 评分检查按双路径放行：`scores["5"]`（stage-level）或覆盖全部 Qi 的 `scores["5_per_qi"]`，满足其一即可。`qi_weights` 默认 `[1.0]*qi_count`（由 stage 2 分解确认后重建），用户可在第一个 Qi 完成时按题目重要性调整并写回。
 
 #### Stage-level (跨子问题):
 

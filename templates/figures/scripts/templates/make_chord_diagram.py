@@ -51,7 +51,7 @@ matplotlib.use("Agg")
 import numpy as np
 import pandas as pd
 
-# figkit 位于本脚本上级目录 (scripts/), 注册后方可 from figkit import ...
+# figkit 位于本脚本上级目录 (scripts/), 注册后方可 from figkit import ..., restore_style_on_error
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from figkit import apply_style, load_neutral, load_palette, save_fig
 
@@ -73,6 +73,7 @@ def _demo_matrix(seed: int = 20240901) -> np.ndarray:
     return total.astype(int)
 
 
+@restore_style_on_error
 def plot_chord(
     matrix: np.ndarray,
     labels: list[str],

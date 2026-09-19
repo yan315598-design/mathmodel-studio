@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-"""v1.0.0 建模图表模板包 dispatcher（17 个数据图模板的统一入口）。
+"""建模图表模板包 dispatcher（25 个数据图模板的统一入口）。
 
-示意图（流程图/框架图等）由同目录 render_diagram_pack.py 分发。
+示意图（流程图/框架图等）由同目录 render_diagram_pack.py 分发,
+drawio 可编辑模板由 render_drawio_pack.py 分发。
 
 用法:
     python render_modeling_pack.py <子命令> [模板参数...]
@@ -11,6 +12,8 @@
     python render_modeling_pack.py optimization-allocation --mode gantt --out figs/alloc
     python render_modeling_pack.py tornado --out figs/tornado
     python render_modeling_pack.py heatmap --out figs/heatmap
+    python render_modeling_pack.py field-contour --out figs/field
+    python render_modeling_pack.py before-after --mode dist --out figs/ba
 
 退出码: 0 成功; 1 模板执行失败; 2 未知模板/用法错误。
 """
@@ -91,6 +94,39 @@ TEMPLATES: dict[str, tuple[str, str]] = {
         "make_chord_diagram.py",
         "和弦图: 部门迁移矩阵 Circos 弦图(依赖 pycirclize, 缺失时退出码 3)",
     ),
+    # ---- 3.0.0 物理场/场景模板（图叙事纪律: 判据层 + 对照构图 + 量化标签）----
+    "field-contour": (
+        "make_field_contour.py",
+        "物理场图: pcolormesh 场 + 红虚线判据等值线 + 共享色标多面板",
+    ),
+    "profile-family": (
+        "make_profile_family.py",
+        "剖面族: N 条剖面按连续变量 viridis 渐变着色 + colorbar + 可选判据线",
+    ),
+    "threshold-inversion": (
+        "make_threshold_inversion.py",
+        "阈值穿越反演: 主曲线 + 阈值红虚线 + 穿越点 + inset 双边锁定放大",
+    ),
+    "convergence-sequence": (
+        "make_convergence_sequence.py",
+        "收敛序列: 误差随离散参数变化 + Richardson 外推虚线 + 档差标注 + log-log 可选",
+    ),
+    "contrast-pair": (
+        "make_contrast_pair.py",
+        "对照双联: 同坐标同尺度两面板(前后/两法/两档), 共享色标 + 差异判据圈出",
+    ),
+    "route-on-field": (
+        "make_route_on_field.py",
+        "路径叠加场图: 底图场 + 主色路径折线 + 起点星/终点叉/途经点",
+    ),
+    "answer-grid": (
+        "make_answer_grid.py",
+        "结果交付网格: M×N 数值/概率热力网格(16×4 范式), 格内自适应黑白数值 + 色条",
+    ),
+    "before-after": (
+        "make_before_after.py",
+        "前后对照双联: 同坐标散点(t-SNE 式)或直方分布双模式, 前灰后红",
+    ),
 }
 
 ALIASES = {
@@ -133,9 +169,53 @@ ALIASES = {
     "shap": "shap-summary",
     "chord": "chord-diagram",
     "和弦图": "chord-diagram",
+    # ---- 3.0.0 物理场/场景模板别名 ----
+    "field": "field-contour",
+    "场图": "field-contour",
+    "等值线": "field-contour",
+    "profile": "profile-family",
+    "剖面": "profile-family",
+    "剖面族": "profile-family",
+    "threshold": "threshold-inversion",
+    "反演": "threshold-inversion",
+    "穿越": "threshold-inversion",
+    "收敛序列": "convergence-sequence",
+    "网格收敛": "convergence-sequence",
+    "gridconv": "convergence-sequence",
+    "contrast": "contrast-pair",
+    "对照": "contrast-pair",
+    "对照双联": "contrast-pair",
+    "路径": "route-on-field",
+    "航线": "route-on-field",
+    "轨迹": "route-on-field",
+    "answer": "answer-grid",
+    "结果网格": "answer-grid",
+    "答案网格": "answer-grid",
+    "before": "before-after",
+    "after": "before-after",
+    "前后": "before-after",
+    "前后对照": "before-after",
 }
 
-SKILL_ROOT = Path(__file__).resolve().parents[3]
+def _import_skill_paths():
+    """导入根路径唯一真源 scripts/skill_paths.py (D1)。
+
+    先按调用路径向上找含 SKILL.md 的 skill 根 (.codex/.zcode 两份安装并存时
+    取当前调用的那一份), 把其 scripts/ 挂进 sys.path; 找不到时退回本文件所在安装。
+    """
+    root = Path(__file__).resolve().parents[3]
+    for parent in Path(__file__).absolute().parents:
+        if (parent / "SKILL.md").is_file() and (parent / "scripts").is_dir():
+            root = parent
+            break
+    sys.path.insert(0, str(root / "scripts"))
+    import skill_paths
+
+    return skill_paths
+
+
+_skill_paths = _import_skill_paths()
+SKILL_ROOT = _skill_paths.skill_root(__file__)
 FIGQA_SCRIPT = SKILL_ROOT / "scripts" / "figqa.py"
 
 # 流程图/技术路线图的盒内标签是合法版式, figqa 硬门固定带 --allow-box-labels;
@@ -143,10 +223,24 @@ FIGQA_SCRIPT = SKILL_ROOT / "scripts" / "figqa.py"
 BOX_LABEL_TEMPLATES = {"technical-route-flowchart"}
 
 
+def quote_arg(value: object) -> str:
+    """回显命令行参数: 含空白的路径加双引号, 复制粘贴到终端即可直接跑。
+
+    安装根常在 `Program Files`、用户目录含空格、项目名带空格——不加引号时
+    `--list` 里那条 figqa 命令会被 shell 拆成多个参数而失败（本函数只做回显,
+    不参与真正的执行: 真正执行走 subprocess 的列表传参, 无需转义）。
+    """
+    text = str(value)
+    if text and any(ch.isspace() for ch in text) and not (
+            text.startswith('"') and text.endswith('"')):
+        return f'"{text}"'
+    return text
+
+
 def figqa_hint(template_id: str) -> str:
     """返回该模板推荐的 figqa 硬门命令行（分模板豁免规则）。"""
     flag = " --allow-box-labels" if template_id in BOX_LABEL_TEMPLATES else ""
-    return f"python {FIGQA_SCRIPT} <图脚本或输出目录> --strict{flag}"
+    return f"python {quote_arg(FIGQA_SCRIPT)} <图脚本或输出目录> --strict{flag}"
 
 
 def resolve(value: str) -> str:
@@ -164,6 +258,7 @@ def resolve(value: str) -> str:
 
 def print_list() -> None:
     """输出模板清单表 + 每个模板推荐的 figqa 硬门命令。"""
+    print(_skill_paths.describe(__file__))  # V0 日志: 当前使用的安装根 (D1)
     id_width = max(len(k) for k in TEMPLATES) + 2
     file_width = max(len(v[0]) for v in TEMPLATES.values()) + 2
     print(f"{'模板 id'.ljust(id_width)}{'脚本文件'.ljust(file_width)}说明")
@@ -178,13 +273,14 @@ def print_list() -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="渲染 v1.0.0 建模图表模板包（17 个模板的统一入口）"
+        description="渲染建模图表模板包（25 个模板的统一入口）"
     )
     parser.add_argument("--list", action="store_true", help="列出支持的模板清单")
     parser.add_argument(
         "template", nargs="?", default=None,
         help="模板 id 或别名（radar/heatmap/pareto/prediction/ranking/"
-             "convergence/tornado-sensitivity/allocation/robustness/flowchart 等）",
+             "convergence/tornado-sensitivity/allocation/robustness/flowchart/"
+             "field-contour/threshold-inversion/answer-grid/before-after 等）",
     )
     # REMAINDER 捕获首个位置参数之后的全部内容（含 -- 开头的模板参数）,
     # 不用 argparse 子解析器: 子解析器会把转发参数误判为本脚本的未知项
@@ -208,8 +304,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"模板脚本缺失: {script}")
         return 2
     cmd = [sys.executable, str(script), *args.extra]
-    print(f"$ {' '.join(cmd)}", flush=True)
-    result = subprocess.run(cmd, check=False)
+    print(f"$ {' '.join(quote_arg(part) for part in cmd)}", flush=True)
+    result = subprocess.run(cmd, check=False)  # 列表传参, 无需 shell 转义
     print(f"\n[提示] 出图后跑该模板的 figqa 硬门: {figqa_hint(template_id)}")
     return result.returncode
 

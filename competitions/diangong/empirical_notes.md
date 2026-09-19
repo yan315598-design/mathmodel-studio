@@ -2,7 +2,7 @@
 
 > **此目录数据为种子版本 (seed_v0.1), 未做真 PDF 烘焙。**
 > 阈值取自历年电工杯题目题量分析 + 公开评审标准估算 + 国赛 D 题部分类比。
-> 后续若提交 30+ 篇电工杯一等奖 PDF, 可用 `scripts/ingest_papers.py` 重新烘焙覆盖。
+> 历史流程已退役：`scripts/legacy/ingest_papers.py` 的烘焙产物仅保留复核用，不得再生成统计真值；脚本已移入 scripts/legacy/（v2.8.0）。
 
 ## 数据缺口提示
 

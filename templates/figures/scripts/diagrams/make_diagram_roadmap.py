@@ -68,6 +68,7 @@ from figkit import (
     load_diagram_order,
     load_diagram_page,
     num_badge,
+    restore_style_on_error,
     rich_box,
     save_fig,
     use_diagram_font,
@@ -182,6 +183,7 @@ def _next_node_index(k: int, cnt: int, cnt_next: int) -> int:
     return int(round(k * (cnt_next - 1) / max(cnt - 1, 1)))
 
 
+@restore_style_on_error
 def plot_roadmap(bands, out_stem: str | None = None,
                  title: str = "研究技术路线图",
                  conclusion: str | None = CONCLUSION) -> tuple[Path, Path]:

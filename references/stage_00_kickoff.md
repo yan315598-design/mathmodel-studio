@@ -104,7 +104,7 @@ Q5 题目 PDF 路径: 回复本地路径或"未公布"。
 ```bash
 python --version           # ≥ 3.9
 
-# 完整依赖检查 (一次性安装见 templates/requirements.txt)
+# 完整依赖检查 (一次性安装见 templates/shared/requirements.txt)
 python -c "import numpy, scipy, sklearn, cvxpy, matplotlib, pandas, statsmodels, seaborn, SALib, pdfplumber, imblearn"
 
 # 关键 solver 检查 (优化类必备)

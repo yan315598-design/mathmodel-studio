@@ -66,6 +66,7 @@ from figkit import (
     load_diagram_families,
     load_diagram_page,
     num_badge,
+    restore_style_on_error,
     rich_box,
     save_fig,
     use_diagram_font,
@@ -124,6 +125,7 @@ def _est_card_h(title: str, detail: str, max_w: float) -> float:
     return max(h + 16.0, CARD_MIN_H)
 
 
+@restore_style_on_error
 def plot_framework(rows, columns=None, out_stem: str | None = None,
                    title: str = "研究框架图") -> tuple[Path, Path]:
     """绘制三栏研究框架图并保存 PNG+SVG+PDF 三格式, 返回前两个输出路径。

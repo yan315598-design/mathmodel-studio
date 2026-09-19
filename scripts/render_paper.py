@@ -354,6 +354,9 @@ def fill_template_cumcm(workspace: Path, template_dir: Path, output_dir: Path,
 \\usepackage{{xcolor}}
 \\usepackage{{enumitem}}
 \\usepackage[hidelinks]{{hyperref}}
+% ---- pandoc 3.x 输出兼容（T-01 修复）----
+\\providecommand{{\\pandocbounded}}[1]{{#1}}  % pandoc 3 给未指定宽度图片的包壳
+\\usepackage{{array}}   \\usepackage{{calc}}  % pandoc longtable 列格式依赖
 \\ctexset{{
   section = {{format = {{\\Large\\bfseries\\heiti}}}},
   subsection = {{format = {{\\large\\bfseries\\heiti}}}},
@@ -522,21 +525,32 @@ def fill_template_main(workspace: Path, template_dir: Path, output_dir: Path,
         raise FileNotFoundError(f"模板 {main_src} 不存在")
     shutil.copy(main_src, main_dst)
 
-    # 最小兼容性补丁 — 只补 \tightlist (pandoc 生成, 自写模板未定义)
+    # 最小兼容性补丁 — \tightlist (pandoc 生成, 自写模板未定义)
+    # + pandoc 3.x 兼容三件套 (T-01 修复): \pandocbounded 包壳宏与 array/calc
+    #   (longtable 列格式 >{\raggedright\arraybackslash} 依赖)。幂等注入:
+    #   模板已自带的不重复 (6 套模板已补齐, 此处兜底用户侧旧副本)。
+    main_content = main_dst.read_text(encoding="utf-8")
+    patch_lines = [
+        "\\providecommand{\\tightlist}{\\setlength{\\itemsep}{0pt}\\setlength{\\parskip}{0pt}}",
+    ]
+    if "\\pandocbounded" not in main_content:
+        patch_lines.append("\\providecommand{\\pandocbounded}[1]{#1}  % T-01")
+    if "\\usepackage{array}" not in main_content:
+        patch_lines.append("\\usepackage{array}  % T-01")
+    if "\\usepackage{calc}" not in main_content:
+        patch_lines.append("\\usepackage{calc}  % T-01")
     compat_patch = (
         "\n"
         "% ===== compat patch (auto-injected by render_paper.py) =====\n"
-        "% 仅 \tightlist 兜底 (pandoc 生成, 模板自身未定义).\n"
-        "\\providecommand{\\tightlist}{\\setlength{\\itemsep}{0pt}\\setlength{\\parskip}{0pt}}\n"
+        + "\n".join(patch_lines) + "\n"
         "% ===== end compat patch =====\n"
     )
-    main_content = main_dst.read_text(encoding="utf-8")
     # 在 \begin{document} 之前插入补丁
     begin_doc = main_content.find("\\begin{document}")
     if begin_doc != -1:
         patched = main_content[:begin_doc] + compat_patch + "\n" + main_content[begin_doc:]
         main_dst.write_text(patched, encoding="utf-8")
-        print(f"[OK] 已注入 \tightlist 补丁到 {main_dst}")
+        print(f"[OK] 已注入 compat 补丁 (\\tightlist + T-01 三件套缺失项) 到 {main_dst}")
     else:
         print(f"[WARN] 找不到 \\begin{{document}}, 跳过补丁注入")
 

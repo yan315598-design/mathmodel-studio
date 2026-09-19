@@ -56,10 +56,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from figkit import (
     apply_style,
-    load_diagram_family,
     load_diagram_families,
+    load_diagram_family,
     load_diagram_page,
     load_neutral,
+    restore_style_on_error,
     save_fig,
     straight_arrow,
     text_width_px,
@@ -120,6 +121,7 @@ def _draw_text_block(ax, lines: list[str], x: float, y: float, va: str,
             linespacing=1.4, zorder=5, **kw)
 
 
+@restore_style_on_error
 def plot_module(modules: list[tuple[str, str, str, str]],
                 center_lines: list[str] | None = None,
                 out_stem: str | None = None,

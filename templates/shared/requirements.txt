@@ -37,6 +37,9 @@ mesa>=2.1
 # PDF / 文档
 pdfplumber>=0.10
 pypdf>=3.17
+python-docx
+pymupdf
+pywin32; sys_platform == "win32"
 
 # Diff 处理 (extract_diff.py 的 unidiff 模式)
 unidiff>=0.7
