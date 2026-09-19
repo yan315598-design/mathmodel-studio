@@ -50,3 +50,10 @@ templates/figures/gallery/*.svg
 
 # 出图/打包等运行产物（可再生，不入库）
 outputs/
+
+# 分发版有意排除的内部材料（本地保留可用，不进公开仓库；清单对照远端 PACKAGE_CONTENTS.md）
+maintenance/
+templates/figures/gallery/golden/Q1_C1_field.png
+templates/figures/gallery/golden/Q2_C1_stages.png
+templates/figures/gallery/golden/Q34_C1_gridconv.png
+templates/figures/gallery/golden/Q4_C2_routes.png
