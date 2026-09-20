@@ -28,7 +28,7 @@ jobs:
           pandoc --version | head -1
 
       - name: Install Python dependencies
-        run: python -m pip install -r templates/shared/requirements.txt pytest
+        run: python -m pip install -r templates/shared/requirements.txt pytest "matplotlib==3.10.6"
 
       - name: Run test suite
         run: python -m pytest tests -q -p no:cacheprovider
