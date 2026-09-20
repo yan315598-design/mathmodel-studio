@@ -149,6 +149,10 @@ def metadata(path: Path, kind: str) -> dict:
             dataset.visititems(visit)
         return {"datasets": items, "scope": "at most 100 dataset headers"}
     if suffix == ".nc":
+        with open(path, "rb") as probe:
+            head = probe.read(8)
+        if not (head.startswith(b"CDF") or head.startswith(b"\x89HDF")):
+            raise ValueError("魔数不符: 不是 NetCDF/HDF5 文件")
         import xarray as xr
         with xr.open_dataset(path, decode_times=False) as dataset:
             return {"reader": "xarray", "attributes": {str(k): str(v) for k, v in dataset.attrs.items()},

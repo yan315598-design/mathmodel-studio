@@ -200,8 +200,10 @@ DIAGRAM_ORDER_ROADMAP = ["blue", "blue", "orange", "purple", "teal"]   # 五带�
 
 # 示意图字体链: YaHei 有真 700 粗体(msyhbd.ttc)排首位; Noto Sans SC 为可变字体
 # (matplotlib 只注册到 weight=100, 加粗不可用), 排在 PingFang SC 之后作末端兜底。
-DIAGRAM_FONT_FAMILY = ["Microsoft YaHei", "SimHei", "PingFang SC", "Noto Sans SC",
-                       "Arial Unicode MS", "Helvetica"]
+# Noto Sans CJK SC (fonts-noto-cjk, 静态 OTC 含常规/粗体) 排在可变字体之前,
+# 无 Windows 字体的 Linux 环境 (CI/服务器) 优先命中它而非仅 weight=100 的可变款。
+DIAGRAM_FONT_FAMILY = ["Microsoft YaHei", "SimHei", "PingFang SC", "Noto Sans CJK SC",
+                       "Noto Sans SC", "Arial Unicode MS", "Helvetica"]
 
 # ============================================================
 # 示意图版式令牌 (1.3.0): 网格/圆角/描边/字阶/mono

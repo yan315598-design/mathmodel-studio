@@ -6,7 +6,7 @@
 
 # --- 字体: 中文走 sans-serif 回退链, 缺字体自动降级不报方块 ---
 font.family        : sans-serif
-font.sans-serif    : Microsoft YaHei, SimHei, PingFang SC, Arial Unicode MS, Arial
+font.sans-serif    : Microsoft YaHei, SimHei, PingFang SC, Noto Sans CJK SC, Arial Unicode MS, Arial
 font.serif         : Times New Roman, SimSun
 axes.unicode_minus : False
 

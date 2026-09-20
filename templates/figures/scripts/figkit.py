@@ -117,8 +117,8 @@ _DIAGRAM_PAGE_FALLBACK = {
 }
 _DIAGRAM_ORDER_GENERIC_FALLBACK = ["blue", "teal", "olive", "orange", "purple", "green", "grey"]
 _DIAGRAM_ORDER_ROADMAP_FALLBACK = ["blue", "blue", "orange", "purple", "teal"]
-_DIAGRAM_FONT_FALLBACK = ["Microsoft YaHei", "SimHei", "PingFang SC", "Noto Sans SC",
-                          "Arial Unicode MS", "Helvetica"]
+_DIAGRAM_FONT_FALLBACK = ["Microsoft YaHei", "SimHei", "PingFang SC", "Noto Sans CJK SC",
+                          "Noto Sans SC", "Arial Unicode MS", "Helvetica"]
 
 # ---- 1.3.0 版式令牌内联副本（与 palettes.py 全量同步; 蒸馏自 diagram-design, MIT）----
 _DIAGRAM_TOKENS_FALLBACK = {
@@ -217,7 +217,7 @@ def apply_style(upright_math: bool | None = False) -> bool:
     # 内联回退: 与 mathmodel.mplstyle 关键项保持一致
     plt.rcParams.update({
         "font.family": "sans-serif",
-        "font.sans-serif": ["Microsoft YaHei", "SimHei", "PingFang SC",
+        "font.sans-serif": ["Microsoft YaHei", "SimHei", "PingFang SC", "Noto Sans CJK SC",
                             "Arial Unicode MS", "Arial"],
         "axes.unicode_minus": False,
         "axes.prop_cycle": plt.cycler(color=_PALETTES_FALLBACK["academic_blue"]),
@@ -1125,7 +1125,8 @@ def check_cjk_font() -> tuple[bool, str]:
     """检查首选中文字体是否可用, 返回 (是否可用, 实际命中的字体名)。"""
     from matplotlib import font_manager
 
-    preferred = ["Microsoft YaHei", "SimHei", "PingFang SC", "Arial Unicode MS"]
+    preferred = ["Microsoft YaHei", "SimHei", "PingFang SC", "Noto Sans CJK SC",
+                 "Noto Sans SC", "Arial Unicode MS"]
     installed = {f.name for f in font_manager.fontManager.ttflist}
     for name in preferred:
         if name in installed:

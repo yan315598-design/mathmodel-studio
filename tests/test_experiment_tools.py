@@ -163,6 +163,7 @@ def test_gallery_rejects_stale_source_before_writing(tmp_path):
 
 
 def test_scientific_headers(tmp_path):
+    pytest.importorskip("h5py", reason="h5py 是可选科学数据读取器, 默认依赖不含")
     import numpy as np
     import h5py
     from scipy.io import savemat

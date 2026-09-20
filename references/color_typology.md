@@ -116,7 +116,7 @@ fams = get_diagram_families(DIAGRAM_ORDER_ROADMAP, 5)   # 五带路线图族序
 ink = get_diagram_page("ink")               # 页面令牌
 ```
 
-固定族序：`DIAGRAM_ORDER_GENERIC = [blue, teal, olive, orange, purple, green, grey]`（通用 n 阶段取色）；`DIAGRAM_ORDER_ROADMAP = [blue, blue, orange, purple, teal]`（五带路线图，1:1 sci-box 叙事）。字体链 `DIAGRAM_FONT_FAMILY`：Microsoft YaHei（有真 700 粗体）→ SimHei → PingFang SC → Noto Sans SC（可变字体，matplotlib 只注册到 weight=100、加粗不可用，仅作末端兜底）→ Arial Unicode MS → Helvetica；示意图脚本在 `apply_style()` 后调 `figkit.use_diagram_font()`。**注意**：`use_diagram_font()` 修改**全局** rcParams，供独立出图脚本进程使用；同一进程后续要画数据图/其他图之前，必须重新 `apply_style()` 复位字体链，否则示意图字体链会泄漏到后续图。
+固定族序：`DIAGRAM_ORDER_GENERIC = [blue, teal, olive, orange, purple, green, grey]`（通用 n 阶段取色）；`DIAGRAM_ORDER_ROADMAP = [blue, blue, orange, purple, teal]`（五带路线图，1:1 sci-box 叙事）。字体链 `DIAGRAM_FONT_FAMILY`：Microsoft YaHei（有真 700 粗体）→ SimHei → PingFang SC → Noto Sans CJK SC（fonts-noto-cjk 静态 OTC，无 Windows 字体的 Linux 环境优先命中）→ Noto Sans SC（可变字体，matplotlib 只注册到 weight=100、加粗不可用，仅作末端兜底）→ Arial Unicode MS → Helvetica；示意图脚本在 `apply_style()` 后调 `figkit.use_diagram_font()`。**注意**：`use_diagram_font()` 修改**全局** rcParams，供独立出图脚本进程使用；同一进程后续要画数据图/其他图之前，必须重新 `apply_style()` 复位字体链，否则示意图字体链会泄漏到后续图。
 
 连续型 colormap 约定（`CMAPS`, 同样在 `palettes.py`）:
 
@@ -202,7 +202,7 @@ ink = get_diagram_page("ink")               # 页面令牌
 6. **灰度校验**: 正文图配色须过 `grayscale_check(colors)`（相邻色亮度差 ≥0.15）; 不达标的相邻对必须配不同线型/marker/填充。
 7. **图表背景纯白**: `figure.facecolor`/`axes.facecolor` 均为 white, 不用灰色底/透明底进正文。
 8. **网格淡灰虚线**: `grid.alpha ≤0.3`, `linestyle='--'`, 网格在数据之下。
-9. **中文字体必须走 mplstyle 回退链**: `Microsoft YaHei → SimHei → PingFang SC → Arial Unicode MS → Arial`, 禁止脚本里单写 `SimHei` 一种; `axes.unicode_minus=False`。
+9. **中文字体必须走 mplstyle 回退链**: `Microsoft YaHei → SimHei → PingFang SC → Noto Sans CJK SC → Arial Unicode MS → Arial`, 禁止脚本里单写 `SimHei` 一种; `axes.unicode_minus=False`。
 10. **语义色定向**: 红=风险/亏损/差, 绿=盈利/达标/好, 橙=强调（数据点/区域级）; 不反转。判据线/阈值线/参考线的颜色与线型自 v3.0.0 起按 §4 配色语义表绑定（判据红虚线、基线灰黑虚线），本条不再覆盖线型判据要素。
 11. **色板外自定义色**必须写进图表计划（figure plan）的备注, 说明为什么四套色板都不适用。
 12. **300dpi 起步**: 正文图 `savefig.dpi=300`, SVG/PDF 矢量优先。
