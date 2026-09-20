@@ -31,6 +31,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 try:
     from docx import Document
+    from docx.oxml import parse_xml
     from lxml import etree
     HAS_DEPS = True
 except ImportError:
@@ -81,16 +82,23 @@ def _omp_styled(run_specs):
     )
 
 
+# 安全解析: 夹具均为本文件字面量 XML, 无外部输入、不含实体引用。统一走
+# python-docx 的 oxml 解析器 (其内部 resolve_entities=False), 行为等价且
+# 给 docx 元素返回正确的自定义类; 不直接调 lxml fromstring 以免 XXE 模式告警。
+def _safe_fromstring(xml: str):
+    return parse_xml(xml)
+
+
 def _build_fixture(path: Path):
     """01 编号拆 run 的 display 公式; 02 第二条编号公式 (制造相邻公式表);
     03 无编号 display 公式 (Step B 不动、Step A 仍正体); 04 两行数据表。"""
     doc = Document()
     p1 = doc.add_paragraph()
-    p1._p.append(etree.fromstring(_omp(["E=mc", "^2", " ", "(", "1", ")"])))
+    p1._p.append(_safe_fromstring(_omp(["E=mc", "^2", " ", "(", "1", ")"])))
     p2 = doc.add_paragraph()
-    p2._p.append(etree.fromstring(_omp(["F=", "ma", "  ", "(", "2", ")"])))
+    p2._p.append(_safe_fromstring(_omp(["F=", "ma", "  ", "(", "2", ")"])))
     p3 = doc.add_paragraph()
-    p3._p.append(etree.fromstring(_omp(["a", "+", "b"])))
+    p3._p.append(_safe_fromstring(_omp(["a", "+", "b"])))
     tbl = doc.add_table(rows=2, cols=2)
     tbl.cell(0, 0).text = "指标"
     tbl.cell(0, 1).text = "数值"
@@ -329,7 +337,7 @@ class UnnumberedFormulaGuardTest(unittest.TestCase):
         doc = Document()
         for runs, _ in self.RUN_SETS:
             p = doc.add_paragraph()
-            p._p.append(etree.fromstring(_omp(runs)))
+            p._p.append(_safe_fromstring(_omp(runs)))
         doc.save(str(path))
         return path
 
@@ -381,7 +389,7 @@ def _build_pandoc_like(path: Path, n_eq: int = 6, numbered: bool = True):
             runs += [("\u2001\u2001", None), ("(", "p"), (str(i + 1), None),
                      (")", "p")]
         p = doc.add_paragraph()
-        p._p.append(etree.fromstring(_omp_styled(runs)))
+        p._p.append(_safe_fromstring(_omp_styled(runs)))
     tbl = doc.add_table(rows=2, cols=3)
     tbl.cell(0, 0).text = "指标"
     tbl.cell(0, 1).text = "数值"
@@ -538,7 +546,7 @@ class EquationTableWidthTest(unittest.TestCase):
 
     def _num_p(self, doc, num: int):
         p = doc.add_paragraph()
-        p._p.append(etree.fromstring(_omp(["x", "=", "1", "\u2001\u2001",
+        p._p.append(_safe_fromstring(_omp(["x", "=", "1", "\u2001\u2001",
                                            "(", str(num), ")"])))
         return p
 
@@ -828,7 +836,7 @@ class StandaloneMathTest(unittest.TestCase):
         p = doc.add_paragraph("公式说明：T 为温度。")
         p2 = doc.add_paragraph()
         _blank, omath_xml, tail_text = self._omp_loose(list(runs), tail)
-        p2._p.append(etree.fromstring(omath_xml))
+        p2._p.append(_safe_fromstring(omath_xml))
         r = p2._p.makeelement(W + "r", {})
         t = etree.SubElement(r, W + "t")
         t.set("{http://www.w3.org/XML/1998/namespace}space", "preserve")
@@ -908,7 +916,7 @@ class StandaloneMathTest(unittest.TestCase):
         t.text = "(1)"
         p._p.append(r)
         _blank, omath_xml, _tail = self._omp_loose(["x=1"], "")
-        p._p.append(etree.fromstring(omath_xml))
+        p._p.append(_safe_fromstring(omath_xml))
         path = self.dir / "before_nospace.docx"
         doc.save(str(path))
         stats = process(path, decision_log=UPRIGHT)
@@ -936,7 +944,7 @@ class StandaloneMathTest(unittest.TestCase):
         doc = Document()
         p = doc.add_paragraph()
         _blank, omath_xml, _tail = self._omp_loose(["x=1"], "")
-        p._p.append(etree.fromstring(omath_xml))
+        p._p.append(_safe_fromstring(omath_xml))
         path = self.dir / "inline.docx"
         doc.save(str(path))
         stats = process(path, decision_log=UPRIGHT)
@@ -951,7 +959,7 @@ class StandaloneMathTest(unittest.TestCase):
         doc = Document()
         p = doc.add_paragraph()
         _blank, omath_xml, _t = self._omp_loose(["x=1"], "")
-        omath = etree.fromstring(omath_xml)
+        omath = _safe_fromstring(omath_xml)
 
         def _text_run(text):
             r = p._p.makeelement(W + "r", {})
@@ -978,7 +986,7 @@ class StandaloneMathTest(unittest.TestCase):
             p._p.append(omath)
         elif kind == "two_omath":
             p._p.append(omath)
-            p._p.append(etree.fromstring(omath_xml))
+            p._p.append(_safe_fromstring(omath_xml))
             p._p.append(num)
         doc.save(str(path))
         return path
@@ -1032,7 +1040,7 @@ class IndentSpacingEdgeTest(unittest.TestCase):
             sp.set(W + "beforeLines", "50")
             sp.set(W + "afterAutospacing", "1")
         eq = doc.add_paragraph()
-        eq._p.append(etree.fromstring(_omp(["x", "=", "1", "\u2001\u2001", "(", "1", ")"])))
+        eq._p.append(_safe_fromstring(_omp(["x", "=", "1", "\u2001\u2001", "(", "1", ")"])))
         eqppr = eq._p.get_or_add_pPr()
         eqind = etree.SubElement(eqppr, W + "ind")
         eqind.set(W + "hanging", "200")
@@ -1092,7 +1100,7 @@ class SchemaOrderTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             doc = Document()
             sect = doc.element.find(W + "body").find(W + "sectPr")
-            sect.addprevious(etree.fromstring(PANDOC_LIKE_TBL))
+            sect.addprevious(_safe_fromstring(PANDOC_LIKE_TBL))
             path = Path(tmp) / "f.docx"
             doc.save(str(path))
             process(path)
@@ -1119,7 +1127,7 @@ class SchemaOrderTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             doc = Document()
             p = doc.add_paragraph()
-            p._p.append(etree.fromstring(_omp(["x", "=", "1", "\u2001\u2001",
+            p._p.append(_safe_fromstring(_omp(["x", "=", "1", "\u2001\u2001",
                                                "(", "3", ")"])))
             path = Path(tmp) / "f.docx"
             doc.save(str(path))

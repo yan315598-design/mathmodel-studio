@@ -1112,6 +1112,9 @@ def find_unprocessed_equation_numbers(docx_path) -> list:
     path = Path(docx_path)
     with ZipFile(path) as zf:
         xml_bytes = zf.read("word/document.xml")
+    # XXE 防护: 正常 Word 导出的 document.xml 不含 DTD, 携带实体定义一律拒解析
+    if b"<!DOCTYPE" in xml_bytes or b"<!ENTITY" in xml_bytes:
+        raise ValueError("document.xml 含 DTD/实体定义, 拒绝解析 (XXE 防护)")
     root = ET.fromstring(xml_bytes)
     body = root.find(wq("body"))
     if body is None:

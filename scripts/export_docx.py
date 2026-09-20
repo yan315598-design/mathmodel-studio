@@ -280,8 +280,7 @@ def main(argv=None) -> int:
 
     try:
         try:
-            with open(tmp_md, "w", encoding="utf-8") as f:
-                f.write(merged)
+            tmp_md.write_text(merged, encoding="utf-8")
         except OSError as e:
             print(f"[FAIL] 写临时拼接文件 {tmp_md} 失败: {e}")
             return 2

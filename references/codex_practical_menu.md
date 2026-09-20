@@ -2,6 +2,8 @@
 
 本文件是 mathmodel-studio 在 Codex 中的实战入口单一参考。Codex 通常没有弹窗选择 UI, 所有入口都用 Markdown 编号菜单。
 
+明确任务直接按 SKILL.md 路由，不重复展示菜单。附件检查用 `references/multimodal_assets.md`；试算或实测比较用 `references/experiment_cycle.md`；整理备选图用 `references/result_gallery.md`。宿主有合适交互工具时可直接使用，以下菜单仅为文本回退形式。
+
 ---
 
 ## 首屏菜单

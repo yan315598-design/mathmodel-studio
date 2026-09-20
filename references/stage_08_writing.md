@@ -38,6 +38,8 @@ next: stage_09_review
 
 ## 写作编排
 
+入文图按 `references/figure_quality_layers.md` 验收，Agent 可完成机制图精修。旧 draft 不能凭改名入文；原 mask 与答案附件保留原尺寸编码，必交覆盖不受图库预算限制。
+
 **三个关口（按序，缺一不可）**
 
 1. **样张先行**：全量铺开前先产 1 页样张（摘要初稿 + §5 任一问的一节正文，含 1 图 1 表）**真实渲染成 PDF** 给用户过目——版式/标点/加粗路标/图题长度/段落密度是否合意，反馈落实后再全量写作。**样张关即视觉关**：结论必须来自渲染页的真实视觉判定（用户过目或环境视觉通道），**不得用 md 源码、文本层字符检索替代**；未渲染不得记"样张已确认"。`interaction=detailed` 不可跳过；`auto` 可跳过但须登记。
@@ -55,13 +57,13 @@ next: stage_09_review
 |---|---|
 | 写作期需要动模型/结果 | 不自行回退：触发 L2（`references/feedback_layer2_backtrack.md`）定向回滚 |
 | 图注需改 | **回源**：改 `真源.md` 图表登记表"终稿图注"列（唯一来源），正文只逐字复制；不得就地改写 |
-| 示意图仍是 `*.draft` | 列出清单提醒用户精修回贴；正文只收录无 `.draft` 后缀版本（分野协议 `references/figure_skill_bridge.md` 图叙事章） |
+| 示意图仍是 `*.draft` | Agent 完成可编辑源精修与分层验收后生成新候选；仅改名不算完成。视觉未检查继续保留草稿，见 `references/figure_quality_layers.md` |
 | 作战地图缩略 | 必须是真实结果成品，不得画假图 |
 | 证据链不完整 | `trace_claims.py --strict` 不过 → 不得定稿摘要；缺口按 unstarted/partial 如实披露 |
 | 结算-结果矛盾 | `scripts/claim_consistency_check.py --draft <正文> --results results/ [--strict]`；warn/info 人工核对后在真源登记处理结果 |
 | 文献首引乱序 | `scripts/ref_order_audit.py --workspace <项目根>`；exit 1 先修再进摘要重写 |
 | 经验校准越界 | 只取 `config/rating_contract.json` ∩ `competitions/<comp>/empirical.json.scoring_policy`；图表数/章节数/正文字数/词频**不作硬阈值** |
-| 编译/导出失败 | 见 `SKILL.md` §7 失败兜底（换链须用户确认） |
+| 编译/导出失败 | 见 `references/workflow_entry_details.md` §7 失败兜底（换链须用户确认） |
 
 ## 精准指针
 

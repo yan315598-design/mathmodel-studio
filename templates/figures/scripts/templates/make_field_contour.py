@@ -61,6 +61,21 @@ from figkit import (
 CRITERION_COLOR = load_palette("academic_blue")[3]
 
 
+def draw_field(ax, X, Y, field, *, cmap="viridis", vmin=None, vmax=None,
+               norm=None, rasterized=True):
+    """Draw on caller-owned axes without changing style, saving or closing."""
+    x, y, values = np.asarray(X), np.asarray(Y), np.asarray(field, dtype=float)
+    if values.ndim != 2 or x.shape != values.shape or y.shape != values.shape:
+        raise ValueError("X/Y/field must be matching 2D arrays")
+    if not np.all(np.isfinite(x)) or not np.all(np.isfinite(y)) or np.isinf(values).any():
+        raise ValueError("coordinates must be finite; field may contain NaN but not infinity")
+    if not np.isfinite(values).any():
+        raise ValueError("field has no observed values")
+    return ax.pcolormesh(x, y, np.ma.masked_invalid(values), cmap=cmap,
+                         vmin=vmin, vmax=vmax, norm=norm,
+                         shading="auto", rasterized=rasterized)
+
+
 def _demo_fields() -> tuple[np.ndarray, np.ndarray, list[np.ndarray], list[float]]:
     """构造示例场: 10cm×6cm 板面温度场, 三个时刻热斑扩展, 返回 (X, Y, 场列表, 时刻列表)。"""
     x = np.linspace(0.0, 10.0, 61)
@@ -154,8 +169,7 @@ def plot_field_contour(
     for ax, f, title in zip(axes, fields, panel_titles):
         if not share_scale:
             vmin, vmax = float(np.min(f)), float(np.max(f))
-        im = ax.pcolormesh(X, Y, f, cmap=cmap, vmin=vmin, vmax=vmax,
-                           shading="auto", rasterized=True)
+        im = draw_field(ax, X, Y, f, cmap=cmap, vmin=vmin, vmax=vmax)
         if criterion is not None:
             cs = ax.contour(X, Y, f, levels=[criterion],
                             colors=[CRITERION_COLOR], linestyles="--",

@@ -45,6 +45,8 @@ Step 1..9 操作流程（含 panel）
 
 ## 操作流程（Step 1-9）
 
+图表检查分层见 `references/figure_quality_layers.md`：科学、必交和实际尺寸可读性是硬条件；面板/节点/卡片风格是建议。预览不替代原图，未看真实渲染不得记视觉通过。
+
 | Step | 做什么（一句话） | 权威源 / 入口 |
 |---|---|---|
 | 1 反模式逐条对照 (45 min) | 按本竞赛 `anti_patterns.md` 逐项判定：high → 立即修；medium → 标记，panel 后再定；通过 → 记录 | `competitions/<comp>/anti_patterns.md` |

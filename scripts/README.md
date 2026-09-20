@@ -4,6 +4,11 @@
 
 | 脚本 | 用途 |
 |---|---|
+| `inspect_assets.py` | 按类型检查本地附件元数据；可选依赖懒加载；视频帧保留帧号与时间戳 |
+| `compare_experiments.py` | 核对同协议实测实验与证据哈希，比较效果、稳定性、成本并给出临时推荐 |
+| `build_result_gallery.py` | 为已质检图片生成本地缩略图、原图和来源说明，不自动入文 |
+| `experiment_protocol_v2.py` | compare_experiments 的显式 experiments-2 分任务实现；按实例统计重复、多目标非支配与未知成本 |
+| `figure_export_quality.py` | 检查正式原图而非预览；混合位图质量不明记 unknown |
 | `score_artifact.py` | 按统一评分契约处理各阶段评分、加权和 verdict |
 | `check_gate.py` | 阶段推进门禁：必停点 checkpoints 登记 + L1 评分落盘双校验，exit 1 拦截并中文列缺失项 (v2.3) |
 | `extract_diff.py` | 生成或应用局部精修 patch |

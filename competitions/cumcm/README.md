@@ -29,7 +29,7 @@
 
 案例人读视图 `case_library.md`（由 `scripts/distill_cumcm_cases.py` 重建时写出）与人工复核总表 `all_cases_manual_audit.md` 属**维护期本地材料**（v2.8.0 起从本目录迁出运行路径，落在维护方本地的 maintenance 语料目录）：只在维护工作副本里存在，**不随公开分发包发布**，公开包里没有这两个文件。公开包内可用的对应内容是 `cases/index.json`（25 题结构化索引）与 `cases/manual_review_annotations.json`（25 题、64 篇论文的人工复核覆盖层）——运行时检索只读这两份，不依赖本地维护材料。
 
-旧写作辅助层 `distilled_phrases.md`、`distilled_structures.md`、`distilled_formats.md` 已废止并整体归档至 `docs/legacy/cumcm/`（v2.8.0），不再出现在本目录；其中任何旧定量表述都不得覆盖 `empirical.json` 和 `winning_patterns.md` 的新规则。（`distilled_naming.md` 已删除：修饰词命名不作质量要求，见 `references/rubrics.md` 对模型命名的解释。）
+旧写作辅助层 `distilled_phrases.md`、`distilled_structures.md`、`distilled_formats.md` 已废止（v2.8.0 归档，v3.3.0 起随历史归档目录整体移出公开仓库，维护者本地留存），不再出现在本目录；其中任何旧定量表述都不得覆盖 `empirical.json` 和 `winning_patterns.md` 的新规则。（`distilled_naming.md` 已删除：修饰词命名不作质量要求，见 `references/rubrics.md` 对模型命名的解释。）
 
 ## 来源
 

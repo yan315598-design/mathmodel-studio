@@ -62,9 +62,9 @@ FACT = 题面/数据给定的事实（有误须用户确认才改）; CHOICE = �
 | v1 | h2 | 用户 | 初建口径冻结单 | — |
 ```
 
-> **两列写入纪律**：设计卡列（v3.0.0）——每张数据图生成前必填设计卡五要素（回答什么问题 / 图型选择与理由 /
+> **两列写入纪律**：设计卡列——每张正式展示图生成前填写设计卡五要素，探索图不强制（回答什么问题 / 图型选择与理由 /
 > 证据层 / 注释预算 / 评委一眼应看到什么，规范见 `references/figure_skill_bridge.md` 图叙事章），本列登记
-> "已写/不适用（示意图）"，作战地图为必选件。终稿图注列（v3.1.0）——stage 5 出图时把设计卡第 ⑤ 要素凝成
+> "已写/不适用（原始答案附件）"；作战地图仅在全局依赖概览有价值时采用。终稿图注列（v3.1.0）——stage 5 出图时把设计卡第 ⑤ 要素凝成
 > 一句话写入本列，本列是论文图注的**唯一来源**：stage 8 组装**只许逐字复制**进 `![图 N …]` 题注，不得改写、
 > 扩写或重述；写作期若须改图注，回本表改本列（走计划修订）再复制，正文不出现第二份图注文本。实测教训：
 > 2026 国赛 A 题图 13 题注虚报"问题三与问题四并列"而图内只有问题三——写作 agent 自由改写图注所致。
@@ -102,7 +102,7 @@ FACT = 题面/数据给定的事实（有误须用户确认才改）; CHOICE = �
 1. 读 `state/decision_log.json` → 流程状态（当前阶段 / 各 Qi 状态 / 评分历史）。
 2. 读 `真源.md` 的口径冻结单 + 修订记录末尾 5 行 → 内容口径与最近变更。
 3. 跑 `freeze_numbers.py check` 与 `run_manifest.py verify`（脚本从 **`<skill>/scripts/`** 解析，不是工作区内——见 §9/§10）→ 报告 stale 项；脚本或依赖缺失时**记 `未执行/缺依赖` 并向用户如实报告（不得当作已核验通过，硬门不因跳过而放行）**，不中断恢复流程。
-4. 输出三行给用户确认：**当前阶段 / 已冻结项 / 待办 3 条**（stale 清单并入本行亮出）。确认后才继续动工。
+4. 输出 **当前阶段 / 已冻结项 / 待办**（并列 stale 清单）；用户明确要求继续时直接按记录推进。只有缺少必要科学决策或触及冻结变更才等待确认，不重复询问已有授权。
 
 规则：**禁止写超过 50 行的交接文档**（交接信息只落真源.md 与 decision_log.json，不落第三处）；会话结束前把"待办 3 条"写入 `decision_log.events.log`（一行一条，不写散文）。
 
@@ -114,8 +114,8 @@ FACT = 题面/数据给定的事实（有误须用户确认才改）; CHOICE = �
 
 | 时点 | 冻结内容 | 之后允许 | 推翻条件 |
 |------|---------|---------|---------|
-| h8 | 图表规格定稿（张数预算 / 每图论证价值 / 色板） | h24 前仍可修订（在真源.md 修订记录登记时间/原因/影响） | 用户确认 + 真源登记 |
-| h24 | 口径冻结单 + 图表规格硬冻结 | 改 CHOICE 条目（登记）；FACT 有误须用户确认 | 用户确认 + 真源登记 |
+| h8 | 登记每问证据需求和暂定展示方案 | 按探索与基线实验修订图型 | 真源登记原因与影响 |
+| h24 | 口径冻结单；复查图表计划是否已有证据 | 图型随实验完善；FACT 有误须用户确认 | 真源登记；正式规格在验证后的 D.1 冻结 |
 | 48h | 模型主结构 | 只修 bug 与补灵敏度分析 | 用户编号菜单确认 + 真源登记 |
 | 60h | 结果数字 | 只写不改模型（数字注入，§6） | 不推翻；重算属重大事故，须用户确认 |
 
@@ -171,7 +171,7 @@ def inject(text, registry):
 |-------|------|------|
 | 0 kickoff | 建骨架 + 真源.md 落盘；检测旧工作区；已有真源走会话恢复四步 | `references/stage_00_kickoff.md` Step 3 |
 | 1 选题 | 选题锁定后立即锁口径冻结单（FACT/CHOICE） | `references/stage_01_problem_selection.md` |
-| 2 解析 | 图表规格冻结（张数预算 / 论证价值 / 色板）写入图表登记表 | `references/stage_02_analysis.md` 图表规格冻结节 |
+| 2 解析 | 证据需求与暂定图表方案写入登记表，实验后完善 | `references/stage_02_analysis.md` 证据需求与图表计划节 |
 | 5 / 8 / 9 | 每问完成即登记结果表；写作期数字注入；终审独立验收三选二 | `references/stage_05_subproblem_loop.md` / `references/stage_08_writing.md` / `references/stage_09_review.md` |
 
 赛前兵检（工作区骨架生成）：`references/stage_preseason.md` §④。逐小时冻结时点排布：`references/huaweibei_battle_plan_72h.md`、`references/huashubei_battle_plan_72h.md`。
@@ -234,7 +234,7 @@ def inject(text, registry):
 ```
 
 - `status`: 固定 `"answered"`；`asked_at` / `answer`: 提问时间戳与用户选择摘要。
-- `source`: 白名单 `chat` / `user_cli`。主 agent 经用户问答后写入，固定 `"chat"`；已归档薄执行器（`docs/legacy/runtime/`，见其 README）经 CLI `answer` 子命令 trusted 写入时为 `"user_cli"`。**缺失或非白名单值（model/llm/agent/auto 等）一律视为未答，`check_gate.py` 拦截。**
+- `source`: 白名单 `chat` / `user_cli`。主 agent 经用户问答后写入，固定 `"chat"`；已归档薄执行器（v3.3.0 起移出公开仓库）经 CLI `answer` 子命令 trusted 写入时为 `"user_cli"`。**缺失或非白名单值（model/llm/agent/auto 等）一律视为未答，`check_gate.py` 拦截。**
 
 **扩展字段**（仅 `figure_menu["Q<i>"]` 用，逐问写入）：`count`（0-9，该问图表数量，必填）；0/1 张时加 `exception: true` + `reason`（低频决策披露登记，用途是决策追溯、不是扣分豁免）；`narrative`（逐图一行摘要：问题/图型/一眼所见，D.1 第 3 问结果，纯记录不入门禁）；多问菜单合并成一轮呈现时加 `menu_form: "consolidated_4q_single_round"`（字段值固定，三问/四问通用；形态定义见 `references/figure_skill_bridge.md` 出图决策菜单节"合并菜单形态"——**登记仍逐问写入**，合并的只是呈现轮次）。其余登记键（`kickoff_5q` / `analysis_confirm` / `card_decision` / `qi_verdict["Q<i>"]` / `per_qi_selection["Q<i>"]`）只用基础条目；stage 文件引用本 schema 时写"条目形状见 `references/workspace_protocol.md` §12"，不再内联 JSON 示例。
 
@@ -242,4 +242,4 @@ def inject(text, registry):
 
 ## 13. 知识架构设计理由（已迁出运行路径）
 
-> 原 §13「知识架构设计理由」（v2.8.0 由 `docs/legacy/architecture.md` 摘录）于 2026-09-19 维护期整体迁出运行路径；设计理由的公开历史归档见 `docs/legacy/architecture.md`（维护期另有本地摘录，不随公开分发包发布）。本节运行时不需要，仅保留指针，别再搬回本文件。归属与迁移规则对照见 `docs/maintenance_notes.md`。
+> 原 §13「知识架构设计理由」（v2.8.0 由历史归档 architecture.md 摘录）于 2026-09-19 维护期整体迁出运行路径；该归档于 v3.3.0 起移出公开仓库（维护者本地留存）。本节运行时不需要，仅保留指针，别再搬回本文件。归属与迁移规则对照见 `docs/maintenance_notes.md`。

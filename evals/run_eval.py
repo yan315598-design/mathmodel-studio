@@ -208,14 +208,20 @@ def cmd_build_holdout_index(args) -> int:
         print(f"[FAIL] {exc}")
         return 1
 
-    out_cases_dir = Path(args.out) / "competitions" / args.competition / "cases"
+    out_root = Path(args.out).resolve()
+    comp = args.competition
+    if (not comp or Path(comp).is_absolute() or ".." in Path(comp).parts
+            or "/" in comp or "\\" in comp):
+        print(f"[FAIL] 非法竞赛名 {comp!r}: 须为单段目录名")
+        return 1
+    out_cases_dir = out_root / "competitions" / comp / "cases"
     out_cases_dir.mkdir(parents=True, exist_ok=True)
 
     mirror_index = dict(index_data)
     mirror_index["cases"] = kept_cases
     out_index_path = out_cases_dir / "index.json"
-    with open(out_index_path, "w", encoding="utf-8") as f:
-        json.dump(mirror_index, f, ensure_ascii=False, indent=1)
+    out_index_path.write_text(
+        json.dumps(mirror_index, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"index.json: {total} -> {len(kept_cases)} (剔除 {total - len(kept_cases)} 条, "
           f"exclude_year={args.exclude_year})")
     for case in removed_cases:
@@ -228,8 +234,8 @@ def cmd_build_holdout_index(args) -> int:
         mirror_ann = dict(ann_data)
         mirror_ann["cases"] = kept_ann
         out_ann_path = out_cases_dir / "manual_review_annotations.json"
-        with open(out_ann_path, "w", encoding="utf-8") as f:
-            json.dump(mirror_ann, f, ensure_ascii=False, indent=1)
+        out_ann_path.write_text(
+            json.dumps(mirror_ann, ensure_ascii=False, indent=1), encoding="utf-8")
         ann_total = len(ann_data.get("cases", []))
         print(f"manual_review_annotations.json: {ann_total} -> {len(kept_ann)} "
               f"(剔除 {ann_total - len(kept_ann)} 条)")
@@ -478,8 +484,8 @@ def cmd_score_run(args) -> int:
         print(f"[FAIL] 结果文件路径越界: {out_path.resolve()} 不在 {out_dir} 内")
         return 1
     out_dir.mkdir(parents=True, exist_ok=True)
-    with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(report, f, ensure_ascii=False, indent=2)
+    out_path.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(f"score-run [{args.label}] workspace={workspace}")
     for name, tool in report["tools"].items():

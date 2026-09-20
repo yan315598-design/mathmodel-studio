@@ -30,6 +30,10 @@ next: stage_06_robustness
 
 ## 循环编排（每问按序走完；括号=指回权威源）
 
+正式图由 Agent 按 `references/figure_quality_layers.md` 自动设计、渲染、检查与精修。D.1 有明确授权即按真实对话登记，不重复询问常规设计；科学/成本/锁定风格改变仍须确认。
+
+本问先以 `references/experiment_cycle.md` 的小实验检验关键风险，再扩到正式求解。新结果推翻计划时登记原因与受影响项；验证后按 `references/result_gallery.md` 检查是否存在有独立价值的展示候选，达到预算即停止。
+
 | 步 | 做什么（一句话） | 权威源 / 落盘 |
 |---|---|---|
 | A0 | 本问选型确认（**必停点**）：与 stage 3 一致时轻量确认，不一致或无记录出完整选择卡；拍板后更新《选型总表》该行 | SKILL.md 必停点协议；选择卡规格 `references/stage_03_model_selection.md`；登记形状 `references/workspace_protocol.md` §12 |
@@ -38,7 +42,7 @@ next: stage_06_robustness
 | C | 结果验证四查：状态（可行/最优/超时）→ 约束与单位 → 反例 → 同口径对照（基线也须可行）；国赛/研究生赛/华数杯按 Stage 5 知识包命中案例的 `required_solution_checks` 逐项核验并登记 evidence ID，不迁移历史数值 | 验证纪律 `references/modeling_evidence_protocol.md` Stage 5 节；知识包入口见下“精准指针”；收敛时程纪律见下 |
 | C.1 | 公式-代码一致性对照表落盘 `results/Q{i}_formula_code_map.md`（per-Qi 必填 evidence） | **`references/modeling_evidence_protocol.md` Stage 5 节**（表模板 + 三条判定口径） |
 | D | 子灵敏度：只计算并落盘（机器可读文件），**不出图** | `references/modeling_evidence_protocol.md` Stage 5 节"敏感性"（区分固定方案换参数评价 vs 每情景重新决策） |
-| D.1 | 出图决策菜单（**必停点**）：数量 / 风格 / 逐图叙事三问，用户拍板后才出图 | **`references/figure_skill_bridge.md` 出图决策菜单节**（含 0/1 张披露、合并菜单、风格试产）；登记形状 `references/workspace_protocol.md` §12 |
+| D.1 | 正式出图决策（**必停点**）：登记数量 / 风格 / 逐图叙事；已有有效授权直接登记，缺必要科学决策才询问 | **`references/figure_skill_bridge.md` 出图决策菜单节**（含 0/1 张披露、合并菜单、风格试产）；登记形状 `references/workspace_protocol.md` §12 |
 | D.2 | 图表契约与生成：写清 core claim / figure type / source artifact / palette / 设计卡五要素 / 判据线 / 注释预算 → 生成 → 过 `figqa.py --strict` + `figure_lint.py` | 图表纪律 `references/figure_skill_bridge.md`；命中案例的 `figure_story` 组证据组 |
 | E | 物理意义：数值 → 现实含义，含与同口径基线的对比（篇幅由内容决定） | 写作语域 `competitions/huaweibei/writing_voice.md`（研究生赛） |
 | E2 | 章节草稿卡写入 `paper_workspace/sections/q{i}_draft.md`（write-as-you-solve） | **`references/modeling_evidence_protocol.md` Stage 8 节**（五件内容 + 冻结数字要求） |

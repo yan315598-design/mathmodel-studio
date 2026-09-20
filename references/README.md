@@ -41,6 +41,9 @@
 | R12 | 中文标点全角体系 | `cn_presentation_spec.md` §2 | abstract_template 等指针 |
 | R13 | docx 终稿通道（冻结后 Word 终改协议） | `docx_final_channel.md`（v2.9.0） | workspace_protocol §3.1 只写例外指针；SKILL 入口路由 + stage 8 行各一指针 |
 | R14 | 图叙事设计卡/判据线/对照构图/量化标签/示意图草稿通道 | `figure_skill_bridge.md` 图叙事章（v3.0.0） | stage_05 / stage_08 / cn_presentation_spec §7 / parallel_dispatch 挂接点 3.5 指针；配色语义（色与线型绑定）归 R7 的 `color_typology.md` 配色语义表；图题/注释预算/图宽呈现仍归 R2（`cn_presentation_spec.md` §7） |
+| R15 | 附件读取与多模态元数据 | `multimodal_assets.md` + `scripts/inspect_assets.py` | Stage 2 指针 |
+| R16 | 小实验、同口径模型比较、动态计划 | `experiment_cycle.md` + `scripts/compare_experiments.py` | Stage 2/3/5 指针 |
+| R17 | 多类型图路由与候选图库 | `result_gallery.md` + `scripts/build_result_gallery.py` | 图表桥与 Stage 5 指针 |
 
 ## 二、判层必摘（"判而不摘"禁令）
 
@@ -48,8 +51,8 @@
 
 1. 从 `SKILL.md` 加载表（通用加载 / 按 stage 表 / 竞赛专项加载）摘除该文件；
 2. 摘除全库全部正面加载引用（grep 文件名确认零残留；CHANGELOG 历史叙述豁免）；
-3. 有价值残值先迁移到权威源（登记迁出位置），再 `git mv` 进 `docs/legacy/`
-   （移动不删除，保持证据链）。
+3. 有价值残值先迁移到权威源（登记迁出位置），再整体移出公开仓库并在维护者
+   本地归档（原历史归档目录已于 v3.3.0 整体移出，保持证据链的方式改为本地留存）。
 
 依据：2.7.0 前 `SKILL.md` stage 8 加载表仍在加载已被 README 判旧层的
 distilled_structures/distilled_formats，"判而不摘"是字数/图题/编号三类冲突

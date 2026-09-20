@@ -100,7 +100,7 @@ TIER_LABELS = {
 
 # ① 运行资源: 缺任一项 skill 都跑不起来
 SELECT_RUNTIME_PREFIXES = (
-    "SKILL.md", "README.md", "LICENSE", "AGENTS.md", "CHANGELOG.md",
+    "SKILL.md", "README.md", "LICENSE", "AGENTS.md", "CHANGELOG.md", "ARCHITECTURE.md",
     ".editorconfig", ".gitattributes", ".gitignore",
     ".codex-plugin", ".claude-plugin",
     "agents", "competitions", "config", "references", "scripts", "skills", "templates",
@@ -828,6 +828,8 @@ def _insert_banner(text: str, banner: str) -> str:
     SKILL.md 的 frontmatter 必须在文件最前, 直接 prepend 会让宿主技能发现失效
     (v3.1.0 复审 P2 修正)。
     """
+    if banner.strip() in text:
+        return text
     if not text.startswith("---"):
         return banner + text
     lines = text.splitlines(keepends=True)

@@ -1,0 +1,54 @@
+# 实验驱动建模
+
+触发：用户要求试算、模型比较、求解，或正式实验显示原方案不成立。仅问模型建议时只给选择卡。此处是实验比较与动态计划的唯一规则来源；不增加 Stage 编号或新的门禁。
+
+## 小实验到正式方案
+
+1. 先明确该问的目标、可行性判据、现有数据与最高风险假设。Stage 2 登记的是证据需求，不预先锁定图型。
+2. 使用成熟库实现最简单可行基线，安排能检验最高风险的最小实验。写下样本范围、运行预算、种子及停止条件；合成数据只能检验代码与机制。
+3. 看结果再调整模型、数据处理和展示计划。记录“观察到什么、改变什么、影响哪些问”；在现有 `decision_log.events` 和真源修订记录中引用实验路径，不复制整份结果。
+4. 挑选可行候选开展同口径比较，将实测结果附在 Stage 3 选择卡。正式求解仍按 A0 登记，实验不能冒充用户拍板。
+5. 正式验证通过后再冻结图型与正式结果。按 `references/workspace_protocol.md` 处理数字冻结和下游失效；诊断图留在 `results/figures_diagnostic/`。
+
+已明确授权实验时可以直接执行小规模原型。现有明确选择直接复用；只有候选范围、成本或研究目标发生实质变化时才提出新决策。不为每次改参数再增加菜单。
+
+## 候选与预算
+
+通常先比较一个基线和一条有依据的替代路线；候选数量按问题决定，不凑经典、机器学习、深度学习三类。深度学习只在样本、任务结构、算力与剩余时间支持时进入候选，使用现有框架。纯优化、机理求解不能硬套预测精度排名。
+
+预测任务按样本实体、时间顺序或空间块划分；同一对象的帧、音频窗与衍生特征不得跨训练验证泄漏。预处理只在训练折拟合，候选共用外层划分；调参使用内部验证。最终测试集只在选型结束后使用。优化任务共用实例、预算与可行性判据，比较目标值、间隙与稳定性；数值求解还要比较误差与收敛。
+
+先比较效果是否达到实用容差，再看稳定性、时间、内存和可解释性。不用任意加权分掩盖量纲差异。预算是每次运行上限；失败、超时与排除原因保留。只有一次运行时不能声称稳定。
+
+## 比较工具契约
+
+`scripts/compare_experiments.py` 汇总已执行实验，不训练模型、不自动搜索超参数。Agent 按任务编写求解脚本并执行，将结果登记为 `experiments-1`：
+
+```json
+{
+  "schema_version": "experiments-1",
+  "protocol": {
+    "task": "regression",
+    "dataset_sha256": "原始数据快照的真实 SHA-256",
+    "split_id": "保存的数据划分文件 SHA-256",
+    "metric": "rmse",
+    "direction": "min",
+    "evaluation_role": "validation",
+    "budget_s": 60,
+    "practical_tolerance": 0.01,
+    "replicates": ["fold0-seed42", "fold1-seed42"]
+  },
+  "candidates": []
+}
+```
+
+每个 completed 候选含 `id / status / protocol / interpretability / runs`，其中 `protocol` 必须与顶层完全相同。每个 run 含 `replicate / feasible / value / elapsed_s / peak_memory_mb / evidence`，`evidence={path, sha256}` 指向实测结果文件，路径相对清单。失败候选写 `status=failed|timeout` 和 `reason`。不估算内存冒充实测；无法采集时先补测或明确比较未完成。
+
+```bash
+python <skill>/scripts/compare_experiments.py results/Q1_experiments.json --output results/Q1_comparison.json
+```
+
+输出平均指标、样本标准差、时间、内存、排除项与临时推荐。容差内依次以稳定性、时间、内存决胜；可解释性保持文字评估，由选择卡说明最终权衡。脚本检查协议声明与结果哈希，不能证明训练代码无泄漏：仍需检查划分、预处理和真实运行。对实验脚本继续调用 `scripts/run_manifest.py` 记录运行链。
+## 显式扩展入口
+
+跨任务、不同实例重复、多目标或缺测成本时按需读取 `references/experiment_protocol_v2.md`，显式使用 experiments-2。旧 experiments-1 语义不变。

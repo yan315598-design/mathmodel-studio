@@ -99,6 +99,19 @@ def _check_finite(values, label: str, allow_none: bool = True) -> None:
             raise ValueError(f"{label} 含非有限数值或非数值: {v!r}")
 
 
+def draw_prediction_series(ax, t, prediction, *, label="Prediction", **kwargs):
+    """Draw without owning the figure; None marks a missing interval."""
+    import numpy as np
+    if len(t) != len(prediction) or len(t) == 0:
+        raise ValueError("t/prediction must be nonempty and equal length")
+    _check_finite(t, "t", allow_none=False)
+    _check_finite(prediction, "prediction")
+    if not any(value is not None for value in prediction):
+        raise ValueError("prediction has no observed values")
+    values = np.asarray([np.nan if v is None else v for v in prediction], dtype=float)
+    return ax.plot(t, values, label=label, **kwargs)[0]
+
+
 @restore_style_on_error
 def plot_prediction(
     actual: list[float],
@@ -200,9 +213,9 @@ def plot_prediction(
             np.array([np.nan if v is None else v for v in ci_hi], dtype=float))
         ax_top.fill_between(x, lo, hi, color=orange, alpha=0.18, linewidth=0,
                             zorder=2, label=ci_label)
-    # 预测曲线只取有限子集绘制, 避免 NaN 断点数据进入线段几何
-    ax_top.plot(x[pred_mask], pred_raw[pred_mask], color=orange,
-                linewidth=1.7, linestyle="--", zorder=5, label=pred_label)
+    # 保留 NaN 断点，避免跨内部缺测区间连接；残差仍只计算有限重叠点。
+    draw_prediction_series(ax_top, t, prediction, color=orange,
+                           linewidth=1.7, linestyle="--", zorder=5, label=pred_label)
     if split is not None:
         ax_top.axvline(x[split], color=split_line, linestyle=":", linewidth=1.1,
                        zorder=3)

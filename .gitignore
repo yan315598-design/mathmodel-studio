@@ -40,6 +40,7 @@ evals/results/
 # 内部工作笔记与可再生状态, 不进入公开仓库
 _internal_notes/
 state/knowledge_manifest.json
+/CONTEXT.md
 
 # gallery 只保留 PNG 预览与 drawio 可编辑稿, PDF/SVG 由脚本可再生
 templates/figures/gallery/*.pdf

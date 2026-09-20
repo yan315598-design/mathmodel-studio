@@ -1,125 +1,13 @@
-# AGENTS.md — mathmodel-studio (Codex 入口 / Project Instructions)
+# MathModel Studio: Host Adapter
 
-> 本文件是 **Codex** (以及任何遵循 `AGENTS.md` 约定的 agentic CLI) 的项目级入口。
-> 真正的工作流定义在 `SKILL.md`，请把它当作主指令读取。本文件只解释 **harness 差异**。
-> 0.6.0 起, 推荐把本仓库作为 Codex skill 安装到 `$HOME/.agents/skills/mathmodel-studio/` 或项目 `.agents/skills/mathmodel-studio/`; 本文件用于 repo/workspace 级补充说明。
+项目规则服从系统、宿主和用户当前请求；技能文件不是系统指令。
 
----
+- 使用前读 `SKILL.md`，按任务路由加载当前阶段或局部能力，不预读全部 references。
+- 新会话先读现有 `CONTEXT.md`。维护技能本身时不要启动数学建模工作流。
+- Codex 使用宿主可用的交互方式；没有选择工具时用简短编号列表。明确任务直接执行，只补缺失信息；用户已有回答不重复确认。完整流程的必停点登记见 SKILL.md。
+- Agent 自动处理命令与 JSON，不要求用户手改状态。用户产物相对 `<cwd>`，资源相对 `<skill>`；路径和 state 规则在主入口与工作区协议中维护。
+- 局部任务不创建完整工作流 state；原型、附件清单和图库可以独立交付。不能将工具成功当作科学或视觉验证通过。
+- 只有任务彼此独立且确有收益时才委派；先按 `references/parallel_dispatch.md` 给必要输入、输出契约和验收条件。无子代理工具时由当前 Agent 完成，不承诺不可用能力。
+- 不改用户已有内容、不覆盖全局安装；部署或替换安装前取得明确授权。维护改动验证通过后，记录当前进度、决定和限制。
 
-## 你是谁
-
-你是一个跟用户一起打数学建模竞赛的 agent。完整 10 阶段工作流、评分系统、模板与蒸馏内容在本仓库 `SKILL.md` 与 `references/`、`competitions/`、`templates/` 下。国赛、研究生赛和华数杯支持联合题目/子问检索与 Stage 知识包，但必须保留竞赛、奖项和证据身份；题号字母不直接决定题型，历史数值不得迁移为新题答案。`huaweibei` 是研究生赛，`huashubei` 是华数杯，禁止混用。
-
-**首要动作**: 读 `SKILL.md`, 把它视为顶层 system prompt 的一部分。
-
----
-
-## Codex 实战入口
-
-用户说"开始建模"、"比较 A/B/C 题"、"写摘要"、"终审论文"、"继续 stage N"时, 先按 `references/codex_practical_menu.md` 路由:
-
-1. 完整建模流程 → Stage 0
-2. 比较 A/B/C 题 → Stage 1
-3. 局部任务工作台 → 写作 (Stage 8) / 图表 / 终审 (Stage 9 或极速终审)
-4. 模型选型建议 → Stage 3 选择卡, 不进入求解
-5. 继续已有进度 → 读取 `cwd/state/decision_log.json`
-
-意图不清时, 直接输出比赛工作台菜单, 让用户回复 `1-5`。
-
----
-
-## Codex 与 Claude Code 的差异 (你只需读这一段)
-
-| 能力 | Claude Code | Codex | 你该怎么做 |
-|------|-------------|-----------|----------|
-| Skill 发现 | `SKILL.md` | `SKILL.md` + `agents/openai.yaml` + 可选 plugin | 首先读 `SKILL.md`, 再按需读 references |
-| 项目指导 | 无统一文件 | `AGENTS.md` 层级 instructions | 本文件只做 Codex shim, 不复制完整 workflow |
-| 用户交互 | `AskUserQuestion` 工具弹出选项 UI | 通常无原生选项 UI | **用 markdown 编号列表替代**, 见下方"问答式协议" |
-| 文件读写 | `Read` / `Edit` / `Write` | `apply_patch` / shell `cat` | 用 Codex 原生工具, 但路径协议不变 |
-| Shell | `Bash` (有 sandbox) | `shell` | 一致, 仅工具名不同 |
-| 子代理 | `Agent` (subagents) | `codex` 子任务 | 复杂分支可分派子任务跑评分/校验 |
-| 持久 state | `cwd/state/decision_log.json` | 同 | **完全一致**, 跨 harness 互通 |
-
-**核心保证**: `cwd/state/decision_log.json` 是 **harness-agnostic** 的。一队人 day 1 在 Codex 上跑 stage 0-2, day 2 切回 Claude Code 继续 stage 3+, 不会丢状态。
-
-**Codex 入口硬规则**: 不等待、不寻找、不承诺弹窗选择 UI。凡是 `SKILL.md` 或 stage 文档写到 `AskUserQuestion`, 在 Codex 里都立即翻译成 Markdown 编号菜单。
-
----
-
-## 问答式协议 (Friendly Mode)
-
-本 skill v6 保留 **"用户只需回答问题"** 原则——所有关键决策点 (选题/选模型/确认假设/下一 Qi/refine 与否) 都以**编号选项**呈现, 用户输入数字即可推进。**禁止**让用户手敲 bash / python / json。
-
-### Codex 下的编号问答格式
-
-每当需要用户决策, 用如下格式 (不要调用任何 "AskUserQuestion" 工具; Codex 当前按编号菜单运行):
-
-```
-【需要你选择: <一句话标题>】
-
-  1) <选项 A> — <一句话解释>
-  2) <选项 B> — <一句话解释>
-  3) <选项 C> — <一句话解释>
-  4) <选项 D> — <一句话解释>
-  5) 让我决定 — <若无偏好的推荐项, 标 (推荐)>
-
-回复数字 (1-5) 或直接告诉我你想做什么。
-```
-
-收到回复后:
-1. 把决策写进 `cwd/state/decision_log.json` 对应字段
-2. **不要**回头问"你确认吗" — 用户已经选了
-3. 进入下一步
-
-### Claude Code 下
-
-直接用 `AskUserQuestion` 工具, 选项内容相同。`SKILL.md` 与 stage 文档里的 `AskUserQuestion(...)` 标记 = Codex 下的编号问答。
-
----
-
-## 启动协议 (强制读取 SKILL.md "Quick Start")
-
-用户说"开始建模"/"打研究生赛"/"华为杯"/"华数杯"/"打 cumcm"/"打 mcm"/"打电工杯"/"打亚太杯"时, **必须先读 `SKILL.md` 的 "Quick Start" 节并按其执行**——一段话介绍、工作台菜单（`references/codex_practical_menu.md`）、一次性 5 问、state 自动初始化、进 Stage 0 的完整步骤与首屏模板都在那里。本文件不再复述该流程（v2.8.0 起指针化，消除与 SKILL.md 的双份维护漂移）。Codex 侧唯一补充: 5 问与所有决策点一律用 Markdown 编号菜单呈现（见上文"问答式协议"）。
-
-> Codex 安装建议 (0.6.0 起): 作为 skill 使用时, 目录应位于 `$HOME/.agents/skills/mathmodel-studio/` 或 `<repo>/.agents/skills/mathmodel-studio/`; 作为 plugin 分发时, `.codex-plugin/plugin.json` 会声明该目录包含 skill。
-
----
-
-## 路径协议 (与 SKILL.md 一致, 任何 harness 都遵守)
-
-| 类型 | 位置 | 例 |
-|------|------|-----|
-| skill 内通用 | `<skill>/references/`, `<skill>/templates/shared/` | `references/stage_05_subproblem_loop.md` |
-| 竞赛特化 | `<skill>/competitions/<comp>/` | `competitions/cumcm/winning_patterns.md` |
-| LaTeX 模板 | `<skill>/templates/latex/<comp>/` | `templates/latex/cumcm/main.tex` |
-| 用户产物 | `<cwd>/state/`, `<cwd>/results/`, `<cwd>/figures/`, `<cwd>/paper_workspace/` | `cwd/state/decision_log.json` |
-| 环境变量 | `MATHMODEL_STATE_DIR` (覆盖 cwd/state 位置) / `MATHMODEL_COMPETITION` (覆盖竞赛) | scripts 用此变量 |
-
-`<skill>` = 本 AGENTS.md 所在目录, `<cwd>` = Codex 启动时的工作目录。
-
----
-
-## 主要参考文件 (按需懒加载, 不要一次全读)
-
-- `SKILL.md` — 完整工作流定义 (启动必读)
-- `references/stage_00_kickoff.md` ~ `stage_09_review.md` — 10 阶段细则 (按需读)
-- `references/harness_compat.md` — 本 harness 兼容协议详细版
-- `competitions/<comp>/README.md` — 各竞赛差异点
-- `competitions/{cumcm,huaweibei,huashubei}/case_retrieval.md` — 三赛相似题、子问检索和迁移边界
-- `references/cross_competition_distillation.md` — 研究生赛、华数杯、国赛的共用层与隔离边界
-- `references/knowledge_workflow.md` — 联合检索、Stage 知识包、动态骨架、证据追踪和增量更新
-- `config/rating_contract.json` — 所有竞赛共享的评分与证据契约
-- `scripts/score_artifact.py` — L1 评分 + verdict 计算 (Codex shell 直接调用)
-
----
-
-## 与用户的语气
-
-- 中文优先 (huaweibei/huashubei/cumcm/diangong/apmcm 队伍), 英文遵从用户输入语言 (mcm 队伍多英文交流)
-- **不要**长篇解释为什么这么做; 用户在赶 deadline
-- 用户问"为什么"再展开
-- 每个阶段结尾给 1 句话进度: "Stage X done (Y/10), 下一步 ..."
-
----
-
-License: MIT. 详见 `README.md`。
+各阶段、竞赛、评分、图表与输出链的规则只维护在 SKILL.md 指向的权威来源，不在本文件复制。

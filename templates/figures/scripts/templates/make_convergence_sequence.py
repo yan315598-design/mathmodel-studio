@@ -231,14 +231,17 @@ def plot_convergence_sequence(
                 label = ax.text(n_mid, e_mid * factor, gap_texts[i],
                                 ha="center", va="center", fontsize=8.5,
                                 color=load_neutral("secondary"))
-                if line_y is None or _clear_of_line(label, ax, line_y, renderer):
+                clear_reference = line_y is None or _clear_of_line(label, ax, line_y, renderer)
+                clear_tolerance = tolerance is None or _clear_of_line(
+                    label, ax, lambda _x: tolerance, renderer)
+                if clear_reference and clear_tolerance:
                     break
                 label.remove()
             else:
                 # 两个候选落点都被参考线穿过: 省略这只标签, 但不静默
                 print(
                     f"[提示] 档差标注 {gap_texts[i]} 在 N={ns[i]:g}→{ns[i + 1]:g} "
-                    f"区间两个候选落点均被参考线穿过, 已省略"
+                    f"区间两个候选落点均被参考线或判据线穿过, 已省略"
                     f"（差值 = e({ns[i]:g}) − e({ns[i + 1]:g}) = "
                     f"{es[i] - es[i + 1]:{gap_fmt}}）",
                     flush=True,

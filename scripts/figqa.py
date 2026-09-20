@@ -781,7 +781,8 @@ def analyze_figure(fig, name: str, script: Path | None = None,
             xy = ln.get_xydata()
             if xy is None or len(xy) < 1:
                 continue
-            pts = ax.transData.transform(np.asarray(xy, dtype=float))
+            # Reference lines mix axes/data coordinates; use the artist transform.
+            pts = ln.get_transform().transform(np.asarray(xy, dtype=float))
             if ln.get_linestyle() not in ("None", "", None) and len(pts) >= 2:
                 lines.append((ln, pts, ax))  # 7e 图例压折线按宿主 axes 过滤
             if ln.get_marker() not in ("", "None", None, "none"):
