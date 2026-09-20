@@ -34,6 +34,15 @@ def load_figqa():
     return module
 
 
+def _ms_cjk_font_available() -> bool:
+    """两个旋转标签用例的相交几何（>500/>1000 px²）源自 Windows 现场案例，
+    依赖微软中文字体的字形度量；无微软字体（如 Linux CI 只有 Noto）时构造
+    不出同等相交，跳过而非放宽断言。"""
+    from matplotlib import font_manager
+    names = {f.name for f in font_manager.fontManager.ttflist}
+    return bool(names & {"Microsoft YaHei", "SimHei", "PingFang SC"})
+
+
 class ArtistBboxTestCase(unittest.TestCase):
     """公共装置: Agg + 中文字体链 + analyze_figure 直调。"""
 
@@ -235,6 +244,7 @@ class TickLabelOverlapTests(ArtistBboxTestCase):
         finally:
             self.plt.close(fig)
 
+    @unittest.skipUnless(_ms_cjk_font_available(), "相交几何依赖微软中文字体度量")
     def test_rotated_long_tick_labels_not_reported(self):
         """旋转 35° 的长中文类别标签: 轴对齐 bbox 相交不算叠印（A 题 Q6_F2 假阳性）。
 
@@ -326,6 +336,7 @@ class RotatedTickLabelEvidenceTests(ArtistBboxTestCase):
         finally:
             self.plt.close(fig)
 
+    @unittest.skipUnless(_ms_cjk_font_available(), "相交几何依赖微软中文字体度量")
     def test_false_rotated_overlap_not_reported(self):
         """30° 斜排长标签: 包围盒相交 >1000px²、墨迹零重叠 → 不报。"""
         fig, ax = self.plt.subplots(figsize=(5.0, 3.0))

@@ -115,9 +115,12 @@ class TestSkillRootResolution(unittest.TestCase):
         """审查 low 回归: 传目录本身应从该目录查起; 找不到根时须抛异常。"""
         self.assertEqual(skill_paths.skill_root(ROOT), ROOT)
         self.assertEqual(skill_paths.skill_root(ROOT / "scripts"), ROOT)
-        for bogus in ("C:/_absent_skill_probe_/x.py", "C:/", "/"):
+        # 非 Windows 上 "C:/..." 是相对路径, 会相对 cwd 误命中仓库根, 换缺席探针
+        bogus = (["C:/_absent_skill_probe_/x.py", "C:/", "/"] if sys.platform == "win32"
+                 else ["/_absent_skill_probe_/x.py", "/"])
+        for path in bogus:
             with self.assertRaises(ValueError):
-                skill_paths.skill_root(bogus)
+                skill_paths.skill_root(path)
 
     def test_no_absolute_user_path_in_sources(self):
         """全仓库 python 源码不得写死用户目录绝对路径。"""
