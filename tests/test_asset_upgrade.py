@@ -3,8 +3,14 @@
 import sys
 from pathlib import Path
 import numpy as np
-import xarray as xr
+import pytest
 from PIL import Image, TiffImagePlugin
+
+try:
+    import xarray as xr
+    HAS_XARRAY = True
+except ImportError:
+    HAS_XARRAY = False
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from inspect_assets import inspect, sha256
@@ -39,6 +45,7 @@ def test_geotiff_is_not_silently_downgraded(tmp_path):
         assert result["metadata"]["transform"][0] == 10
 
 
+@pytest.mark.skipif(not HAS_XARRAY, reason="xarray 是可选科学数据读取器, 默认依赖不含")
 def test_real_netcdf_preserves_time_crs_and_units(tmp_path):
     path = tmp_path / "field.nc"
     data = xr.Dataset({"speed": (("time", "y", "x"), np.ones((2, 3, 4)))},

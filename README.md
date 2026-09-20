@@ -1,6 +1,7 @@
 # mathmodel-studio · 数模工坊
 
 [![Version](https://img.shields.io/badge/version-v3.3.0-blueviolet)](CHANGELOG.md)
+[![CI](https://github.com/yan315598-design/mathmodel-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/yan315598-design/mathmodel-studio/actions/workflows/ci.yml)
 
 **用于数学建模竞赛的 AI Skill，协助完成审题、建模、求解、验证和论文整理。**
 
