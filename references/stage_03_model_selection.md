@@ -1,265 +1,99 @@
 ---
 stage: 3
 name: model_selection
-duration_h: 2-3
+duration_h: 按风险、算力与剩余赛时分配
 inputs: [stage.2.{decomposition, objective_per_subproblem, data_schema}]
-outputs: [stage.3.{candidate_models, selected_per_subproblem, rejection_log, toy_demos_passed, red_team, model_family_consistency}]
-loads_reference: [model_catalog.md, rubrics.md§Stage_3, winning_patterns.md]
-loads_template: [code_starter/<problem_type>.py]
-feedback: [L1, counterfactual_exploration_in_championship]
+outputs: [stage.3.{research_status, candidate_models, selected_per_subproblem, rejection_log, evidence_status, fairness_comparison, open_risks, toy_demos_passed, red_team, model_family_consistency}]
+loads_reference: [model_catalog.md, rubrics.md§Stage_3]
 next: stage_04_foundation
 ---
 
 # Stage 3 — 模型选型与机制设计
 
-**时长**: 2-3h | **反馈层**: L1 + 针对核心失败边界的反事实探索
+## 目标与边界
 
----
+从题目、数据和误差出发，生成能解释失效原因的候选，经实验比较后提出推荐。路线可以包含数据处理、表示、模型、求解算法、适配和解释；不以算法名、模块数量或复杂程度评价创新。
 
-## 目标
+保持四种研究状态：`explore`（发现）、`validate`（验证）、`recommend`（范围明确的推荐）、`frozen`（用户确认并移交）。新证据可以使推荐退回探索或验证；不增加子阶段、审批或候选配额。用户要求执行且已有授权时直接开展实验，仅问建议时不自动训练。
 
-按 `references/modeling_evidence_protocol.md` 选主模型并认真比较可行替代。先做概念到指标的转换，再选求解器。不强制族数、统一库或修饰词；模型变化须说明依据并核对接口。
+当前任务只加载模型目录命中域及相关协议，不通读全部目录。实际实验与预算遵循 `references/experiment_cycle.md`；定义、实现和主张边界遵循 `references/modeling_evidence_protocol.md`。
 
----
+## A. 发现候选：先提出能被否定的假设
 
-## 输入
+对当前最值得投入的方向，在既有 `selection_sheet.md` 简记：
 
-- stage 2 输出: 子问题卡片 + 目标函数雏形 + 数据 schema
-- `references/model_catalog.md` 必读
+> 观察 → 失效假设 → 能区别替代解释的实验 → 结果 → 下一步。
 
-### 国赛 / 研究生赛 / 华数杯案例入口
+假设可来自题面机理、数据审计、分组误差、文献或类比推导，不要求每条先有文献。说明什么结果支持它、什么结果会使它失去优先级。无需给所有想到的候选填卡。
 
-当 `competition` 为 `cumcm`、`huaweibei` 或 `huashubei` 时，先由 agent 运行 `scripts/build_stage_pack.py --competition <competition> --stage 3`；需要跨赛结构参考时使用 `--competition all`。对命中案例和子问读取 `question_dependency`、`recommended_chain`、`paper_route_comparison` 和 `assumption_risks`：
+候选应能修复具体缺口。例如表示压缩可能丢信息、目标与代理不一致、搜索未收敛、采集条件提供类别捷径。分开判断表示、读出模型和训练过程：一次弱实现不能否定表示或整个方法族；已有表示可先换合理读出器检验，也允许复杂组合先整体试验，再对最可能影响归因的模块补控制。
 
-- 候选模型来自跨论文路线差异，不按历史出现次数投票。
-- 选型理由必须说明新题与历史案例在目标、约束、数据和假设上的相同与不同。
-- `result_disagreements` 只用于发现口径风险，历史数值和参数不得进入当前题结果。
-- 在 `rejection_log` 记录案例 ID、evidence ID、拒绝路线及原因。
-- 华数杯 `S1-S4` 是蒸馏任务链，不是原题逐问；2020—2022 的 `problem_summary_only` 只能启发路线，不能称为论文共识。
+至少考虑一个实质不同的可行替代；没有则说明限制，不凑模型族。数学模型和求解算法分列。新增模块说明输入输出、前提和接收方；创新体现为本题有依据且可验证的设计，不要求目录外方法或修饰名称。
 
-华为杯赛题先按八类风险 + 信号诊断分类（`competitions/huaweibei/distilled_modeling.md`），命中后分两步定位 playbook：先读 `competitions/huaweibei/playbooks/README.md` 的域→文件映射表，再加载映射表中的英文文件名（当前六域：signal_diagnosis / spatial_geometry / scheduling_optimization / spatiotemporal_forecasting / physics_data_hybrid / high_dimensional_prediction）：动作清单补充候选生成（不替代缺口驱动选型，不按条目数投票）；需要深读材料时经 `competitions/huaweibei/papers/domain_index.md` 命中 paper_id 后定向读 `manual_paper_reviews.json`，2021 届模板字段（derivation_logic/solver_logic 等）不作为逐篇结论引用。
+### 按需使用历史案例
 
-国赛赛题先按九类内容范式分类（`competitions/cumcm/distilled_modeling.md`），命中后读 `competitions/cumcm/playbooks/README.md` 的域→文件映射表，再加载对应域文件（五域：optimization_decision / geometric_physical / ml_data_analysis / simulation_routing / probability_statistical）：动作清单补充候选生成（不替代缺口驱动选型，不按条目数投票）；国赛 playbook 全部为论文方法链提取（source_checked），无本地实验条目，论文声称与本地复核的边界见各域文件头部声明。
+竞赛为 `cumcm`、`huaweibei` 或 `huashubei`，且历史类比有助于当前缺口时，可运行 `scripts/build_stage_pack.py --competition <competition> --stage 3`。定向读取命中项的 `question_dependency`、`recommended_chain`、`paper_route_comparison`、`assumption_risks`，不按出现次数投票。记录采用或拒绝的理由及本题条件差异；历史数值、参数和预测不能作为本题答案。
 
-## 产出
+华为杯/国赛先读对应 `competitions/<competition>/playbooks/README.md` 的域映射，再加载命中域；需要方法原文线索才查该赛论文索引。华数杯S1–S4为蒸馏任务链，不是原题逐问；题面摘要不冒充论文共识。案例资源不可用时保留缺口，不阻断题面推导和本地实验。
 
-- 每个 Qi 的主模型、真实名称、选型理由和必要模块接口
-- 可行替代及取舍证据；无可行替代则说明限制
-- 可调用的小规模原型；正式实现不同则重新验证
-- (championship) red-team 攻击与回应
-- 《选型总表》`cwd/selection_sheet.md`（每个 Qi 一行; stage 3 生成初版, stage 5 每问 A0 确认后更新对应行）
+## B. 验证与比较：给路线合理的验证机会
 
----
+最小实验围绕当前最大不确定性，检查接口、训练诊断、可行性或泛化。合成原型只证明所覆盖的机制；正式函数不同，需要在实际函数上复查关键反例。发现失败后先区分方法前提、实现错误、资源不足与数据问题，再决定补预算、改路线或淘汰。
 
-## 操作流程
+实验记录 `protocol_status=compliant|deviated|unknown` 及依据。偏差未解决或执行情况未知时，结果留作诊断，不进入正常排名；负收益本身不是协议失败。公平性由数据权限、外层评价和训练侧选型机会决定，不要求所有模型使用相同epoch。预算、训练诊断、数据隔离与比较工具契约统一见 `references/experiment_cycle.md`，此处不另设一套规则。
 
-用户要求执行时，先按 `references/experiment_cycle.md` 做有预算的基线和小实验，再完善下列候选与选择卡；有多个实测候选时运行 `scripts/compare_experiments.py`。建议任务只提出实验方案，不自动开跑。
+保留四轴证据，适用于当前入围候选，不为探索池批量补空表：
 
-### Step 1: 问题类型映射 (10 min)
+| 轴 | 含义 |
+|---|---|
+| `bibliography_verified` | 外源出处核验；本地推导没有文献时可为not_applicable，并说明来源 |
+| `mechanism_reviewed` | 理解定义、前提、接口、反例与适用边界 |
+| `implementation_validated` | 关键真实行为已核验，注明覆盖范围；运行成功不等于此项通过 |
+| `effect_evaluated` | 本题已测范围内的效果，可为positive、neutral、negative或inconclusive |
 
-对每个 Qi,查 `model_catalog.md` §0 速查表:
+前三轴取 `unknown|pass|fail|not_applicable`，效果轴取 `unknown|positive|neutral|negative|inconclusive`。旧 `proposed/source_checked/locally_tested` 仅为来源线索，不能自动映射为全部pass。实现核验通过不代表效果正向。
 
-```
-Q1: "求最优生产计划" → 优化类 (LP/IP)
-Q2: "考虑库存约束" → 优化类 (MIP) + 启发式
-Q3: "随机需求下的稳健决策" → 鲁棒优化 / 随机规划 / 蒙特卡罗
-```
+### 文献发现与转译
 
-### Step 2: 基线与替代路线 (45 min)
+有未解决的机制、反例或实现缺口时，按 `references/literature_scout.md` 检索，先查已有记录和缓存。对影响决策的来源简记：它支持哪个前提、能转成哪个候选或实验、哪些条件与本题不同。只找到题名或摘要，不升级为机制已核验。没有新信息就停止泛搜；不设文献数量或组合数量配额。
 
-至少考虑一个实质不同的可行替代，不强制三个族。下例主要是同一整数规划问题的不同求解技术，不冒充三种数学机制：
+## C. 推荐与移交：完成度带范围
 
-```
-Q1 候选:
-  候选 A: 整数线性规划 (优化族)
-    - Python: cvxpy + GUROBI/CBC
-    - 时间复杂度: 一般整数线性规划为 NP-hard，特殊结构另证
-    - 优势: 可表达离散约束，求解器可报告界与间隙
-    - 风险: 数据规模大时求解慢
-  
-  候选 B: 遗传算法 (启发式族)
-    - Python: deap
-    - 时间: O(代数 × 种群)
-    - 优势: 大规模可扩展
-    - 风险: 不保证最优, 需调参
-  
-  候选 C: 拉格朗日松弛 + 列生成 (优化族变体)
-    - 自实现
-    - 优势: 特定结构可利用分解并构造界，界的质量需验证
-    - 风险: 实现复杂, 时间不够
-```
+在现有选择表主动说明推荐、实测证据、替代方案、代价和未解决风险。区分“值得继续”“开发范围内优于基线”“可正式求解”“目标环境有效”。一问比较完成不升级其他问；用户选择研究方向也不升级科学证据。
 
-检查候选是否在假设、表示、可行域或求解预算上有实质差异；不因同族否决。新增模块说明缺口、接口和去掉模块的对照。
+`fairness_comparison` 沿用现有字段，可在 `notes` 说明范围；复杂任务可选加 `by_subproblem`，不要求旧工作区补该字段。整体仍有影响当前选型的比较缺口时记 `in_progress`，可以给条件性推荐并继续已授权实验。跨域无标签不能直接计算真实准确率，但可完成范围明确的代理比较；这些限制必须随推荐保留。
 
-### Step 3: 选型决策矩阵 (30 min)
+正式选择卡通常展示每问主路线、强基线和至多一个条件性备用；需要保留互补路线时说明原因。这是展示建议，不是组合模块上限。每个候选给出依据、关键取舍、失效条件和验证范围；没有外源依据则明确为题面推导或本地实测。
 
-为每个 Qi 做加权评分:
+题面硬约束与用户偏好分开。例如目标无标签限制监督训练和准确率评价，但仍允许直接迁移、机理诊断、域泛化或无监督适配。不要将尚未验证的效果交给用户拍板代替实验。
 
-| 维度 | 权重 | 候选A | 候选B | 候选C |
-|------|-----|------|------|------|
-| 1. 适配度 (与问题契合) | 0.28 | 9 | 7 | 9 |
-| 2. 求解可行性 (库支持/复杂度) | 0.22 | 8 | 9 | 5 |
-| 3. 时间预算 (实施所需 h) | 0.18 | 8 | 7 | 4 |
-| 4. 创新空间 (变体可能性) | 0.12 | 6 | 8 | 9 |
-| 5. 文献支持 (参考资料) | 0.20 | 9 | 9 | 6 |
-| **加权** | | **8.05** | **7.85** | **6.45** |
+正式定型使用真实 `card_decision` 回答，已有明确选择不重复询问；不得编造用户理由。将选择写入 `selected_per_subproblem`，同步选择表的正式选择栏，未选的探索候选仍可留在表中。淘汰项记原因和重新考虑的触发条件。按跨问实际依赖检查单位、样本单位、信息权限与接口，不强求统一模型族或库。
 
-该矩阵仅作初步可行性讨论，不固定权重或沿用示例分数。获得实测结果后，以统一评价口径、预算、稳定性和可解释性更新选择卡；实测比较规则见 `references/experiment_cycle.md`。
+### 状态与兼容性
 
-### Step 4: 名称与真实实现 (15 min)
+保持现有decision_log schema和六类checkpoint，不新增阶段机。Stage 3记录：
 
-可以直接用“整数线性规划”。仅在公式和代码实际具备相应结构时使用限定词，不借名称表示未经验证的优越性：
-
-可选形式：`<真实限定条件> + <核心模型>`。
-
-候选名:
-- "基于 Lagrangian 松弛的混合整数线性规划模型"
-- "考虑动态约束的 MILP 优化模型"
-- "二阶锥松弛改进 MILP"
-
-最终选 1 个写入 `decision_log.stages.3.selected_per_subproblem.Q1`。
-
-### Step 4.5: 方法文献佐证 (stage 3 文献挂点, 非必停点)
-
-对短名单每个候选跑一次外源检索（`python scripts/literature_scout.py "<方法名 + 问题域>" --n 5`）, 把方法卡转写成机制条目（五要素: 基线失效/机制/前提接口/反例/迁移边界）并逐条标 `review_status`（`proposed` → `source_checked` → `locally_tested`）: `proposed` 不得作为拍板依据, `source_checked` 可入围短名单, 只有 `locally_tested` 的机制才能写进正文模型链。检索结果登记 `decision_log.stages.3.literature_searches`。预算护栏: 单挂点 ≤2 次检索、单次 ≤5 篇; 命中 24h 缓存不重复消耗配额。协议全文见 `references/literature_scout.md`。
-
-### Step 5: Toy Demo 验证 (45 min)
-
-原型范围按风险决定，不按固定行数或数据比例。下例只是求解器可用性原型，正式函数须另过关键反例：
-
-```python
-# Q1 toy demo - 验证 cvxpy 能跑通
-import cvxpy as cp
-import numpy as np
-
-# 模拟参数
-n = 5  # 真实是 100,这里用 5
-p = np.random.rand(n) * 100
-B = 200
-
-x = cp.Variable(n, integer=True)
-objective = cp.Maximize(p @ x)
-constraints = [cp.sum(x) <= B, x >= 0, x <= 50]
-prob = cp.Problem(objective, constraints)
-prob.solve(solver=cp.GLPK_MI)
-
-print("Q1 toy demo 通过, 求解时间:", prob.solver_stats.solve_time)
-print("最优解:", x.value)
-```
-
-要求:
-- 状态与可行性正确；不可行实例也须正确处理
-- 时间在事先记录的预算内
-- 核心定义/接口反例使用真实调用函数；未实现部分明确待验证
-
-不通过 → 候选无效,回 Step 2 换。
-
-### Step 6: 跨子问题模型族协调 (10 min)
-
-按题面实际依赖检查单位、时间步长、样本单位和信息可用性，防止固定输入被误替换。不同库和模型族可以并存，不将统一工具作为质量证据。
-
-写入 `decision_log.stages.3` 的 "model_family_consistency" 字段。
-
-### Step 7 (championship 模式): Red-team 攻击 (30 min)
-
-> 假装最严苛评委,列出本模型选择被 reject 的最强理由（数量按实际风险，不设下限）,并给出**可信回应**。
-
-例:
-```
-攻击 1: "你说用 MILP 但数据规模 1000+, 求解时间不可控"
-回应: "已做 toy demo, 1000 规模在 GUROBI 下 < 5min;
-      备用方案: GA 启发式 (候选 B) 已实现, 可作为 fallback"
-
-攻击 2: "Q3 用蒙特卡罗, 但样本数 N 没说"
-回应: "stage 5 会做 N=1000/5000/10000 收敛性测试, 
-      取首个稳定 N (估计 2000) "
-
-攻击 3: "命名 '改进 MILP', 改进点是什么?"
-回应: "(a) Lagrangian 松弛降低规模, 
-       (b) warm start 复用 Q1 解, 
-       (c) 添加 Benders 切平面"
-```
-
-写入 `decision_log.stages.3.red_team`。
-
-### Step 8: 输出移交 (10 min)
-
-写入 `decision_log.stages.3`:
 ```json
 {
-  "candidate_models": [...],
-  "selected_per_subproblem": {
-    "Q1": {"name": "...", "library": "cvxpy", "rationale": "..."},
-    "Q2": {...},
-    "Q3": {...}
+  "research_status": "explore|validate|recommend|frozen",
+  "candidate_models": [],
+  "selected_per_subproblem": {},
+  "evidence_status": {},
+  "fairness_comparison": {
+    "status": "not_started|in_progress|complete|not_applicable",
+    "protocol_id": "", "split_id": "", "metric": "",
+    "budget_s": null, "aggregation_unit": "", "notes": ""
   },
-  "rejection_log": [...],
-  "toy_demos_passed": true,
-  "red_team": [...],
-  "model_family_consistency": "..."
+  "open_risks": [], "rejection_log": [],
+  "toy_demos_passed": false, "red_team": [],
+  "model_family_consistency": ""
 }
 ```
 
-除写 `decision_log.stages.3` 外, 同时生成人类可读的《选型总表》`cwd/selection_sheet.md`——每个 Qi 一行, 列: 问号 / 主模型 / baseline / 条件性备用（含触发条件）/ 依据 / 文献或证据来源 / 失效边界 / 用户拍板记录。机器真源仍是 `decision_log.stages.3.selected_per_subproblem`, 总表是它的渲染, 两者同段流程一起写, 不得各说各话; stage 5 每问 A0 确认后更新对应行（见 `stage_05_subproblem_loop.md`）。
+恢复旧工作区时不重置模型、历史结果或已答checkpoint；只在重新做Stage 3移交时依据现存证据补缺字段，未知保留unknown，不能批量升级为pass。旧schema无须整库迁移。选择表既容纳探索记录，也呈现正式选择，不再要求整张表只是selected字段的渲染。
 
----
+`recommend`允许范围明确的条件性推荐；正式移交要求比较complete或有理由的not_applicable、证据与选择记录齐备、阶段评分通过及真实用户确认。`check_gate.py --gate 3`核对移交记录（兼容recommend并已确认的旧调用顺序）；Agent在实际移交时记frozen，不凭布尔状态宣称效果已证。关键比较缺口未解决则继续验证，不索取形式批准。
 
-## 选择卡（人类拍板门, 0.7.5 新增）
+L1评分唯一口径见 `references/rubrics.md` 的Stage 3；最高风险质询按需进行，不设攻击条数。门禁用于正式移交，不为内部探索新增停点。
 
-短名单定稿到 `decision_log.stages.3` 之前过一道**人类拍板门**: 模型选择是全论文最大的单点决策, 该由用户拍板, 不由 agent 默契通过。
-
-**短名单规格**: 每个Qi进入选择卡的短名单 = **1 主 + 1 baseline + 至多 1 条件性备用**。备用必须有**显式触发条件**（"主模型在 X 条件下失效时启用", 触发条件直接用 model_catalog.md §12 的失效边界）, 写不出触发条件的备用不留。
-
-**选择卡出卡顺序（候选版修订）**:
-
-1. **先亮短名单，每个候选带取舍档案**——不在看到候选前凭空问偏好（早期伪精确偏好会提前剪掉正确候选）。档案五列:
-   - 防守的输出形式（该候选产出的是排序 / 数值 / 方案 / 政策建议）
-   - 不可接受的失败模式（该候选最可能怎么死：无解 / 精度崩 / 超时 / 结果反直觉）
-   - 失效边界与触发条件（直接用 model_catalog.md §12）
-   - 实验预算（该候选预计的求解/调参时长）
-   - 依据与文献（机制条目 ID / 方法卡 `paper_id` / 本地案例 `evidence ID`；无则写"无外源依据，仅机理推导"，允许留白但不许假装有依据）
-2. 展示短名单与档案对照表，标注哪些是**题面硬约束决定**的（如目标域无标签→只能无监督域适应），哪些才是**真正的偏好权衡**——硬约束项不给用户"选错"的空间，偏好项才交给用户。
-3. 用户拍板（可以推翻 agent 推荐，理由可留空）。
-
-**依据与文献列是出卡硬要求**: 选择卡必须列出每个候选的依据与文献来源; 写不出依据的候选要显式标注"无外源依据，仅机理推导"，不允许留空装作有依据。
-
-**decision_log 登记**:
-
-- 用户的选择连同理由写入 `decision_log.stages.3.choice_card`: `{"answers": <用户对候选档案的拍板记录>, "chosen": <主模型>, "rationale_user": <用户理由>}`。
-- **必停点登记 (v2.3.0)**: 拍板结果同步写入 `decision_log.checkpoints.card_decision`（`{"status": "answered", "asked_at": "<ISO>", "answer": "<用户拍板摘要>", "source": "chat"}`；source 缺失或非 chat/user_cli 视为未答，check_gate 拦截）；推进 stage 4 前必须 `python scripts/check_gate.py --gate 3` 放行（见 SKILL.md 必停点协议）。
-- AI 可代录**答案原文**, 但**不得代写理由**——理由栏空着就空着, 等用户补; 填 AI 生成的"用户理由"属于伪造决策记录。
-- 被淘汰的方法进 `rejection_log` 归档备注: 记淘汰原因与"何种题目形态下应重新考虑", 防止 Stage 5 遇阻时把已淘汰方法不声不响地捡回来。
-
-与 Step 3 决策矩阵的关系: 矩阵算分是 agent 的参谋结论, 选择卡是用户的拍板记录; 两者不一致时以选择卡为准, 矩阵留档供回溯。
-
----
-
-## L1 Rubric
-
-| 维度 | 满分行为 |
-|------|---------|
-| 1. 候选比较 | 有实质差异的可行替代及证据，不按族数评分 |
-| 2. 选型理由 | 每候选有适配 + 不选原因 |
-| 3. 名称与机制 | 名称对应公式、模块和实现，不要求修饰词 |
-| 4. 求解可行性 | 原型范围明确，关键正式函数反例已验证或明确待验证 |
-| 5. 文献支撑 | 关键选型主张（主模型的选择、以及对 baseline 的否决）必须有可核验来源；来源可以是外源文献（方法卡 `paper_id`）、本地案例 evidence ID、或题面数据。其中主模型这一项至少要有外源文献或本地同构案例之一，"纯机理推导"只能作为补充。仍不设篇数下限 |
-
-championship 额外: red_team 攻击须覆盖最高风险边界且每个有可信回应，不设条数下限。
-
-## 常见坑
-
-- C1 直接抄 textbook → 核对本题概念、数据、接口，而不是更换名称
-- C2 模型不匹配 → Step 1 速查表对照
-- C3 名异实同 → 检查实质差异，不强制换族
-- C4 选型理由薄弱 → Step 3 5 维矩阵
-- C5 不验证可行性 → Step 5 toy demo
-
-## 退出条件
-
-1. 每 Qi 选型完成，名称对应机制
-2. 替代方案及取舍证据明确；无可行替代时披露限制
-3. toy demo 通过
-4. (championship) red-team 覆盖最高风险边界 + 回应
-5. L1 全维 ≥7
-
-→ 跳转 `stage_04_foundation.md`
+→ `stage_04_foundation.md`

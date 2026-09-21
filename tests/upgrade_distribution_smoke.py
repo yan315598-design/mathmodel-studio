@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -40,8 +41,10 @@ def main():
         [sys.executable, "templates/figures/scripts/render_task_examples.py", "--cases", "D",
          "--output", str(output / "sample")],
     ]
+    child_env = dict(os.environ, PYTHONUTF8="1", PYTHONIOENCODING="utf-8")
     for command in commands:
-        result = subprocess.run(command, cwd=snapshot, text=True, encoding="utf-8", capture_output=True)
+        result = subprocess.run(command, cwd=snapshot, env=child_env,
+                                text=True, encoding="utf-8", capture_output=True)
         checks.append({"command": command[1:], "returncode": result.returncode,
                        "stdout": result.stdout, "stderr": result.stderr})
     report = {"kind": "local no-dev selection snapshot, not published",
@@ -49,6 +52,7 @@ def main():
               "entry_bytes": {name: (snapshot / name).stat().st_size for name in ("SKILL.md", "AGENTS.md")},
               "hard_scan_hits": len(scan["hard"]), "soft_scan_hits": len(scan["soft"]),
               "scan_boundary": "text only; soft findings require human review",
+              "python_environment": {key: child_env[key] for key in ("PYTHONUTF8", "PYTHONIOENCODING")},
               "checks": checks, "files": [item.rel for item in included]}
     (output / "report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     failures = sum(c["returncode"] != 0 for c in checks)

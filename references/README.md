@@ -14,7 +14,7 @@
 3. 数值口径（模板数、字数分位、页数区间、色值）尤其不得双份维护——
    数字在第二处出现的那一刻就开始漂移。
 
-### 规则主题 → 唯一权威源对照表（R1-R14）
+### 规则主题 → 唯一权威源对照表
 
 | # | 主题 | 唯一权威源 | 其余各处 |
 |---|---|---|---|
@@ -44,6 +44,10 @@
 | R15 | 附件读取与多模态元数据 | `multimodal_assets.md` + `scripts/inspect_assets.py` | Stage 2 指针 |
 | R16 | 小实验、同口径模型比较、动态计划 | `experiment_cycle.md` + `scripts/compare_experiments.py` | Stage 2/3/5 指针 |
 | R17 | 多类型图路由与候选图库 | `result_gallery.md` + `scripts/build_result_gallery.py` | 图表桥与 Stage 5 指针 |
+
+| R18 | 候选研究、四轴证据与移交范围 | `stage_03_model_selection.md` | playbook仅给条件线索，选型评分见rubrics |
+| R19 | 检索profile、阅读预算与停止条件 | `literature_scout.md` | 引用桥与阶段页只引用；真实性与格式归reference_skill_bridge |
+| R20 | 定义、关键实现行为与主张边界 | `modeling_evidence_protocol.md` | Stage 3/5/6/8按需引用，不复制检查清单 |
 
 ## 二、判层必摘（"判而不摘"禁令）
 

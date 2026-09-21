@@ -15,7 +15,7 @@
   },
   "mode": "standard",
   "interaction": "detailed",
-  "_interaction_doc": "交互密度: detailed (默认) | auto。detailed = 必停点之外的关键自由参数 (假设取舍/图表风格细节/章节侧重) 也要问; auto = 用户明确说'自动模式/少问点/你自己定'时开启, 只减少必停点之外的细节提问密度, 六个必停点永远要问。与 mode (fast/standard/championship, token 档位) 正交, 不得混用。",
+  "_interaction_doc": "交互密度: detailed (默认) | auto。detailed = 必停点之外的关键自由参数 (假设取舍/图表风格细节/章节侧重) 也要问; auto = 用户明确说'自动模式/少问点/你自己定'时开启, 只减少必停点之外的细节提问密度, 六类决策需真实授权登记，已有明确回答或适用授权不重复询问。与 mode (fast/standard/championship, token 档位) 正交, 不得混用。",
   "final_chain": "tex",
   "_final_chain_doc": "终稿链 (v2.9.1): tex (默认, md→LaTeX→PDF) | docx (md→docx 终稿通道, 冻结后人在 Word 改呈现层)。stage 8 样张先行时经编号菜单确定; docx 选择本身即 docx 通道的切换声明, 无需另记 docx_channel。写作期全程仍写 md 真源, 选择只影响 stage 8 出口的渲染与终检路径; 冻结完成前任何链下都禁止人改 docx。",
   "started_at": null,
@@ -71,7 +71,19 @@
       "rejection_log": [],
       "toy_demos_passed": false,
       "red_team": [],
-      "model_family_consistency": ""
+      "model_family_consistency": "",
+      "research_status": "explore",
+      "evidence_status": {},
+      "fairness_comparison": {
+        "status": "not_started",
+        "protocol_id": "",
+        "split_id": "",
+        "metric": "",
+        "budget_s": null,
+        "aggregation_unit": "",
+        "notes": ""
+      },
+      "open_risks": []
     },
     "4": {
       "_label": "foundation",
@@ -83,7 +95,7 @@
     "5": {
       "_label": "subproblem_loop",
       "qi_count": null,
-      "_qi_count_doc": "题目子问题总数, 由 stage 2 分解确认后按实际子问数写入并重建 qi_weights (runtime 侧 confirm_qi_count 原子迁移, 记 qi_count_confirmed 事件). cumcm IQR [3,5], mcm [3,5], diangong [6,8].",
+      "_qi_count_doc": "题目子问题总数, 由 stage 2 分解确认后按实际子问数写入并重建 qi_weights (Agent同步题数与权重长度并记 qi_count_confirmed 事件). cumcm IQR [3,5], mcm [3,5], diangong [6,8].",
       "qi_weights": [],
       "_qi_weights_doc": "per-Qi 加权聚合权重数组, 长度=qi_count. 默认均匀 [1.0]*qi_count. score_artifact.py compute_stage5_verdict 用此重加权 mean.",
       "qi_status": {},

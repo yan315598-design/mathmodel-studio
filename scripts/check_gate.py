@@ -81,6 +81,9 @@ VALID_VERDICTS = {
     "refine", "refine_partial", "carryover"
 }
 
+# Stage 3 不能把“尚未完成研究”的评分当成已定型并移交。
+STAGE3_NON_PROGRESS_VERDICTS = {"block", "refine", "refine_partial", "carryover"}
+
 # 评分记录必填字段 (score_artifact.py update_decision_log 写入口径)
 SCORE_ENTRY_REQUIRED_FIELDS = ("iteration", "scores", "min", "mean", "verdict", "ts")
 
@@ -262,6 +265,88 @@ def validate_score_entries(entries, per_qi: bool = False) -> list:
     return problems
 
 
+def _stage3_problems(log: dict) -> list:
+    """检查 Stage 3 定型所需的最小研究状态。
+
+    这是一个轻量的最终移交检查，不要求探索阶段提前填满所有字段：
+    候选池和证据状态用于说明“为什么能选”，公平比较用于说明“如何公平比”。
+    详细机制理解仍由 Agent 按 stage_03 文档核验，脚本不冒充科学评审。
+    """
+    problems = []
+    stages = log.get("stages")
+    stage3 = stages.get("3") if isinstance(stages, dict) else None
+    if not isinstance(stage3, dict):
+        return ["stages.3 缺失或不是 dict: Stage 3 尚未形成候选和选择记录"]
+
+    candidates = stage3.get("candidate_models")
+    if not isinstance(candidates, list) or not candidates:
+        problems.append("stages.3.candidate_models 为空: 先形成至少一条可执行候选路线")
+
+    selected = stage3.get("selected_per_subproblem")
+    if not isinstance(selected, dict) or not selected:
+        problems.append("stages.3.selected_per_subproblem 为空: 公平比较后仍需登记每个 Qi 的正式选择")
+    else:
+        for qi, choice in selected.items():
+            if not isinstance(choice, dict):
+                problems.append(f"stages.3.selected_per_subproblem.{qi} 不是 dict")
+                continue
+            model_name = choice.get("model_name") or choice.get("name") or choice.get("model")
+            if not isinstance(model_name, str) or not model_name.strip():
+                problems.append(f"stages.3.selected_per_subproblem.{qi} 缺真实模型名称")
+
+    status = stage3.get("research_status")
+    if status not in {"recommend", "frozen"}:
+        problems.append("stages.3.research_status 必须为 recommend 或 frozen 才能移交 Stage 4")
+
+    evidence = stage3.get("evidence_status")
+    if not isinstance(evidence, dict) or not evidence:
+        problems.append("stages.3.evidence_status 缺失: 至少区分书目、机制、实现和本题效果状态")
+    else:
+        evidence_allowed = {
+            "bibliography_verified": {"unknown", "pass", "fail", "not_applicable"},
+            "mechanism_reviewed": {"unknown", "pass", "fail", "not_applicable"},
+            "implementation_validated": {"unknown", "pass", "fail", "not_applicable"},
+            "effect_evaluated": {"unknown", "positive", "neutral", "negative", "inconclusive"},
+        }
+        for candidate_id, status_map in evidence.items():
+            if not isinstance(status_map, dict):
+                problems.append(f"stages.3.evidence_status.{candidate_id} 不是 dict")
+                continue
+            for field, allowed in evidence_allowed.items():
+                value = status_map.get(field)
+                if value not in allowed:
+                    problems.append(f"stages.3.evidence_status.{candidate_id}.{field} 非法: {value!r}")
+
+    fairness = stage3.get("fairness_comparison")
+    if not isinstance(fairness, dict):
+        problems.append("stages.3.fairness_comparison 缺失: 需记录统一划分、指标、预算和聚合单位")
+    else:
+        fairness_status = fairness.get("status")
+        if fairness_status not in {"complete", "not_applicable"}:
+            problems.append("stages.3.fairness_comparison.status 必须为 complete 或 not_applicable 才能移交")
+        if fairness_status == "complete":
+            for field in ("protocol_id", "split_id", "metric", "aggregation_unit"):
+                if not str(fairness.get(field, "")).strip():
+                    problems.append(f"stages.3.fairness_comparison 缺 {field}")
+    return problems
+
+
+def _latest_score_entry(entries):
+    """Return the latest valid score entry in append order.
+
+    ``score_artifact.py`` appends entries chronologically.  Stage gates should
+    judge the current verdict only; an earlier ``refine`` must not continue to
+    block after a later pass.  Validation of the complete array still happens
+    before this helper is called.
+    """
+    if not isinstance(entries, list):
+        return None
+    for entry in reversed(entries):
+        if isinstance(entry, dict):
+            return entry
+    return None
+
+
 def _max_artifact_mtime(workspace: Path, max_depth: int = ARTIFACT_SCAN_DEPTH):
     """扫描 workspace 下三个产物目录 (results/paper_workspace/figures) 的最新文件 mtime。
 
@@ -396,6 +481,24 @@ def check_gate(log: dict, gate: int, workspace=None) -> dict:
                 f"scores['{gate}'] 不合格: {'; '.join(problems)}. "
                 f"先跑 rubric L1 自评 + score_artifact.py 落盘 "
                 f"(python scripts/score_artifact.py --stage {gate} --critique <critique.json>)")
+        # Stage 8 cannot be handed to final review while its writing score is
+        # still explicitly asking for refinement or carrying unfinished work.
+        if gate == 8 and isinstance(entries, list):
+            latest = _latest_score_entry(entries)
+            if latest and latest.get("verdict") in STAGE3_NON_PROGRESS_VERDICTS:
+                missing.append("scores['8'] 最新评分含未完成 verdict: " + str(latest["verdict"]) +
+                               "; 先完成写作修订并重新评分，不能进入终审")
+
+    # Stage 3 的评分不能掩盖“仍在 refine/block”或空选择；这只影响移交 gate 3，
+    # 不限制 Stage 3 内部继续探索，也不把脚本检查冒充科学判断。
+    if gate == 3:
+        entries = scores.get("3") if isinstance(scores, dict) else None
+        if isinstance(entries, list):
+            latest = _latest_score_entry(entries)
+            if latest and latest.get("verdict") in STAGE3_NON_PROGRESS_VERDICTS:
+                missing.append("scores['3'] 最新评分含未完成 verdict: " + str(latest["verdict"]) +
+                               "; 先继续探索/验证，不能直接移交 Stage 4")
+        missing.extend(_stage3_problems(log))
 
     # 2. 必停点 checkpoints
     checkpoints = log.get("checkpoints")

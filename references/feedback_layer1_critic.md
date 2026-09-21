@@ -263,8 +263,8 @@ Critic 在 `issues` 数组中可以直接引用 anti_pattern ID:
   "5_literature_support": {...}
 }
 ```
-关键: C1 (无改进), C3 (候选同族), C5 (不验证可行性)
-5_literature_support 口径（本行与 `rubrics.md` Stage 3、`stage_03_model_selection.md` L1 rubric 表两处逐字一致；`scripts/score_artifact.py` 按引用指向，不重复口径正文）：关键选型主张（主模型的选择、以及对 baseline 的否决）必须有可核验来源；来源可以是外源文献（方法卡 `paper_id`）、本地案例 evidence ID、或题面数据。其中主模型这一项至少要有外源文献或本地同构案例之一，"纯机理推导"只能作为补充。仍不设篇数下限。
+关键: C1 (无改进), C3 (候选缺实质差异), C5 (不验证可行性)
+`5_literature_support` 保留旧评分键；依据范围与满分行为唯一见 `references/rubrics.md` Stage 3，不在此复制口径。
 
 #### Stage 4
 ```json

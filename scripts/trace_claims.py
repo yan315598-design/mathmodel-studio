@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import re
 
 
 CHAIN_FIELDS = ("question", "model", "result", "validation", "figure", "abstract_claim")
@@ -19,6 +20,35 @@ def has_content(value) -> bool:
     if isinstance(value, (list, tuple, dict, set)):
         return bool(value)
     return True
+
+
+ARTIFACT_SUFFIXES = {".json", ".jsonl", ".csv", ".tsv", ".xlsx", ".xls",
+                     ".mat", ".npy", ".npz", ".png", ".svg", ".jpg", ".jpeg",
+                     ".pdf", ".txt", ".md", ".tex", ".docx"}
+
+
+def missing_path(value, *, explicit: bool = False) -> bool:
+    """Return True for path-like evidence references that do not exist.
+
+    Bare figure IDs and prose (including ``train/test``) remain valid labels.
+    Lists and explicit ``path``/``file`` references are checked recursively;
+    recognized artifact suffixes also work with the original string schema.
+    """
+    if isinstance(value, (list, tuple)):
+        return any(missing_path(item, explicit=explicit) for item in value)
+    if isinstance(value, dict):
+        return any(missing_path(item, explicit=key in {"path", "file", "file_path"})
+                   for key, item in value.items()
+                   if key in {"path", "file", "file_path"} or isinstance(item, (list, tuple, dict)))
+    if not isinstance(value, str) or not value.strip():
+        return explicit
+    text = value.strip()
+    # Remote citations are not local filesystem references. This checker does
+    # not claim to verify their availability or scientific support.
+    if re.match(r"^[A-Za-z][A-Za-z0-9+.-]*://", text):
+        return False
+    path_like = explicit or Path(text).suffix.lower() in ARTIFACT_SUFFIXES
+    return path_like and not Path(text).is_file()
 
 
 def normalize_rows(payload: dict | list) -> list[dict]:
@@ -46,6 +76,9 @@ def audit_row(row: dict, index: int) -> dict:
         issues.append("结果尚未绑定图表或精确结果表")
     if has_content(row.get("model")) and not has_content(row.get("question")):
         issues.append("模型没有绑定题面任务")
+    for field in ("result", "validation", "figure"):
+        if missing_path(row.get(field)):
+            issues.append(f"{field} 指向的证据文件不存在: {row.get(field)}")
     completed = len(CHAIN_FIELDS) - len(missing)
     return {
         "id": row_id,

@@ -1,6 +1,7 @@
 """check_gate.py 必停点与答题义务台账 (stages.2.obligations) 的门禁行为测试。"""
 
 import json
+import copy
 from pathlib import Path
 import sys
 import tempfile
@@ -46,6 +47,28 @@ def _gate5_log():
             "per_qi_selection": {"Q1": _answered("主模型: 规划模型"),
                                  "Q2": _answered("baseline: 启发式")},
         },
+    }
+
+
+def _gate3_log(verdict="pass"):
+    """构造 Stage 3 移交所需的最小完整记录。"""
+    return {
+        "scores": {"3": [{"iteration": 0, "scores": {"1_candidate_comparison": 8},
+                           "min": 8, "mean": 8.0, "verdict": verdict,
+                           "ts": "2026-09-08T12:00:00"}]},
+        "stages": {"3": {
+            "research_status": "frozen",
+            "candidate_models": [{"id": "A", "name": "基线"}, {"id": "B", "name": "替代"}],
+            "selected_per_subproblem": {"Q1": {"model_name": "基线"}},
+            "evidence_status": {"A": {"bibliography_verified": "pass",
+                                         "mechanism_reviewed": "pass",
+                                         "implementation_validated": "pass",
+                                         "effect_evaluated": "positive"}},
+            "fairness_comparison": {"status": "complete", "protocol_id": "p1",
+                                     "split_id": "s1", "metric": "macro_f1",
+                                     "aggregation_unit": "file"},
+        }},
+        "checkpoints": {"card_decision": _answered("确认 Q1 主模型")},
     }
 
 
@@ -203,6 +226,72 @@ class GatePerQiSelectionTest(unittest.TestCase):
         self.assertFalse(result["pass"])
         self.assertTrue(any("per_qi_selection" in m and "补走 per-Qi 选型问答即可" in m
                             for m in result["missing"]))
+
+
+class GateStage3ResearchTest(unittest.TestCase):
+    """Stage 3 只在完成候选、证据和公平协议后移交。"""
+
+    def test_complete_stage3_passes(self):
+        self.assertTrue(check_gate(_gate3_log(), 3)["pass"])
+
+    def test_non_progress_verdict_blocks(self):
+        result = check_gate(_gate3_log("refine"), 3)
+        self.assertFalse(result["pass"])
+        self.assertTrue(any("未完成 verdict" in item for item in result["missing"]))
+
+    def test_missing_fairness_and_evidence_blocks(self):
+        log = _gate3_log()
+        del log["stages"]["3"]["fairness_comparison"]
+        del log["stages"]["3"]["evidence_status"]
+        result = check_gate(log, 3)
+        self.assertFalse(result["pass"])
+        self.assertTrue(any("fairness_comparison" in item for item in result["missing"]))
+        self.assertTrue(any("evidence_status" in item for item in result["missing"]))
+
+    def test_stage8_non_progress_verdict_blocks(self):
+        log = _gate3_log()
+        log["scores"] = {"8": [{"iteration": 0, "scores": {"example": 8},
+                                  "min": 8, "mean": 8, "verdict": "refine",
+                                  "ts": "2026-09-21T00:00:00+00:00"}]}
+        result = check_gate(log, 8)
+        self.assertFalse(result["pass"])
+        self.assertTrue(any("scores['8'] 最新评分含未完成 verdict" in item for item in result["missing"]))
+
+    def test_stage3_refine_then_pass_preserves_history_and_passes(self):
+        log = _gate3_log("refine")
+        last = copy.deepcopy(log["scores"]["3"][0])
+        last.update(verdict="pass", iteration=1)
+        log["scores"]["3"].append(last)
+        self.assertTrue(check_gate(log, 3)["pass"])
+        self.assertEqual(log["scores"]["3"][0]["verdict"], "refine")
+
+    def test_stage3_latest_refine_blocks_after_pass(self):
+        log = _gate3_log()
+        last = copy.deepcopy(log["scores"]["3"][0])
+        last.update(verdict="refine", iteration=1)
+        log["scores"]["3"].append(last)
+        self.assertFalse(check_gate(log, 3)["pass"])
+
+    def test_stage8_refine_then_pass_passes(self):
+        log = _base_log()
+        del log["stages"]["2"]["obligations"]
+        first = copy.deepcopy(log["scores"]["8"][0])
+        first["verdict"] = "refine"
+        log["scores"]["8"].insert(0, first)
+        self.assertTrue(check_gate(log, 8)["pass"])
+
+    def test_stage8_latest_refine_blocks_after_pass(self):
+        log = _base_log()
+        del log["stages"]["2"]["obligations"]
+        last = copy.deepcopy(log["scores"]["8"][0])
+        last.update(verdict="refine", iteration=1)
+        log["scores"]["8"].append(last)
+        self.assertFalse(check_gate(log, 8)["pass"])
+
+    def test_malformed_score_history_is_not_hidden_by_latest_pass(self):
+        log = _gate3_log()
+        log["scores"]["3"].insert(0, {"verdict": "refine"})
+        self.assertFalse(check_gate(log, 3)["pass"])
 
 
 if __name__ == "__main__":

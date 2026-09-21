@@ -17,7 +17,7 @@
   },
   "classification_steps": [
     "提取对象、输入、输出、约束、不确定性和子问依赖",
-    "运行相似案例检索并比较至少三个案例",
+    "运行相似案例检索并按相关性和决策缺口比较案例",
     "按主导困难选择 content_type_key，可记录一个 secondary_type",
     "题号只写入 problem_letter，不据此选择模型"
   ],

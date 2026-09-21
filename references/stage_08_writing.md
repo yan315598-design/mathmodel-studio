@@ -49,7 +49,7 @@ next: stage_09_review
 **正文写作顺序（可复用骨架）**：§1 问题重述（用 `templates/shared/restatement_card.md`）→ §2 问题分析（含流程图）→ §3 模型假设（复用 stage 4，每条带依据）→ §4 符号说明（booktabs 三线表，全单位）→ ⭐摘要初稿 → 逐问组装 §5.i（基于 `paper_workspace/sections/q{i}_draft.md` 草稿卡扩写；无草稿卡才从零写）→ §6 灵敏度（复用 stage 6）→ §7 评价与推广（复用 stage 7）→ §8 参考文献 → 附录（`templates/shared/appendix_checklist.md`）→ ⭐摘要重写（按证据账本）→ 整篇 L1 自评 + 修订 → ⭐摘要终审润色。理由：初稿防跑偏、重写防"摘要绑架"、润色只改表达不改数据。
 各节写法与模板句：`<comp>/phrase_bank.md`（按章取用，**同款句式每节 ≤1 次**）+ `paper_skeleton.md`；附录代码三段式（中文注释 / 首行"对应 §X.Y.Z" / 删除 print 残留）见 `anti_patterns.md` D1。
 
-**每节成稿后两个小循环**：① 引用缺口补查（按 `references/reference_skill_bridge.md`，硬上限 5 次搜索，够用即停）；② 去 AI 味自查（`references/ai_flavor_removal.md` 词句十类；版式四类为**建议性**、全文级、在终审跑）。
+**每节成稿后两个小循环**：① 引用缺口补查（真实性按 `references/reference_skill_bridge.md`，预算按 `references/literature_scout.md`，关键缺口关闭后停止）；② 去 AI 味自查（`references/ai_flavor_removal.md` 词句十类；版式四类为**建议性**、全文级、在终审跑）。
 
 ## 必停点与失败处理
 

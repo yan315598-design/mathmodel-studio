@@ -1,6 +1,6 @@
 # Harness 兼容协议 (Claude Code / Codex)
 
-本文件定义 mathmodel-studio 在不同 agentic harness 下运行时的**统一行为约定**。从 v6.0 起, Codex 以原生 skill / plugin 形态发现本仓库, 但 skill 主体内容 (`SKILL.md`, `stage_NN.md`, `competitions/*`) 仍为 harness-agnostic, 仅在以下方面有差异。
+本文件定义 mathmodel-studio 在不同 agentic harness 下运行时的**统一行为约定**。从 0.6.0 起, Codex 以原生 skill / plugin 形态发现本仓库, 但 skill 主体内容 (`SKILL.md`, `stage_NN.md`, `competitions/*`) 仍为 harness-agnostic, 仅在以下方面有差异。
 
 ---
 
@@ -21,14 +21,14 @@ Codex 触发优先依赖 `SKILL.md` frontmatter 的 `description`; UI 展示与�
 
 ## 0.5 Codex UI 现实说明
 
-Codex CLI / Codex app 通常不会弹出 Claude Code 的 `AskUserQuestion` 选择界面。运行在 Codex 时:
+使用宿主当前实际提供的交互工具，不假定某一平台永远有或没有选择界面。无可用工具时：
 
 - 不等待弹窗 UI。
 - 不承诺"会出现选择界面"。
 - 直接把离散选择写成 Markdown 编号菜单。
 - 用户回复数字后, agent 自动写入 `decision_log.json` 并继续。
 
-如果未来某个 Codex harness 暴露原生选择工具, 可把同一组选项映射到该工具; 在没有明确工具可用时, 永远使用编号菜单。
+如果当前 Codex harness 暴露原生选择工具, 可把同一组选项映射到该工具; 在没有明确工具可用时, 永远使用编号菜单。
 
 ---
 
@@ -38,7 +38,7 @@ Codex CLI / Codex app 通常不会弹出 Claude Code 的 `AskUserQuestion` 选�
 
 | 决策类型 | 行为 |
 |---------|------|
-| 离散选项 (选竞赛/选题/选模型/选 verdict) | **必须**用问答式 (Claude: AskUserQuestion; Codex: markdown 编号列表) |
+| 离散选项 (选竞赛/选题/选模型/选 verdict) | **必须**用问答式 (Claude: AskUserQuestion; Codex: 当前宿主交互工具或编号列表) |
 | 自由文本 (PDF 路径 / 截止时间 / 关键评论) | 直接问, 单行回复 |
 | 确认型 (yes/no/进入下一步) | 编号 2 选 1, 或加"让我决定 (推荐 X)" 作为第 3 项 |
 | 状态读写 (state/decision_log.json) | agent 自动完成, **不要**让用户编辑 json |
@@ -72,10 +72,11 @@ AskUserQuestion(questions=[{
 回复数字 (1-5)。
 ```
 
-收到 `1` / `2` / `3` / `4` / `5` 后:
-- 写入 `decision_log.stages.3.selected_per_subproblem.Q1.model_name`
-- 写入 `decision_log.stages.3.rejection_log` (未选的两个 + 简短理由)
-- 直接进入 Step B (求解实现), 不要二次确认
+收到回复后按其真实含义处理：
+- 1–3为具体路线选择，登记真实回答及适用checkpoint；证据充分时按Stage 3移交与Stage 5 A0进入相应步骤，不跳过中间阶段。
+- 4为暂不选择：保留探索状态，回审题补信息，不写selected。
+- 5为委托判断：记录授权范围，基于证据形成推荐；不将“委托”伪写成用户指定模型或用户理由。是否足以完成当前checkpoint按主入口及实际授权判断，不重复索取已有授权。
+- 未选路线不自动等于科学淘汰；记录真实取舍，不编造否决证据。
 
 ---
 
@@ -83,7 +84,7 @@ AskUserQuestion(questions=[{
 
 | 操作 | Claude Code | Codex |
 |------|-------------|-----------|
-| 读文件 | `Read(file_path=...)` | `shell: cat ...` 或 `apply_patch` view |
+| 读文件 | `Read(file_path=...)` | `shell: cat ...` 或宿主文件读取工具 |
 | 写新文件 | `Write(file_path=..., content=...)` | `apply_patch *** Add File` |
 | 改文件 | `Edit(file_path=..., old_string=..., new_string=...)` | `apply_patch *** Update File` |
 | 查找 | `Glob` / `Grep` | `shell: rg ...` |
@@ -145,7 +146,7 @@ python scripts/render_paper.py --workspace cwd/paper_workspace/
 
 - [ ] 启动后, 不论 harness, 都立即问 5 个问题
 - [ ] 所有"选 X" 决策点都呈现编号选项
-- [ ] decision_log.json schema 完全一致 (含 v6 兼容字段)
+- [ ] decision_log.json schema 完全一致 (含 当前模板兼容字段)
 - [ ] scripts/*.py 退出码与输出 JSON 一致
 - [ ] cwd 下生成的目录结构 (state/results/figures/paper_workspace) 一致
 - [ ] Codex 安装包含 `agents/openai.yaml` 与 `.codex-plugin/plugin.json`

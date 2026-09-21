@@ -19,7 +19,7 @@
   code/                # 求解代码                              paper_workspace/  # 论文工程（main.tex|main.md + sections/）
   _archive/            # 归档区，只进不出
   真源.md              # SSOT：口径/符号/假设/结果/图表/修订记录
-  selection_sheet.md   # 选型总表：人读产物，渲染自 stages.3.selected_per_subproblem 与 checkpoints.per_qi_selection；冲突时以 decision_log.json 为准
+  selection_sheet.md   # 选型总表：记录候选、比较和证据；正式选择栏与 stages.3.selected_per_subproblem 及 checkpoints.per_qi_selection 对齐
 ```
 
 规则：
@@ -72,7 +72,7 @@ FACT = 题面/数据给定的事实（有误须用户确认才改）; CHOICE = �
 规则：
 
 1. **任何数字进论文前必须在结果登记表有行**（数值 + 生成脚本 + 时间戳三位一体，缺一不可）。
-2. **禁止平行结论文件**：结论性数字只写在真源与由真源/脚本注入的论文里；`results/` 只存机器可读原始结果。发现与真源冲突的结论性 md/txt，立即移入 `_archive/`。
+2. **禁止平行结论文件**：结论性数字只写在真源与由真源/脚本注入的论文里；`results/` 可包含机器结果及绑定来源的诊断报告，探索结果明确未冻结。发现冲突先回源核对并标记失效；不得用副本覆盖正式数字或自动删除用户内容。
 3. **修订记录强制**：任何口径/结果/图表变更追加版本行（谁审查、改了什么、审计是否通过），只追加不删行。
 
 ---

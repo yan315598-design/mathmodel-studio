@@ -43,7 +43,7 @@ Codex 首屏用 `references/codex_practical_menu.md` 工作台菜单：`1` 完�
 |---|---|---|---|
 | 1 | 启动完整流程 | 本文件 §1 + `references/codex_practical_menu.md` + `references/workspace_protocol.md` §1/§2/§4 | 5 答入 state + Stage 0 骨架 |
 | 2 | 选题比较 | `competitions/<comp>/topic_specs.json` + `case_retrieval.md` + `scripts/build_stage_pack.py --stage 1`；华数杯加 `references/huashubei_topic_decision.md` | 选题建议（编号菜单拍板） |
-| 3 | 模型选型 | `references/stage_03_model_selection.md` 选择卡节 + `references/model_catalog.md` 对应域 + 题目域 playbook；文献挂点 ≤2 次/≤5 篇 | 候选短名单 + 《选型总表》`cwd/selection_sheet.md` |
+| 3 | 模型选型 | `references/stage_03_model_selection.md` 的探索—验证—比较循环 + `references/model_catalog.md` 对应域 + 题目域 playbook；文献预算按 `references/literature_scout.md` 的 profile 和缺口停止条件执行 | 路线地图、验证候选、公平比较记录、证据状态 + 《选型总表》`cwd/selection_sheet.md` |
 | 4 | 子问求解 | `references/stage_05_subproblem_loop.md` 本问链路（A0→A/B/C/C.1→D/D.1→E/E2/E3→F/G/H）+ `references/modeling_evidence_protocol.md`；出图加 `references/figure_skill_bridge.md` 图叙事章 + 出图决策菜单节；**冻结时点/改源/数字进稿时**按需只读 `references/workspace_protocol.md` §5（冻结时点）/ §6（数字注入）/ §9（改数四步）/ §10（哈希级联失效）对应小节 | 每问结果 + 草稿卡 + per-Qi 评分 |
 | 5 | 论文写作 | `references/stage_08_writing.md` 写作顺序 + 对应章节 + `<comp>/{abstract_template, phrase_bank, paper_skeleton}.md` + `references/cn_presentation_spec.md` 相关节；十类自查 `references/ai_flavor_removal.md`；**数字进稿/改源时**加 `references/workspace_protocol.md` §6/§9/§10 对应小节 | md 真源正文 + 摘要三遍 + 机检（claim/文献序） |
 | 6 | 局部单图 / 单节（不写 state） | 单图：`references/figure_skill_bridge.md` 图叙事章 + `references/cn_presentation_spec.md` §7；单节：`references/ai_flavor_removal.md` + `<comp>/phrase_bank.md`；**不加载 stage 5/8/9 全书** | 该图/该节成品 |

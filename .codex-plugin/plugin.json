@@ -1,7 +1,7 @@
 {
   "name": "mathmodel-studio",
-  "version": "3.3.0",
-  "description": "数学建模竞赛论文全流程助手：选题、建模、验算、写作、图表、模拟评审、打包提交，按阶段走完一篇可提交的论文。",
+  "version": "3.4.0",
+  "description": "数学建模竞赛助手：审题、数据假设驱动选型、实验验证、科研绘图和论文整理；支持完整流程与局部任务。",
   "author": {
     "name": "yan315598-design",
     "url": "https://github.com/yan315598-design"
@@ -24,8 +24,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "MathModel Studio",
-    "shortDescription": "数学建模竞赛全流程助手：从选题到终审提交，按阶段走完一篇可提交的论文",
-    "longDescription": "An end-to-end coach for math modeling contests. It walks you through problem selection, modeling, solving, validation, paper writing, figure generation with automatic quality checks, traceable numbers, and a simulated judge-panel review before submission. Covers six contests including the China Graduate Contest (Huawei Cup), CUMCM, Huashu Cup, MCM/ICM, Diangong Cup and APMCM, built on a knowledge base distilled from award-winning papers.",
+    "shortDescription": "数学建模竞赛助手：审题、模型研究、实验验证、绘图与论文整理",
+    "longDescription": "A math modeling assistant for full contest workflows and focused tasks. Supports data-driven hypothesis generation, candidate comparison, evidence checks, scientific figures, writing and review. Available tools and validation depend on the host and local environment.",
     "developerName": "yan315598-design",
     "category": "Education",
     "capabilities": [

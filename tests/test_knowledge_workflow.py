@@ -119,6 +119,15 @@ class KnowledgeWorkflowTest(unittest.TestCase):
         evidence = self.scorer.inject_evidence("fig_count", 20, empirical, competition="huashubei")
         self.assertIn("禁止作为评分阈值", evidence)
 
+    def test_trace_claims_rejects_missing_path_evidence(self):
+        row = {"question": "Q1", "model": "RF", "result": "missing/result.json",
+               "validation": "missing/validation.json", "figure": "missing/plot.svg",
+               "abstract_claim": "claim"}
+        report = self.tracer.trace_claims({"evidence_ledger": [row]})
+        self.assertFalse(report["abstract_ready"])
+        self.assertTrue(any("证据文件不存在" in issue
+                            for issue in report["rows"][0]["issues"]))
+
     def test_incremental_manifest_skips_unchanged(self):
         """增量清单只把新增和变化文件送入后续处理。"""
         with tempfile.TemporaryDirectory() as temp_dir:

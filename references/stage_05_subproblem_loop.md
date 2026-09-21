@@ -25,7 +25,7 @@ next: stage_06_robustness
 ## 输入 / 产出
 
 - 输入：stage 2 子问题卡片（含答题义务）、stage 3 选定模型、stage 4 假设/符号/术语；上游结果**只在题面或机制需要时**引入，不默认 Qi-1 复用。
-- 产出（逐问）：数学模型完整公式 + 求解代码 + 数值结果 + 物理意义讨论 + **章节草稿卡**；跨问：依赖与固定输入的依据、单位与信息边界明确；对照证据：同口径横向对照（主模型 vs 基线，含失败路线）与新增模块消融。
+- 产出（逐问）：数学模型完整公式 + 求解代码 + 数值结果 + 物理意义讨论 + **章节草稿卡**；跨问：依赖与固定输入的依据、单位与信息边界明确；对照证据：同口径横向对照（主模型 vs 基线，含失败路线）与支持归因所需的关键控制或适用消融（按实验循环）。
 - 落盘：`decision_log.stages.5.sub_problems.Q<i>`（字段见 `templates/shared/decision_log.json`）+ `state/evidence_ledger.json` + 真源结果登记表。
 
 ## 循环编排（每问按序走完；括号=指回权威源）
@@ -40,7 +40,7 @@ next: stage_06_robustness
 | A | 模型完整化：变量/参数/约束编号 + LaTeX 公式，名称只反映真实实现 | 数学对象与命名纪律 `references/modeling_evidence_protocol.md` Stage 3 节 |
 | B | 求解实现：中文注释、首行"对应论文 §X"、seed、关键字状态 print、结果落 `results/` | 代码样例 `templates/shared/code_starter/`；anti_pattern D1/D4（`competitions/<comp>/anti_patterns.md`） |
 | C | 结果验证四查：状态（可行/最优/超时）→ 约束与单位 → 反例 → 同口径对照（基线也须可行）；国赛/研究生赛/华数杯按 Stage 5 知识包命中案例的 `required_solution_checks` 逐项核验并登记 evidence ID，不迁移历史数值 | 验证纪律 `references/modeling_evidence_protocol.md` Stage 5 节；知识包入口见下“精准指针”；收敛时程纪律见下 |
-| C.1 | 公式-代码一致性对照表落盘 `results/Q{i}_formula_code_map.md`（per-Qi 必填 evidence） | **`references/modeling_evidence_protocol.md` Stage 5 节**（表模板 + 三条判定口径） |
+| C.1 | 按实际模型核对公式与代码；控制方程复杂时可单列 `results/Q{i}_formula_code_map.md`，否则复用验证记录 | **`references/modeling_evidence_protocol.md` Stage 5 节**（表模板 + 三条判定口径） |
 | D | 子灵敏度：只计算并落盘（机器可读文件），**不出图** | `references/modeling_evidence_protocol.md` Stage 5 节"敏感性"（区分固定方案换参数评价 vs 每情景重新决策） |
 | D.1 | 正式出图决策（**必停点**）：登记数量 / 风格 / 逐图叙事；已有有效授权直接登记，缺必要科学决策才询问 | **`references/figure_skill_bridge.md` 出图决策菜单节**（含 0/1 张披露、合并菜单、风格试产）；登记形状 `references/workspace_protocol.md` §12 |
 | D.2 | 图表契约与生成：写清 core claim / figure type / source artifact / palette / 设计卡五要素 / 判据线 / 注释预算 → 生成 → 过 `figqa.py --strict` + `figure_lint.py` | 图表纪律 `references/figure_skill_bridge.md`；命中案例的 `figure_story` 组证据组 |
@@ -68,7 +68,7 @@ next: stage_06_robustness
 |---|---|
 | 某问 L1 不过（任一维 <7） | 只精修该问（section-patch），iter +1；cap 3 后仍不过 → `carryover`，标记交 L2/终审 |
 | 某问 min <7 而其他问已 pass | `refine_partial`：只重跑该问 A-G，不动其他问 |
-| 迭代 2 轮无改善且怀疑方法不适用 | 触发 stage 5 文献挂点（1 次定向检索：方法名 + 失效场景，只找失效证据与替代路线），登记 `decision_log.stages.5.literature_searches`（协议 `references/literature_scout.md`） |
+| 实验出现方法前提或机制缺口 | 触发 stage 5 文献挂点（按profile定向检索方法名与失效场景，寻找失效证据与替代路线），登记 `decision_log.stages.5.literature_searches`（协议 `references/literature_scout.md`） |
 | 收敛/网格不足 | 不得写"已收敛"；按上一节两条纪律处理，结论处如实标注"未量化/未解决" |
 | 结果不可行或状态异常 | 不伪装最优（状态/可行性/性能分开报告，`references/modeling_evidence_protocol.md` Stage 5 节） |
 | 假设被 L2 patch 后 | 走 H 的子检查：依赖该假设 → 重跑 A/B 并同步 C/D 与证据；不依赖 → 标记"Q<i> 不受 patch X 影响" |

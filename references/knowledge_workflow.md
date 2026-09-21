@@ -105,15 +105,12 @@ python scripts/update_knowledge.py --source <资料目录> --apply
 python scripts/literature_scout.py "<english query>" --n 5 [--engine openalex|crossref|arxiv]
 ```
 
-- 引擎路由：OpenAlex 主检索（免 key）；429/503 自动降级 Crossref（只取
+- 引擎路由：OpenAlex 主检索（支持可选 key，当前服务权限需核实）；429/503 自动降级 Crossref（只取
   DOI/标题/期刊/年份）；arXiv 用于预印本补充。只接受英文 query。
-- 挂点仅三处：stage 1 选题避坑、stage 3 选型补充（**选型期默认触发**）、
-  stage 5 翻车点验证；其余阶段不触发。
-- 预算：单挂点 ≤2 次检索、单次 ≤5 篇、24h 缓存。
+- 主要方法发现挂点：stage 1 选题避坑、stage 3 选型补充（**选型期默认触发**）、
+  stage 5 翻车点验证；Stage 2背景与Stage 8补查经引用桥接页复用同一预算。
+- 预算与缓存统一见 `references/literature_scout.md`；contest/practice按研究缺口继续，不沿用固定两次上限。
 - 缓存与落盘：同 query 24h 内读 `state/literature_cache.json`；方法卡（13 字段
-  固定 schema）落 `state/literature/<timestamp>.json`，单卡 ≤500 token。
-- 衔接机制侧录：外源方法卡先过四要素核验（题名/作者/期刊/年份）与撤稿检查，
-  转写成机制条目并标 `review_status`（proposed→source_checked→locally_tested），
-  才能进入选择卡与模型链；`proposed` 不得作为拍板依据。
-- 边界：不接知网/万方（无合规 API，中文文献走 `reference_skill_bridge.md` 的
-  cnki 桥接）、不做本地向量库、不分发获奖论文 PDF。
+  固定 schema）落 `state/literature/<timestamp>.json`，方法卡长度按统一协议估算裁剪。
+- 证据衔接：按Stage 3四轴注明书目、机制、实现和效果范围；来源转译与旧review_status兼容见 `references/literature_scout.md`，不要求每次新建全局机制条目。
+- 边界：脚本不集成知网/万方后端，中文来源按实际访问权限走引用桥；不做本地向量库，不分发获奖论文PDF。
