@@ -1,6 +1,6 @@
 # mathmodel-studio · 数模工坊
 
-[![Version](https://img.shields.io/badge/version-v3.4.0-blueviolet)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v3.4.1-blueviolet)](CHANGELOG.md)
 [![CI](https://github.com/yan315598-design/mathmodel-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/yan315598-design/mathmodel-studio/actions/workflows/ci.yml)
 
 **用于数学建模竞赛的 AI Skill，协助完成审题、建模、求解、验证和论文整理。**
@@ -9,7 +9,7 @@
 
 支持 Codex、Claude Code、ZCode 等能够加载 Skill、读取文件并执行工具的助手。实际可用功能取决于所用平台的能力、工具权限和本地环境。
 
-v3.4.0 重点改进模型与算法的选择：从题目、数据和误差中寻找值得验证的方向，结合文献和历史案例提出候选，再用实验比较单一方法或多模块组合。助手会主动说明推荐理由、替代方案和证据缺口，发现新问题时可以返回研究和验证。已有绘图、附件处理和论文整理能力继续保留。项目结构见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+v3.4.1 重点改进模型与算法的选择：从题目、数据和误差中寻找值得验证的方向，结合文献和历史案例提出候选，再用实验比较适合本题的单一方法、模块化方法或组合结构。助手会主动说明推荐理由、比较依据和证据缺口，发现新问题时可以返回研究和验证。已有绘图、附件处理和论文整理能力继续保留。项目结构见 [ARCHITECTURE.md](ARCHITECTURE.md)。
 
 处理附件不需要一次装齐所有依赖：WAV 和 CSV 用 Python 标准库就能查；看图需要 Pillow；视频和压缩音频需要 FFmpeg；地理和科学数据按具体格式再装 rasterio、fiona、laspy、h5py 或 xarray。做普通表格任务这些都不用装。每种格式能查什么、哪些还没实现，见 [多类型附件](references/multimodal_assets.md)。实验比较工具只汇总已经跑过的候选结果，不是自动训练平台。
 
@@ -320,7 +320,7 @@ git -C "<Skill安装目录>" pull --ff-only
 
 如果新版调整了依赖，再执行一次对应的 `pip install -r ...`。使用 ZIP 安装的用户，应先保留自己的修改，再替换为新版文件。
 
-## 3.4.0 更新
+## 3.4.1 更新
 
 - 强化模型与算法研究：从题目、数据、文献和误差提出候选，支持有依据的组合，并主动解释推荐理由。
 - 按研究缺口分配检索和实验预算，完善公平比较、关键实现核验和证据范围记录。
